@@ -26,18 +26,26 @@ export const getWalletTransactions = async ({
   wallet: Wallet;
   dto: z.infer<typeof GetWalletTransactionsDTO>;
 }): Promise<Result<Transaction[], CircleFetchTransactionsError>> => {
-  const [dbTransactions, onchainWalletTransactions] = await Promise.all([
-    loadTransactionsByWallet({
-      walletId: wallet.id,
-      from: dto.from,
-      to: dto.to,
-    }),
-    fetchWalletTransactions({
-      circleWalletId: wallet.circle.id,
-      from: dto.from,
-      to: dto.to,
-    }),
-  ]);
+  const dbTransactions = await loadTransactionsByWallet({
+    walletId: wallet.id,
+    from: dto.from,
+    to: dto.to,
+  });
+
+  if (
+    dbTransactions.length > 0 &&
+    dbTransactions.every(
+      (tx) => !shouldUpdateTransaction(tx) && tx.status !== "queued"
+    )
+  ) {
+    return ok(dbTransactions);
+  }
+
+  const onchainWalletTransactions = await fetchWalletTransactions({
+    circleWalletId: wallet.circle.id,
+    from: dto.from,
+    to: dto.to,
+  });
 
   if (!onchainWalletTransactions.ok) {
     console.error(onchainWalletTransactions.error);
