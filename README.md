@@ -6,6 +6,11 @@ Agent Pay supports the following payment methods:
 - Credit Card (soon)
 - USDC payment (soon)
 
+## How to use (docs)
+
+- See server root path ([GET /](https://pay.superface.dev/))
+- Use included [Postman collection](./docs/AgentPay.postman_collection.json)
+
 ## Development
 
 First install the dependencies.
