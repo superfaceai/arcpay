@@ -1,3 +1,6 @@
+// This import needs to be here so that Vercel recognizes it as an entrypoint
+import { Hono } from "hono";
+
 import { createApplicationApi, listResources, Resource } from "@/api/services";
 
 import { registrationApi } from "@/registration/api";
