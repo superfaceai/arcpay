@@ -19,6 +19,16 @@ export const createApplicationApi = <A extends ReturnType<typeof createApi>>(
 
   registerApis(app as A);
 
+  // Catch-all route for all unmatched paths
+  app.all("*", (c) => {
+    return ProblemJson(
+      c,
+      404,
+      "Not Found",
+      "The requested resource was not found."
+    );
+  });
+
   app.onError(async (err, c) => {
     // Map Hono HTTPException to Problem JSON
     if (err instanceof HTTPException) {
