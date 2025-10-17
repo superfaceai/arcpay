@@ -173,34 +173,6 @@
 					"response": []
 				},
 				{
-					"name": "Retrieve a wallet",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{SECRET_KEY}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{HOST}}/wallets/{{PRIMARY_WALLET_ID}}",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"wallets",
-								"{{PRIMARY_WALLET_ID}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Wallet balance",
 					"request": {
 						"auth": {
@@ -228,6 +200,34 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Retrieve a wallet",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/wallets/{{PRIMARY_WALLET_ID}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"wallets",
+								"{{PRIMARY_WALLET_ID}}"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -248,7 +248,13 @@
 							]
 						},
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Idempotency-Key",
+								"value": "deposit-1",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"type\": \"testnet_faucet\",\n    \"currency\": \"USDC\"\n}",
@@ -315,10 +321,16 @@
 							]
 						},
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Idempotency-Key",
+								"value": "transaction-1",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"to\": \"0x0defb1adf02a2cd7cafffc461bf4f2ce8c0e2147\",\n    \"amount\": \"0.09\",\n    \"currency\": \"USDC\"\n}",
+							"raw": "{\n    \"to\": \"0x0defb1adf02a2cd7cafffc461bf4f2ce8c0e2147\",\n    \"currency\": \"USDC\",\n    \"amount\": \"0.5\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -426,18 +438,12 @@
 		{
 			"key": "SECRET_KEY",
 			"value": "",
-			"description": {
-				"content": "Populates automatically after a sign up",
-				"type": "text/plain"
-			}
+			"description": "Populates automatically after a sign up"
 		},
 		{
 			"key": "PRIMARY_WALLET_ID",
 			"value": "",
-			"description": {
-				"content": "Populates automatically after listing all wallets",
-				"type": "text/plain"
-			}
+			"description": "Populates automatically after listing all wallets"
 		}
 	]
 }

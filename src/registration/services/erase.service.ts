@@ -1,5 +1,6 @@
 import { ok, Result } from "@/lib/index.js";
 
+import { eraseCallsForUser } from "@/api/entities/call.db";
 import { eraseUser, eraseApiKeysForUser } from "@/identity/entities/index.js";
 import {
   loadWalletsByUser,
@@ -21,6 +22,7 @@ export const erase = async ({
     await eraseDepositsForWallet({ walletId: wallet.id });
   }
 
+  await eraseCallsForUser({ userId });
   await eraseWalletsForUser({ userId });
   await eraseUser({ userId });
   await eraseApiKeysForUser({ userId });

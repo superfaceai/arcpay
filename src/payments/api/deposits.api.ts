@@ -1,9 +1,16 @@
 import { createApi } from "@/api/services/index.js";
 import { ProblemJson, ApiObject, ApiList } from "@/api/values/index.js";
-import { withValidation, withAuth } from "@/api/middlewares/index.js";
+import {
+  withValidation,
+  withAuth,
+  withIdempotency,
+} from "@/api/middlewares/index.js";
 
 import { depositMoney, DepositMoneyDTO } from "@/payments/services/index.js";
-import { loadWalletById, loadDepositsByWallet } from "@/payments/entities/index.js";
+import {
+  loadWalletById,
+  loadDepositsByWallet,
+} from "@/payments/entities/index.js";
 
 export const depositsApi = createApi()
   .get("/wallets/:walletId/deposits", withAuth(), async (c) => {
@@ -24,6 +31,7 @@ export const depositsApi = createApi()
   .post(
     "/wallets/:walletId/deposits",
     withAuth(),
+    withIdempotency(),
     withValidation("json", DepositMoneyDTO),
     async (c) => {
       const wallet = await loadWalletById({

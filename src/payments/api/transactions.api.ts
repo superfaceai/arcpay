@@ -1,6 +1,10 @@
 import { createApi } from "@/api/services/index.js";
 import { ProblemJson, ApiObject, ApiList } from "@/api/values/index.js";
-import { withValidation, withAuth } from "@/api/middlewares/index.js";
+import {
+  withValidation,
+  withAuth,
+  withIdempotency,
+} from "@/api/middlewares/index.js";
 
 import {
   getWalletTransactions,
@@ -44,6 +48,7 @@ export const transactionsApi = createApi()
   .post(
     "/wallets/:walletId/transactions",
     withAuth(),
+    withIdempotency(),
     withValidation("json", SendMoneyDTO),
     async (c) => {
       const wallet = await loadWalletById({

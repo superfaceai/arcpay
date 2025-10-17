@@ -150,6 +150,25 @@ curl ${host}/me \\
       )
       .join("\n")}
   </ul>
+
+  <h2>Idempotency</h2>
+
+  <p>The API includes idempotency to ensure that retrying a request won't accidentally repeat the same operation.</p>
+
+  <p>To use idempotency, include the <code>Idempotency-Key</code> header in the request (e.g. UUID v4 or similar alphanumeric).</p>
+  
+  <p>If the same request with the same idempotency key is received multiple times, the same response is returned, even for failed requests.</p>
+  
+  <p>Idempotency keys expire after 24 hours.</p>
+  
+  <p>Only <code>POST</code> requests support idempotency key (<code>GET</code> and <code>DELETE</code> requests are idempotent by design).</p>
+
+  <pre>
+curl ${host}/wallets/wt_nOh7XWhobDWrqG2whh061/deposits \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer sk_test_YOUR_API_KEY" \\
+  -H "Idempotency-Key: OHGqyQ9oXRZQHGbv" \\
+  -d '{ "type": "testnet_faucet" }'</pre>
   </main>
 </body>
 </html>
