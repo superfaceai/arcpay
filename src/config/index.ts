@@ -9,8 +9,8 @@ const ConfigSchema = z.object({
   CIRCLE_ENTITY_SECRET: z.string().min(1),
   CIRCLE_WALLETSET_ID: z.string().min(1),
   DEFAULT_BLOCKCHAIN: z.enum(BLOCKCHAINS),
-  UPSTASH_REDIS_REST_URL: z.string().min(1),
-  UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
+  REDIS_REST_URL: z.string().min(1),
+  REDIS_REST_TOKEN: z.string().min(1),
 });
 
 const parsedConfig = ConfigSchema.safeParse(process.env);
