@@ -1,9 +1,9 @@
 import { HTTPException } from "hono/http-exception";
-import { requestId } from "hono/request-id";
 import { logger } from "hono/logger";
 
 import Config from "@/config/index.js";
 import { ProblemJson } from "@/api/values/index.js";
+import { withRequestId } from "@/api/middlewares/index.js";
 
 import { createApi } from "./create-api.js";
 
@@ -15,7 +15,7 @@ export const createApplicationApi = <A extends ReturnType<typeof createApi>>(
   if (!Config.IS_PRODUCTION) {
     app.use(logger());
   }
-  app.use("*", requestId());
+  app.use("*", withRequestId());
 
   registerApis(app as A);
 
