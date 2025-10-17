@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "strict": true,
+    "skipLibCheck": true,
+    "types": ["node"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/api": ["./src/api/module.ts"],
+      "@/circle": ["./src/circle/index.ts"],
+      "@/config": ["./src/config/index.ts"],
+      "@/database": ["./src/database/index.ts"],
+      "@/lib": ["./src/lib/index.ts"],
+
+      "@/*/errors": ["./src/*/errors.ts"],
+      "@/*/entities": ["./src/*/entities/index.ts"],
+      "@/*/values": ["./src/*/values/index.ts"],
+      "@/*/services": ["./src/*/services/index.ts"],
+      "@/*/api": ["./src/*/api/index.ts"],
+      "@/*/middlewares": ["./src/*/middlewares/index.ts"]
+    },
+    "outDir": "./dist"
+  },
+  "exclude": ["node_modules"]
+}
