@@ -1,8 +1,8 @@
-import { register, RegisterDTO, erase } from "@/registration/services";
+import { register, RegisterDTO, erase } from "@/registration/services/index.js";
 
-import { createApi } from "@/api/services";
-import { ProblemJson, ApiObject } from "@/api/values";
-import { withValidation, withAuth } from "@/api/middlewares";
+import { createApi } from "@/api/services/index.js";
+import { ProblemJson, ApiObject } from "@/api/values/index.js";
+import { withValidation, withAuth } from "@/api/middlewares/index.js";
 
 export const registrationApi = createApi()
   .post("/new", withValidation("json", RegisterDTO), async (c) => {

@@ -1,7 +1,7 @@
-import { Result, tryAsync } from "@/lib";
+import { Result, tryAsync } from "@/lib/index.js";
 import { client } from "./client.js";
 import { CircleLookupTokenError } from "./errors.js";
-import { isValidToken, Token } from "@/payments/values";
+import { isValidToken, Token } from "@/payments/values/index.js";
 
 export const circleTokenIdToToken = async (tokenId: string): Promise<Token> => {
   const cachedToken = CIRCLE_TOKEN_IDS[tokenId];

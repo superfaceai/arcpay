@@ -1,5 +1,5 @@
-import { db } from "@/database";
-import { Transaction, transactionSortDesc } from "@/payments/entities";
+import { db } from "@/database/index.js";
+import { Transaction, transactionSortDesc } from "@/payments/entities/index.js";
 
 const storageKeyById = ({ id }: { id: string }) => `tx:${id}`;
 const storageKeyByWallet = ({ walletId }: { walletId: string }) =>

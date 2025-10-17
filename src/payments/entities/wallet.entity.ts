@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { generateId, DateCodec } from "@/lib";
-import { Blockchain } from "@/payments/values";
+import { generateId, DateCodec } from "@/lib/index.js";
+import { Blockchain } from "@/payments/values/index.js";
 
 export const walletId = () => generateId("wt");
 

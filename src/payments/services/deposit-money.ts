@@ -3,15 +3,15 @@ import {
   requestTestnetFaucet,
   CircleTestnetFaucetError,
   CircleTooManyRequestsError,
-} from "@/circle";
-import { err, ok, Result } from "@/lib";
+} from "@/circle/index.js";
+import { err, ok, Result } from "@/lib/index.js";
 
-import { Wallet, Deposit, depositId, saveDeposit } from "@/payments/entities";
-import { StablecoinToken, isStablecoinSupported } from "@/payments/values";
+import { Wallet, Deposit, depositId, saveDeposit } from "@/payments/entities/index.js";
+import { StablecoinToken, isStablecoinSupported } from "@/payments/values/index.js";
 import {
   PaymentLiveModeError,
   PaymentUnsupportedTokenError,
-} from "@/payments/errors";
+} from "@/payments/errors.js";
 
 export const DepositMoneyDTO = z.object({
   type: z.enum(["testnet_faucet"]), // TODO: Add other types of deposits, like CC

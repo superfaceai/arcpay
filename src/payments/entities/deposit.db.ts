@@ -1,5 +1,5 @@
-import { db } from "@/database";
-import { Deposit } from "@/payments/entities";
+import { db } from "@/database/index.js";
+import { Deposit } from "@/payments/entities/index.js";
 
 const storageKeyById = ({ id }: { id: string }) => `deposit:${id}`;
 const storageKeyByWallet = ({ walletId }: { walletId: string }) =>

@@ -1,6 +1,6 @@
-import { ApiKey, User } from "@/identity/entities";
-import { Deposit, Transaction, Wallet } from "@/payments/entities";
-import { Balance } from "@/payments/values";
+import { ApiKey, User } from "@/identity/entities/index.js";
+import { Deposit, Transaction, Wallet } from "@/payments/entities/index.js";
+import { Balance } from "@/payments/values/index.js";
 
 // When adding new API object,
 // 1) Add the object name to the ObjectName type

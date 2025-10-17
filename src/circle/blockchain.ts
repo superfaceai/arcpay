@@ -1,4 +1,4 @@
-import { Blockchain as PaymentBlockchain } from "@/payments/values";
+import { Blockchain as PaymentBlockchain } from "@/payments/values/index.js";
 
 import {
   TestnetBlockchain as CircleTestnetBlockchain,

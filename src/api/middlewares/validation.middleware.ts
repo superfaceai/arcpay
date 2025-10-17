@@ -1,6 +1,6 @@
 import { ValidationTargets } from "hono";
 import { zValidator } from "@hono/zod-validator";
-import { ProblemJson } from "@/api/values";
+import { ProblemJson } from "@/api/values/index.js";
 
 export const withValidation = (
   target: Parameters<typeof zValidator>[0],

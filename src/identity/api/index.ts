@@ -1,8 +1,8 @@
-import { createApi } from "@/api/services";
-import { ProblemJson, ApiObject } from "@/api/values";
-import { withAuth } from "@/api/middlewares";
+import { createApi } from "@/api/services/index.js";
+import { ProblemJson, ApiObject } from "@/api/values/index.js";
+import { withAuth } from "@/api/middlewares/index.js";
 
-import { loadUserById } from "@/identity/entities";
+import { loadUserById } from "@/identity/entities/index.js";
 
 export const identityApi = createApi().get("/me", withAuth(), async (c) => {
   const user = await loadUserById(c.get("userId"));

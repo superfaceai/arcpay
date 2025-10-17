@@ -1,11 +1,11 @@
 // This import needs to be here so that Vercel recognizes it as an entrypoint
 import { Hono } from "hono";
 
-import { createApplicationApi, listResources, Resource } from "@/api/services";
+import { createApplicationApi, listResources, Resource } from "@/api/services/index.js";
 
-import { registrationApi } from "@/registration/api";
-import { identityApi } from "@/identity/api";
-import { depositsApi, transactionsApi, walletsApi } from "@/payments/api";
+import { registrationApi } from "@/registration/api/index.js";
+import { identityApi } from "@/identity/api/index.js";
+import { depositsApi, transactionsApi, walletsApi } from "@/payments/api/index.js";
 
 const app = createApplicationApi((app) => {
   app.route("/", registrationApi);

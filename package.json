@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "tsx watch development.ts",
-    "build": "tsc"
+    "build": "tsc && tsc-alias -f"
   },
   "dependencies": {
     "@circle-fin/developer-controlled-wallets": "^8.4.1",
@@ -22,6 +22,7 @@
     "@types/big.js": "^6.2.2",
     "@types/node": "^20.11.17",
     "@types/uuid": "^10.0.0",
+    "tsc-alias": "^1.8.16",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3"
   }

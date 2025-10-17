@@ -2,7 +2,7 @@ import { Context } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { bearerAuth } from "hono/bearer-auth";
 
-import { loadApiKeyBySecret } from "@/identity/entities";
+import { loadApiKeyBySecret } from "@/identity/entities/index.js";
 
 export const withAuth = () => bearerAuth({ verifyToken });
 

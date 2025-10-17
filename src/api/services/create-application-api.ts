@@ -2,8 +2,8 @@ import { HTTPException } from "hono/http-exception";
 import { requestId } from "hono/request-id";
 import { logger } from "hono/logger";
 
-import Config from "@/config";
-import { ProblemJson } from "@/api/values";
+import Config from "@/config/index.js";
+import { ProblemJson } from "@/api/values/index.js";
 
 import { createApi } from "./create-api.js";
 

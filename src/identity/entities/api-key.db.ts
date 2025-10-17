@@ -1,5 +1,5 @@
-import { db } from "@/database";
-import { ApiKey } from "@/identity/entities";
+import { db } from "@/database/index.js";
+import { ApiKey } from "@/identity/entities/index.js";
 
 const storageKeyById = ({ id }: { id: string }) => `apikey:id:${id}`;
 const storageKeyBySecret = ({ key }: { key: string }) => `apikey:key:${key}`;

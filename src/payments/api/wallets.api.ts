@@ -1,9 +1,9 @@
-import { createApi } from "@/api/services";
-import { ProblemJson, ApiObject, ApiList } from "@/api/values";
-import { withAuth } from "@/api/middlewares";
+import { createApi } from "@/api/services/index.js";
+import { ProblemJson, ApiObject, ApiList } from "@/api/values/index.js";
+import { withAuth } from "@/api/middlewares/index.js";
 
-import { getWalletBalance } from "@/payments/services";
-import { loadWalletsByUser, loadWalletById } from "@/payments/entities";
+import { getWalletBalance } from "@/payments/services/index.js";
+import { loadWalletsByUser, loadWalletById } from "@/payments/entities/index.js";
 
 export const walletsApi = createApi()
   .get("/wallets", withAuth(), async (c) => {

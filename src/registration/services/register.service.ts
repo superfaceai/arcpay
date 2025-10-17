@@ -1,10 +1,10 @@
 import { z } from "zod";
-import Config from "@/config";
-import { ok, Result } from "@/lib";
+import Config from "@/config/index.js";
+import { ok, Result } from "@/lib/index.js";
 
-import { createWallet, CircleCreateWalletError } from "@/circle";
+import { createWallet, CircleCreateWalletError } from "@/circle/index.js";
 
-import { Wallet, saveWallet, walletId } from "@/payments/entities";
+import { Wallet, saveWallet, walletId } from "@/payments/entities/index.js";
 
 import {
   userId,
@@ -14,7 +14,7 @@ import {
   generateApiKey,
   saveApiKey,
   saveUser,
-} from "@/identity/entities";
+} from "@/identity/entities/index.js";
 
 export const RegisterDTO = z.object({ name: z.string().min(2) });
 

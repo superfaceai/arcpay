@@ -1,7 +1,7 @@
 import Big from "big.js";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
-import { err, ok, Result } from "@/lib";
+import { err, ok, Result } from "@/lib/index.js";
 
 import {
   CircleCreateTransactionError,
@@ -9,25 +9,25 @@ import {
   CircleValidateAddressError,
   createTransaction,
   validateAddress,
-} from "@/circle";
+} from "@/circle/index.js";
 
 import {
   Wallet,
   transactionId,
   Transaction,
   saveTransaction,
-} from "@/payments/entities";
+} from "@/payments/entities/index.js";
 import {
   Amount,
   StablecoinToken,
   getStablecoinTokenAddress,
-} from "@/payments/values";
-import { getWalletBalance } from "@/payments/services";
+} from "@/payments/values/index.js";
+import { getWalletBalance } from "@/payments/services/index.js";
 import {
   PaymentInsufficientBalanceError,
   PaymentUnsupportedTokenError,
   PaymentInvalidAddressError,
-} from "@/payments/errors";
+} from "@/payments/errors.js";
 
 export const SendMoneyDTO = z.object({
   to: z.string().min(2),
