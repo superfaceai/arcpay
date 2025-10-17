@@ -8,7 +8,7 @@ import {
   saveCall,
 } from "@/api/entities/index.js";
 import { ProblemJson } from "@/api/values/index.js";
-import { REQUEST_ID_HEADER } from "./request-id.middleware.js";
+import { REQUEST_ID_HEADER } from "./request-id.js";
 import { StatusCode } from "hono/utils/http-status";
 import { HonoRequest } from "hono";
 import { JSONObject, JSONValue } from "hono/utils/types";
