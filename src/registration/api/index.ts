@@ -25,5 +25,5 @@ export const registrationApi = createApi()
   .delete("/me", withAuth(), async (c) => {
     await erase({ userId: c.get("userId") });
 
-    return new Response(null, { status: 204 });
+    return c.newResponse(null, 204);
   });
