@@ -67,8 +67,7 @@ const HOME_DOCS_HTML = ({
     pre {
       padding: 0.75rem;
       overflow-x: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
+      
     }
     main {
       margin: 0 auto;
@@ -85,6 +84,13 @@ const HOME_DOCS_HTML = ({
       padding: 0.5rem;
       display: flex;
       justify-content: space-between;
+      align-items: baseline;
+    }
+    ul.resources > li > div:nth-child(2) {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: end;
+      gap: 0.2rem;
     }
     ul.resources > li:nth-child(even) {
       background-color: #f9f9f9;
