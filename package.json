@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "tsx watch development.ts",
-    "build": "tsc && tsc-alias -f"
+    "build": "tsc && tsc-alias -f",
+    "arc:generate-wallet": "tsx src/arc/generate-wallet.script.ts"
   },
   "dependencies": {
     "@circle-fin/developer-controlled-wallets": "^8.4.1",
@@ -15,6 +16,7 @@
     "hono": "^4.9.12",
     "nanoid": "^5.1.6",
     "uuid": "^13.0.0",
+    "viem": "^2.38.3",
     "zod": "^4.1.12"
   },
   "devDependencies": {
