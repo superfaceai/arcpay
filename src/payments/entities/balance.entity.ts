@@ -3,7 +3,8 @@ import { generateId } from "@/lib";
 
 import { Amount, Currency } from "../values";
 
-export const balanceId = () => generateId("b");
+export const balanceId = (currency: Currency) =>
+  generateId(`bal_${currency.toLowerCase()}`);
 
 export const Balance = z.object({
   id: z.string(),

@@ -23,7 +23,7 @@ export const getBalance = async ({
   // TODO: Fetch real holdings & sync
 
   const phantomBalance: Balance = {
-    id: balanceId(),
+    id: balanceId(currency),
     owner: userId,
     live,
     currency,

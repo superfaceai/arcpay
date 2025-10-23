@@ -20,7 +20,7 @@ export const listBalances = async ({
 
   const phantomBalances: Balance[] = [
     {
-      id: balanceId(),
+      id: balanceId("USDC"),
       owner: userId,
       live,
       currency: "USDC",
