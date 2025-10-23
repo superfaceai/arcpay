@@ -6,8 +6,8 @@ import {
   IdempotencyKey,
   loadCallByIdempotencyKey,
   saveCall,
-} from "@/api/entities/index.js";
-import { ProblemJson } from "@/api/values/index.js";
+} from "@/api/entities";
+import { ProblemJson } from "@/api/values";
 import { REQUEST_ID_HEADER } from "./request-id.js";
 import { StatusCode } from "hono/utils/http-status";
 import { HonoRequest } from "hono";

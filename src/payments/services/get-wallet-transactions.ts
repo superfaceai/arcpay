@@ -2,8 +2,8 @@ import { z } from "zod";
 import {
   CircleFetchTransactionsError,
   fetchWalletTransactions,
-} from "@/circle/index.js";
-import { DateCodec, ok, Result } from "@/lib/index.js";
+} from "@/circle";
+import { DateCodec, ok, Result } from "@/lib";
 import {
   Wallet,
   Transaction,
@@ -12,7 +12,7 @@ import {
   loadTransactionsByWallet,
   saveManyTransactions,
   transactionId,
-} from "@/payments/entities/index.js";
+} from "@/payments/entities";
 
 export const GetWalletTransactionsDTO = z.object({
   from: DateCodec.optional(),

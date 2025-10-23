@@ -1,13 +1,13 @@
-import { ok, Result } from "@/lib/index.js";
+import { ok, Result } from "@/lib";
 
 import { eraseCallsForUser } from "@/api/entities/call.db";
-import { eraseUser, eraseApiKeysForUser } from "@/identity/entities/index.js";
+import { eraseUser, eraseApiKeysForUser } from "@/identity/entities";
 import {
   loadWalletsByUser,
   eraseWalletsForUser,
   eraseTransactionsForWallet,
   eraseDepositsForWallet,
-} from "@/payments/entities/index.js";
+} from "@/payments/entities";
 
 export const erase = async ({
   userId,

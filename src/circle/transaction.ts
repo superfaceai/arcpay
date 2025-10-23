@@ -5,14 +5,14 @@ import {
   TransactionState,
 } from "@circle-fin/developer-controlled-wallets";
 
-import { Result, tryAsync } from "@/lib/index.js";
+import { Result, tryAsync } from "@/lib";
 import {
   Blockchain,
   Amount,
   getNativeTokenFor,
   mainToken,
-} from "@/payments/values/index.js";
-import { Transaction, TransactionStatus } from "@/payments/entities/index.js";
+} from "@/payments/values";
+import { Transaction, TransactionStatus } from "@/payments/entities";
 
 import { client } from "./client.js";
 import {

@@ -1,7 +1,7 @@
 import Big from "big.js";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
-import { err, ok, Result } from "@/lib/index.js";
+import { err, ok, Result } from "@/lib";
 
 import {
   CircleCreateTransactionError,
@@ -9,20 +9,20 @@ import {
   CircleValidateAddressError,
   createTransaction,
   validateAddress,
-} from "@/circle/index.js";
+} from "@/circle";
 
 import {
   Wallet,
   transactionId,
   Transaction,
   saveTransaction,
-} from "@/payments/entities/index.js";
+} from "@/payments/entities";
 import {
   Amount,
   StablecoinToken,
   getStablecoinTokenAddress,
-} from "@/payments/values/index.js";
-import { getWalletBalance } from "@/payments/services/index.js";
+} from "@/payments/values";
+import { getWalletBalance } from "@/payments/services";
 import {
   PaymentInsufficientBalanceError,
   PaymentUnsupportedTokenError,

@@ -1,4 +1,4 @@
-import { generateId, DateCodec } from "@/lib/index.js";
+import { generateId, DateCodec } from "@/lib";
 import { z } from "zod";
 
 export const generateApiKey = (live: boolean) =>

@@ -3,11 +3,11 @@ import {
   requestTestnetFaucet,
   CircleTestnetFaucetError,
   CircleTooManyRequestsError,
-} from "@/circle/index.js";
-import { err, ok, Result } from "@/lib/index.js";
+} from "@/circle";
+import { err, ok, Result } from "@/lib";
 
-import { Wallet, Deposit, depositId, saveDeposit } from "@/payments/entities/index.js";
-import { StablecoinToken, isStablecoinSupported } from "@/payments/values/index.js";
+import { Wallet, Deposit, depositId, saveDeposit } from "@/payments/entities";
+import { StablecoinToken, isStablecoinSupported } from "@/payments/values";
 import {
   PaymentLiveModeError,
   PaymentUnsupportedTokenError,

@@ -1,4 +1,4 @@
-import { generateId } from "@/lib/index.js";
+import { generateId } from "@/lib";
 import { z } from "zod";
 
 export const userId = () => generateId("usr");

@@ -1,7 +1,7 @@
-import { Result, tryAsync } from "@/lib/index.js";
+import { Result, tryAsync } from "@/lib";
 
 import { CircleValidateAddressError } from "./errors.js";
-import { Blockchain } from "@/payments/values/index.js";
+import { Blockchain } from "@/payments/values";
 
 import { client } from "./client.js";
 import { chooseCircleBlockchain } from "./blockchain.js";

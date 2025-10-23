@@ -1,16 +1,16 @@
-import { createApi } from "@/api/services/index.js";
-import { ProblemJson, ApiObject, ApiList } from "@/api/values/index.js";
+import { createApi } from "@/api/services";
+import { ProblemJson, ApiObject, ApiList } from "@/api/values";
 import {
   withValidation,
   withAuth,
   withIdempotency,
-} from "@/api/middlewares/index.js";
+} from "@/api/middlewares";
 
-import { depositMoney, DepositMoneyDTO } from "@/payments/services/index.js";
+import { depositMoney, DepositMoneyDTO } from "@/payments/services";
 import {
   loadWalletById,
   loadDepositsByWallet,
-} from "@/payments/entities/index.js";
+} from "@/payments/entities";
 
 export const depositsApi = createApi()
   .get("/wallets/:walletId/deposits", withAuth(), async (c) => {

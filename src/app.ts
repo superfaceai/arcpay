@@ -7,15 +7,15 @@ import {
   createApplicationApi,
   listResources,
   Resource,
-} from "@/api/services/index.js";
+} from "@/api/services";
 
-import { erasureApi } from "@/erasure/api/index.js";
-import { identityApi } from "@/identity/api/index.js";
+import { erasureApi } from "@/erasure/api";
+import { identityApi } from "@/identity/api";
 import {
   depositsApi,
   transactionsApi,
   walletsApi,
-} from "@/payments/api/index.js";
+} from "@/payments/api";
 
 const app = createApplicationApi((app) => {
   app.route("/", erasureApi);

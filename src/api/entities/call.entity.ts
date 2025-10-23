@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { generateId, DateCodec } from "@/lib/index.js";
+import { generateId, DateCodec } from "@/lib";
 
 export const generateIdempotencyKey = () => generateId("idm");
 

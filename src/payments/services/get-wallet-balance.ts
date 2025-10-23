@@ -1,9 +1,9 @@
-import { CircleFetchBalanceError, fetchWalletBalance } from "@/circle/index.js";
+import { CircleFetchBalanceError, fetchWalletBalance } from "@/circle";
 import Big from "big.js";
-import { ok, Result } from "@/lib/index.js";
+import { ok, Result } from "@/lib";
 
-import { Balance, isValidToken, mainToken, Token } from "@/payments/values/index.js";
-import { Wallet } from "@/payments/entities/index.js";
+import { Balance, isValidToken, mainToken, Token } from "@/payments/values";
+import { Wallet } from "@/payments/entities";
 
 export const getWalletBalance = async (
   wallet: Wallet

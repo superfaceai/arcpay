@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { z } from "zod";
-import { BLOCKCHAINS } from "@/payments/values/index.js";
+import { BLOCKCHAINS } from "@/payments/values";
 
 const ConfigSchema = z.object({
   NODE_ENV: z.enum(["development", "production"]),

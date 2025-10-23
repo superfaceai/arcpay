@@ -1,5 +1,5 @@
-import { db } from "@/database/index.js";
-import { User } from "@/identity/entities/index.js";
+import { db } from "@/database";
+import { User } from "@/identity/entities";
 
 const storageKey = (id: string) => `user:${id}`;
 

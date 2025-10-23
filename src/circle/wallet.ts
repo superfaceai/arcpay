@@ -4,9 +4,9 @@ import {
   Wallet,
 } from "@circle-fin/developer-controlled-wallets";
 
-import Config from "@/config/index.js";
-import { Result, tryAsync } from "@/lib/index.js";
-import { Blockchain, StablecoinToken } from "@/payments/values/index.js";
+import Config from "@/config";
+import { Result, tryAsync } from "@/lib";
+import { Blockchain, StablecoinToken } from "@/payments/values";
 
 import { client } from "./client.js";
 import { chooseCircleBlockchain } from "./blockchain.js";

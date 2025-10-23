@@ -1,4 +1,4 @@
-import { db } from "@/database/index.js";
+import { db } from "@/database";
 import { Call } from "./call.entity";
 
 const storageKeyByIdempotencyKey = ({

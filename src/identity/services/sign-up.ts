@@ -1,6 +1,6 @@
 import { z } from "zod";
-import Config from "@/config/index.js";
-import { ok, Result } from "@/lib/index.js";
+import Config from "@/config";
+import { ok, Result } from "@/lib";
 
 import {
   userId,
@@ -10,7 +10,7 @@ import {
   generateApiKey,
   saveApiKey,
   saveUser,
-} from "@/identity/entities/index.js";
+} from "@/identity/entities";
 
 export const SignUpDTO = z.object({ name: z.string().min(2) });
 

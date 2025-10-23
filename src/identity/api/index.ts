@@ -1,10 +1,10 @@
-import { createApi } from "@/api/services/index.js";
-import { ProblemJson, ApiObject } from "@/api/values/index.js";
-import { withAuth, withValidation } from "@/api/middlewares/index.js";
+import { createApi } from "@/api/services";
+import { ProblemJson, ApiObject } from "@/api/values";
+import { withAuth, withValidation } from "@/api/middlewares";
 
-import { loadUserById } from "@/identity/entities/index.js";
-import { signUp, SignUpDTO } from "@/identity/services/index.js";
-import { getOrThrow } from "@/lib/index.js";
+import { loadUserById } from "@/identity/entities";
+import { signUp, SignUpDTO } from "@/identity/services";
+import { getOrThrow } from "@/lib";
 
 export const identityApi = createApi()
   .post("/new", withValidation("json", SignUpDTO), async (c) => {

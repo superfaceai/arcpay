@@ -1,7 +1,7 @@
-import { erase } from "@/erasure/services/index.js";
+import { erase } from "@/erasure/services";
 
-import { createApi } from "@/api/services/index.js";
-import { withAuth } from "@/api/middlewares/index.js";
+import { createApi } from "@/api/services";
+import { withAuth } from "@/api/middlewares";
 
 export const erasureApi = createApi().delete("/me", withAuth(), async (c) => {
   await erase({ userId: c.get("userId") });

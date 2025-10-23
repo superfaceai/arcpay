@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { generateId, DateCodec } from "@/lib/index.js";
+import { generateId, DateCodec } from "@/lib";
 import { Amount } from "../values/amount.js";
 import { Currency } from "../values/currency.js";
 
