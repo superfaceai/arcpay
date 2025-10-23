@@ -1,7 +1,7 @@
 import { generateId } from "@/lib/index.js";
 import { z } from "zod";
 
-export const userId = () => generateId("us");
+export const userId = () => generateId("usr");
 
 export const User = z.object({
   id: z.string(),
