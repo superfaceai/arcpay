@@ -1,3 +1,5 @@
+export * from "./balance.db.js";
+export * from "./balance.entity.js";
 export * from "./deposit.db.js";
 export * from "./deposit.entity.js";
 export * from "./transaction.db.js";

@@ -3,15 +3,12 @@ import { Hono } from "hono";
 // Reference Hono to prevent the import from being removed during compilation
 export const _honoReference = Hono;
 
-import {
-  createApplicationApi,
-  listResources,
-  Resource,
-} from "@/api/services";
+import { createApplicationApi, listResources, Resource } from "@/api/services";
 
 import { erasureApi } from "@/erasure/api";
 import { identityApi } from "@/identity/api";
 import {
+  balancesApi,
   depositsApi,
   transactionsApi,
   walletsApi,
@@ -21,6 +18,7 @@ const app = createApplicationApi((app) => {
   app.route("/", erasureApi);
   app.route("/", identityApi);
 
+  app.route("/", balancesApi);
   app.route("/", walletsApi);
   app.route("/", depositsApi);
   app.route("/", transactionsApi);
