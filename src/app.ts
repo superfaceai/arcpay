@@ -9,7 +9,7 @@ import {
   Resource,
 } from "@/api/services/index.js";
 
-import { registrationApi } from "@/registration/api/index.js";
+import { erasureApi } from "@/erasure/api/index.js";
 import { identityApi } from "@/identity/api/index.js";
 import {
   depositsApi,
@@ -18,7 +18,7 @@ import {
 } from "@/payments/api/index.js";
 
 const app = createApplicationApi((app) => {
-  app.route("/", registrationApi);
+  app.route("/", erasureApi);
   app.route("/", identityApi);
 
   app.route("/", walletsApi);
