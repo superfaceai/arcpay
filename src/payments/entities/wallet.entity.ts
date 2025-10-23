@@ -8,6 +8,7 @@ export const WalletAsset = z.object({
   currency: Currency,
   amount: Amount,
 });
+export type WalletAsset = z.infer<typeof WalletAsset>;
 
 export const Wallet = z.object({
   id: z.string(),

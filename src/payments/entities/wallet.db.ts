@@ -1,19 +1,21 @@
 import { db } from "@/database";
 import { Wallet } from "@/payments/entities";
 
-const storageKeyById = ({ id }: { id: string }) => `wallet:${id}`;
-const storageKeyByUser = ({ userId }: { userId: string }) =>
-  `user:${userId}:wallets`;
+const storageKey = ({
+  userId,
+  live,
+  id,
+}: {
+  userId: string;
+  live: boolean;
+  id: string;
+}) => `user:${userId}:wallets:${live ? "live" : "test"}:${id}`;
 
 export const saveWallet = async (wallet: Wallet) => {
-  await db
-    .multi()
-    .hset(storageKeyById({ id: wallet.id }), wallet)
-    .zadd(storageKeyByUser({ userId: wallet.owner }), {
-      score: wallet.created_at.getTime(),
-      member: wallet.id,
-    })
-    .exec();
+  await db.hset(
+    storageKey({ userId: wallet.owner, live: wallet.live, id: wallet.id }),
+    wallet
+  );
 
   return wallet;
 };
@@ -27,7 +29,9 @@ export const loadWalletById = async ({
   userId: string;
   live: boolean;
 }): Promise<Wallet | null> => {
-  const wallet = await db.hgetall<Wallet>(storageKeyById({ id: walletId }));
+  const wallet = await db.hgetall<Wallet>(
+    storageKey({ userId, live, id: walletId })
+  );
 
   if (!wallet || wallet.live !== live || wallet.owner !== userId) {
     return null;
@@ -43,37 +47,60 @@ export const loadWalletsByUser = async ({
   userId: string;
   live: boolean;
 }): Promise<Wallet[]> => {
-  const walletIds = await db.zrange<string[]>(
-    storageKeyByUser({ userId }),
-    0,
-    -1
-  );
+  const pattern = storageKey({ userId, live, id: "*" });
 
-  const wallets = await Promise.all(
-    walletIds.map((walletId) => loadWalletById({ walletId, userId, live }))
-  );
+  let cursor = "0";
+  const allKeys: string[] = [];
 
-  return wallets.filter((wallet) => wallet !== null);
+  do {
+    const [nextCursor, keys] = await db.scan(cursor, {
+      match: pattern,
+      count: 100_000,
+    });
+    if (Array.isArray(keys) && keys.length > 0) {
+      allKeys.push(...keys);
+    }
+    cursor = nextCursor;
+  } while (cursor !== "0");
+
+  if (allKeys.length === 0) return [];
+
+  const walletsPipeline = db.pipeline();
+  for (const key of allKeys) {
+    walletsPipeline.hgetall<Wallet>(key);
+  }
+  const walletsRaw = await walletsPipeline.exec<Wallet[]>();
+
+  return walletsRaw
+    .filter((wallet) => !!wallet)
+    .map((wallet) => Wallet.parse(wallet));
 };
 
 export const eraseWalletsForUser = async ({ userId }: { userId: string }) => {
   // TODO: Transfer remaining funds somewhere?
 
-  const liveWallets = await loadWalletsByUser({ userId, live: true });
-  const testWallets = await loadWalletsByUser({ userId, live: false });
+  const eraseWallets = async ({ live }: { live: boolean }) => {
+    let cursor = "0";
+    let deletedCount = 0;
 
-  const walletIds = [
-    ...liveWallets.map((wallet) => wallet.id),
-    ...testWallets.map((wallet) => wallet.id),
-  ];
+    do {
+      const [nextCursor, keys] = await db.scan(cursor, {
+        match: storageKey({ userId, live, id: "*" }),
+        count: 100_000,
+      });
+      cursor = nextCursor;
 
-  if (walletIds.length === 0) return;
+      if (keys.length) {
+        const delCount = await db.del(...keys);
+        deletedCount += delCount;
+      }
+    } while (cursor !== "0");
 
-  for (const walletId of walletIds) {
-    await db.del(storageKeyById({ id: walletId }));
-    console.debug(`Removed Wallet '${walletId}' for User '${userId}'`);
-  }
-  await db.del(storageKeyByUser({ userId }));
+    console.debug(
+      `Removed ${deletedCount} Wallets for User '${userId}' (Live: ${live})`
+    );
+  };
 
-  console.debug(`Removed Wallets for User '${userId}'`);
+  await eraseWallets({ live: true });
+  await eraseWallets({ live: false });
 };
