@@ -28,6 +28,7 @@ export const getBalance = async ({
     live,
     currency,
     amount: "0",
+    holdings: [],
   };
 
   return ok(phantomBalance);

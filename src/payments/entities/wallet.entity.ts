@@ -1,22 +1,22 @@
 import { z } from "zod";
 import { generateId, DateCodec } from "@/lib";
-import { Blockchain } from "@/payments/values";
+import { Amount, Blockchain, Currency } from "@/payments/values";
 
-export const walletId = () => generateId("wt");
+export const walletId = () => generateId("hld");
+
+export const WalletAsset = z.object({
+  currency: Currency,
+  amount: Amount,
+});
 
 export const Wallet = z.object({
   id: z.string(),
   owner: z.string(),
+  live: z.boolean(),
   address: z.string(),
   blockchain: Blockchain,
-  live: z.boolean(),
   created_at: DateCodec,
-  issuer: z.enum(["circle"]),
-  circle: z.object({
-    id: z.string(),
-    state: z.string(),
-    network: z.string(),
-  }),
+  assets: z.array(WalletAsset),
 });
 
 export type Wallet = z.infer<typeof Wallet>;

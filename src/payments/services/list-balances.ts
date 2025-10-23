@@ -25,6 +25,7 @@ export const listBalances = async ({
       live,
       currency: "USDC",
       amount: "0",
+      holdings: [],
     },
   ];
 
