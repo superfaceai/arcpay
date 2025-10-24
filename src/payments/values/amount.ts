@@ -1,7 +1,7 @@
 import { z } from "zod";
 import Big from "big.js";
 
-const AMOUNT_RE = /^\d+\.?\d+$/;
+const AMOUNT_RE = /^\d*\.?\d+$/;
 
 export const Amount = z.codec(
   z.union([z.string().regex(AMOUNT_RE), z.number()]),
