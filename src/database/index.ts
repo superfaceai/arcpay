@@ -7,3 +7,4 @@ const redis = new Redis({
 });
 
 export const db = redis;
+export { type Pipeline } from "@upstash/redis";
