@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { generateId, DateCodec } from "@/lib";
-import { Amount } from "../values/amount.js";
-import { Currency } from "../values/currency.js";
+import { Amount, Currency } from "@/payments/values";
+import { Location } from "./location.entity.js";
+import { Payment } from "./payment.entity.js";
 
-export const transactionId = () => generateId("tx");
+export const transactionId = () => generateId("txn");
 
 export const TransactionStatus = z.enum([
   "queued",
@@ -15,37 +16,69 @@ export const TransactionStatus = z.enum([
 ]);
 export type TransactionStatus = z.infer<typeof TransactionStatus>;
 
-export const Transaction = z.object({
+const TransactionBase = z.object({
   id: z.string(),
-  status: TransactionStatus,
   amount: Amount,
   currency: Currency,
-  fees: z.array(
-    z.object({
-      type: z.enum(["network", "fx"]),
-      amount: Amount,
-      currency: Currency,
-    })
-  ),
-  counterparty: z.string(),
-  blockchain: z
-    .object({
-      hash: z.string().optional(),
-      explorer_url: z.url().optional(),
-    })
-    .optional(),
-  processor: z
-    .object({
-      name: z.enum(["circle"]),
-      id: z.string(),
-      state: z.string(),
-    })
-    .optional(),
+  status: TransactionStatus,
+  failure_reason: z.string().optional(),
+  cancellation_reason: z.string().optional(),
+  location: Location.shape.id,
+  payment: Payment.shape.id.optional(),
   created_at: DateCodec,
-  fingerprint: z.uuidv4().optional(),
+  finished_at: DateCodec.optional(),
 });
 
+export const PaymentTransaction = TransactionBase.extend({
+  type: z.literal("payment"),
+  network: z.enum(["blockchain"]),
+  blockchain: z.object({
+    hash: z.string(),
+    counterparty: z.string(),
+    explorer_url: z.string().optional(),
+  }),
+  fingerprint: z.uuidv4().optional(),
+});
+export type PaymentTransaction = z.infer<typeof PaymentTransaction>;
+
+export const FeeTransaction = TransactionBase.extend({
+  type: z.literal("fee"),
+  fee_type: z.enum(["network"]),
+  network: z.enum(["blockchain"]),
+  blockchain: z.object({
+    hash: z.string(),
+  }),
+});
+export type FeeTransaction = z.infer<typeof FeeTransaction>;
+
+export const Transaction = z.discriminatedUnion("type", [
+  PaymentTransaction,
+  FeeTransaction,
+]);
 export type Transaction = z.infer<typeof Transaction>;
+
+// ------------------------------------------------------------
+export const remoteTransactionId = (
+  tx: Pick<Transaction, "type" | "blockchain">
+): string => {
+  if (tx.type === "payment" || tx.type === "fee") {
+    return tx.blockchain.hash;
+  }
+
+  throw new Error("Invalid transaction type");
+};
 
 export const transactionSortDesc = (a: Transaction, b: Transaction) =>
   b.created_at.getTime() - a.created_at.getTime();
+
+const FINAL_STATES: TransactionStatus[] = [
+  "completed",
+  "failed",
+  "canceled",
+] as const;
+
+export const isTransactionFinalized = (
+  tx: Pick<Transaction, "status">
+): boolean => {
+  return FINAL_STATES.includes(tx.status);
+};

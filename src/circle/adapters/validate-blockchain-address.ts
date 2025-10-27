@@ -1,12 +1,12 @@
-import { Result, tryAsync } from "@/lib";
+import { tryAsync } from "@/lib";
 
-import { CircleValidateAddressError } from "./errors.js";
 import { Blockchain } from "@/payments/values";
+import { ValidateBlockchainAddress } from "@/payments/interfaces";
 
-import { client } from "./client.js";
-import { chooseCircleBlockchain } from "./blockchain.js";
+import { client } from "../client.js";
+import { chooseCircleBlockchain } from "../blockchain.js";
 
-export const validateAddress = async ({
+export const validateBlockchainAddress: ValidateBlockchainAddress = async ({
   address,
   blockchain,
   live,
@@ -14,7 +14,7 @@ export const validateAddress = async ({
   address: string;
   blockchain: Blockchain;
   live: boolean;
-}): Promise<Result<{ isValid: boolean }, CircleValidateAddressError>> =>
+}) =>
   tryAsync(
     async () => {
       const chain = chooseCircleBlockchain({ blockchain, live });
@@ -25,13 +25,14 @@ export const validateAddress = async ({
       });
 
       if (!validation.data) {
-        throw new Error("Received invalid response from Circle");
+        throw new Error("Received invalid response from Circle API");
       }
 
       return { isValid: validation.data.isValid };
     },
     (error) => ({
-      type: "CircleValidateAddressError",
+      type: "BlockchainActionError",
       message: String(error),
+      blockchain,
     })
   );

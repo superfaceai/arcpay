@@ -1,4 +1,5 @@
 import { Blockchain } from "./blockchain.js";
+import { Currency } from "./currency.js";
 import {
   NativeTestnetToken,
   NativeMainnetToken,
@@ -48,6 +49,27 @@ export const isStablecoinSupported = ({
   );
 
   return !!stablecoin;
+};
+
+export const getCurrenciesForBlockchain = ({
+  blockchain,
+}: {
+  blockchain: Blockchain;
+}): Currency[] => {
+  const blockchainMeta = BLOCKCHAIN_META[blockchain];
+  const stablecoins = blockchainMeta.supportedStablecoins.map((s) => s.token);
+  const nativeToken = blockchainMeta.nativeToken.mainnet;
+  return [...new Set([...stablecoins, nativeToken])];
+};
+
+export const isCurrencySupported = ({
+  blockchain,
+  currency,
+}: {
+  blockchain: Blockchain;
+  currency: Currency;
+}): boolean => {
+  return getCurrenciesForBlockchain({ blockchain }).includes(currency);
 };
 
 export const getNativeTokenFor = ({

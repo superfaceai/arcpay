@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { generateId } from "@/lib";
 
-import { Amount, Currency } from "@/payments/values";
-import { Wallet } from "./wallet.entity";
+import { Currency, PositiveAmount } from "@/payments/values";
+import { Location } from "./location.entity";
 
 export const balanceId = (currency: Currency) =>
   generateId(`bal_${currency.toLowerCase()}`);
@@ -10,10 +10,10 @@ export const balanceId = (currency: Currency) =>
 export const Balance = z.object({
   id: z.string(),
   owner: z.string(),
-  live: z.boolean(),
   currency: Currency,
-  amount: Amount,
-  holdings: z.array(Wallet.shape.id),
+  amount: PositiveAmount,
+  live: z.boolean(),
+  holdings: z.array(Location.shape.id),
 });
 
 export type Balance = z.infer<typeof Balance>;

@@ -1,9 +1,12 @@
 import { Result, tryAsync } from "@/lib";
-import { client } from "./client.js";
-import { CircleLookupTokenError } from "./errors.js";
-import { isValidToken, Token } from "@/payments/values";
+import { client } from "../client.js";
 
-export const circleTokenIdToToken = async (tokenId: string): Promise<Token> => {
+import { isValidToken, Token } from "@/payments/values";
+import { BlockchainActionError } from "@/payments/errors";
+
+export const mapCircleTokenIdToToken = async (
+  tokenId: string
+): Promise<Token> => {
   const cachedToken = CIRCLE_TOKEN_IDS[tokenId];
   if (cachedToken) {
     return cachedToken;
@@ -19,9 +22,9 @@ export const circleTokenIdToToken = async (tokenId: string): Promise<Token> => {
   return token.value;
 };
 
-export const lookupToken = async (
+const lookupToken = async (
   tokenId: string
-): Promise<Result<Token, CircleLookupTokenError>> =>
+): Promise<Result<Token, BlockchainActionError>> =>
   tryAsync(
     async () => {
       const token = await client.getToken({
@@ -35,13 +38,13 @@ export const lookupToken = async (
       const symbol = token.data.token?.symbol;
 
       if (!isValidToken(symbol)) {
-        throw new Error(`Invalid token symbol: ${symbol}`);
+        throw new Error(`Invalid Circle token symbol: ${symbol}`);
       }
 
       return symbol as Token;
     },
     (error) => ({
-      type: "CircleLookupTokenError",
+      type: "BlockchainActionError",
       message: String(error),
     })
   );

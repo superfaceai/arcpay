@@ -1,6 +1,14 @@
 import { ok, Result } from "@/lib";
 
-import { Balance, balanceId, loadBalancesByUser } from "@/payments/entities";
+import {
+  Balance,
+  loadBalancesByUser,
+  saveMultipleBalances,
+} from "@/payments/entities";
+import { BlockchainActionError } from "@/payments/errors";
+
+import { listLocations } from "./list-locations";
+import { syncBalanceWithLocations } from "./sync-balance-with-locations";
 
 export const listBalances = async ({
   userId,
@@ -8,26 +16,47 @@ export const listBalances = async ({
 }: {
   userId: string;
   live: boolean;
-}): Promise<Result<Balance[], void>> => {
+}): Promise<Result<Balance[], BlockchainActionError>> => {
   const dbBalances = await loadBalancesByUser({
     userId,
     live,
   });
 
-  if (dbBalances.length > 0) return ok(dbBalances);
+  if (dbBalances.length === 0) return ok([]);
 
-  // TODO: Fetch real holdings & sync
-
-  const phantomBalances: Balance[] = [
-    {
-      id: balanceId("USDC"),
-      owner: userId,
-      live,
-      currency: "USDC",
-      amount: "0",
-      holdings: [],
-    },
+  const allHoldingIds = [
+    ...new Set(dbBalances.flatMap((balance) => balance.holdings)),
   ];
 
-  return ok(phantomBalances);
+  const allHoldingsResult = await listLocations({
+    userId,
+    live,
+    locationIds: allHoldingIds,
+  });
+
+  if (!allHoldingsResult.ok) return allHoldingsResult;
+
+  const syncedBalances: Balance[] = [];
+  const changedBalances: Balance[] = [];
+
+  for (const balance of dbBalances) {
+    const { balance: syncedBalance, changed } = syncBalanceWithLocations({
+      balance,
+      locations: allHoldingsResult.value.filter((location) =>
+        balance.holdings.includes(location.id)
+      ),
+    });
+
+    syncedBalances.push(syncedBalance);
+
+    if (changed) {
+      changedBalances.push(syncedBalance);
+    }
+  }
+
+  if (changedBalances.length > 0) {
+    await saveMultipleBalances(changedBalances);
+  }
+
+  return ok(syncedBalances);
 };

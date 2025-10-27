@@ -3,10 +3,10 @@ import { ok, Result } from "@/lib";
 import { eraseCallsForUser } from "@/api/entities/call.db";
 import { eraseUser, eraseApiKeysForUser } from "@/identity/entities";
 import {
-  loadWalletsByUser,
-  eraseWalletsForUser,
-  eraseTransactionsForWallet,
-  eraseDepositsForWallet,
+  eraseLocationsForUser,
+  eraseTransactionsForUser,
+  eraseBalancesForUser,
+  erasePaymentsForUser,
 } from "@/payments/entities";
 
 export const erase = async ({
@@ -14,16 +14,11 @@ export const erase = async ({
 }: {
   userId: string;
 }): Promise<Result<void, void>> => {
-  const liveWallets = await loadWalletsByUser({ userId, live: false });
-  const testWallets = await loadWalletsByUser({ userId, live: true });
-
-  for (const wallet of [...liveWallets, ...testWallets]) {
-    await eraseTransactionsForWallet({ walletId: wallet.id });
-    await eraseDepositsForWallet({ walletId: wallet.id });
-  }
-
+  await erasePaymentsForUser({ userId });
+  await eraseTransactionsForUser({ userId });
   await eraseCallsForUser({ userId });
-  await eraseWalletsForUser({ userId });
+  await eraseLocationsForUser({ userId });
+  await eraseBalancesForUser({ userId });
   await eraseUser({ userId });
   await eraseApiKeysForUser({ userId });
 

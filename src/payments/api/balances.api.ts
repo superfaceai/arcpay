@@ -1,13 +1,13 @@
 import { z } from "zod";
 
+import { getOrThrow } from "@/lib";
+
 import { createApi } from "@/api/services";
-import { ApiObject, ApiList } from "@/api/values";
+import { ApiObject, ApiList, ProblemJson } from "@/api/values";
 import { withAuth, withValidation } from "@/api/middlewares";
 
 import { getBalance, listBalances } from "@/payments/services";
-
 import { Currency } from "@/payments/values";
-import { getOrThrow } from "@/lib";
 
 export const balancesApi = createApi()
   .get("/balances", withAuth(), async (c) => {
@@ -16,7 +16,29 @@ export const balancesApi = createApi()
       live: c.get("isLive"),
     });
 
-    return c.json(ApiList("balance", getOrThrow(balancesResult)));
+    if (!balancesResult.ok)
+      return ProblemJson(
+        c,
+        500,
+        "Error accessing blockchain",
+        balancesResult.error.message
+      );
+
+    if (balancesResult.value.length === 0)
+      return c.json(
+        ApiList("balance", [
+          {
+            id: "usdc",
+            owner: c.get("userId"),
+            live: c.get("isLive"),
+            currency: "USDC",
+            amount: "0",
+            holdings: [],
+          },
+        ])
+      );
+
+    return c.json(ApiList("balance", balancesResult.value));
   })
   .get(
     "/balances/:currency",
@@ -39,6 +61,20 @@ export const balancesApi = createApi()
         currency,
       });
 
-      return c.json(ApiObject("balance", getOrThrow(balanceResult)));
+      const foundBalance = getOrThrow(balanceResult);
+
+      if (!foundBalance)
+        return c.json(
+          ApiObject("balance", {
+            id: currency.toLowerCase(),
+            owner: c.get("userId"),
+            live: c.get("isLive"),
+            currency,
+            amount: "0",
+            holdings: [],
+          })
+        );
+
+      return c.json(ApiObject("balance", foundBalance));
     }
   );

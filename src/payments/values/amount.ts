@@ -1,10 +1,11 @@
 import { z } from "zod";
 import Big from "big.js";
 
-const AMOUNT_RE = /^\d*\.?\d+$/;
+const POSITIVE_AMOUNT_RE = /^\d*\.?\d+$/;
+const NEGATIVE_AMOUNT_RE = /^-?\d*\.?\d+$/;
 
-export const Amount = z.codec(
-  z.union([z.string().regex(AMOUNT_RE), z.number()]),
+export const PositiveAmount = z.codec(
+  z.union([z.string().regex(POSITIVE_AMOUNT_RE), z.number()]),
   z.string(),
   {
     decode: (amount) =>
@@ -12,4 +13,18 @@ export const Amount = z.codec(
     encode: (amount) => amount,
   }
 );
+export type PositiveAmount = z.infer<typeof PositiveAmount>;
+
+export const NegativeAmount = z.codec(
+  z.union([z.string().regex(NEGATIVE_AMOUNT_RE), z.number()]),
+  z.string(),
+  {
+    decode: (amount) =>
+      typeof amount === "number" ? Big(amount).toString() : amount,
+    encode: (amount) => amount,
+  }
+);
+export type NegativeAmount = z.infer<typeof NegativeAmount>;
+
+export const Amount = z.union([PositiveAmount, NegativeAmount]);
 export type Amount = z.infer<typeof Amount>;

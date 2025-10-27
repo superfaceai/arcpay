@@ -11,7 +11,8 @@ import {
   balancesApi,
   depositsApi,
   transactionsApi,
-  walletsApi,
+  locationsApi,
+  paymentsApi,
 } from "@/payments/api";
 
 const app = createApplicationApi((app) => {
@@ -19,8 +20,9 @@ const app = createApplicationApi((app) => {
   app.route("/", identityApi);
 
   app.route("/", balancesApi);
-  app.route("/", walletsApi);
+  app.route("/", locationsApi);
   app.route("/", depositsApi);
+  app.route("/", paymentsApi);
   app.route("/", transactionsApi);
 
   app.get("/", (c) => {
@@ -129,7 +131,7 @@ curl ${host}/me \\
   -H "Authorization: Bearer sk_test_YOUR_API_KEY"</pre>
 
     <h2>Test mode</h2>
-    <p>Agent Pay supports test mode for testing and development. Test mode uses testnets & payment sandboxes to avoid real financial risks.</p>
+    <p>Agent Pay supports test mode for testing and development. Test mode uses blockchain testnets & payment sandboxes to avoid real financial risks.</p>
     
     <p>To run in test mode, use the API key with prefix <code>sk_test_</code>. Live mode API keys have the prefix <code>sk_live_</code>.
 
@@ -137,8 +139,8 @@ curl ${host}/me \\
         
     <pre>
 {
-  "object": "wallet",
-  "id": "wt_xOpAZxmEqJ1QVyjR35OQq",
+  "object": "payment",
+  "id": "pay_lb1veJWQWjzEwjo6tqvC5",
   "live": false,
   ...
 }</pre>
@@ -168,11 +170,11 @@ curl ${host}/me \\
   <p>Only <code>POST</code> requests support idempotency key (<code>GET</code> and <code>DELETE</code> requests are idempotent by design).</p>
 
   <pre>
-curl ${host}/wallets/wt_nOh7XWhobDWrqG2whh061/deposits \\
+curl ${host}/deposits \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer sk_test_YOUR_API_KEY" \\
   -H "Idempotency-Key: OHGqyQ9oXRZQHGbv" \\
-  -d '{ "type": "testnet_faucet" }'</pre>
+  -d '{ "type": "testnet_faucet", "currency": "USDC" }'</pre>
   </main>
 </body>
 </html>

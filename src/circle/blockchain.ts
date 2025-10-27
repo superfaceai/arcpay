@@ -1,4 +1,4 @@
-import { Blockchain as PaymentBlockchain } from "@/payments/values";
+import { Blockchain as CoreBlockchain } from "@/payments/values";
 
 import {
   TestnetBlockchain as CircleTestnetBlockchain,
@@ -9,7 +9,7 @@ export const chooseCircleBlockchain = ({
   blockchain,
   live,
 }: {
-  blockchain: PaymentBlockchain;
+  blockchain: CoreBlockchain;
   live: boolean;
 }): CircleBlockchain => {
   return MAPPING[blockchain][live ? "mainnet" : "testnet"];
@@ -30,27 +30,24 @@ export const getCircleBlockchainExplorerUrl = ({
   return explorerUrl + txHash;
 };
 
-export const getCoreBlockchainFor = ({
-  blockchain,
-}: {
-  blockchain: CircleBlockchain;
-}): PaymentBlockchain => {
+export const mapCircleBlockchain = (
+  blockchain: CircleBlockchain
+): CoreBlockchain => {
   const coreBlockchain = Object.keys(MAPPING).find(
     (blockchainIdentifier) =>
-      MAPPING[blockchainIdentifier as PaymentBlockchain].mainnet ===
-        blockchain ||
-      MAPPING[blockchainIdentifier as PaymentBlockchain].testnet === blockchain
+      MAPPING[blockchainIdentifier as CoreBlockchain].mainnet === blockchain ||
+      MAPPING[blockchainIdentifier as CoreBlockchain].testnet === blockchain
   );
 
   if (!coreBlockchain) {
     throw new Error(`Could not identify blockchain identifier ${blockchain}`);
   }
 
-  return coreBlockchain as PaymentBlockchain;
+  return coreBlockchain as CoreBlockchain;
 };
 
 const MAPPING: {
-  [key in PaymentBlockchain]: {
+  [key in CoreBlockchain]: {
     mainnet: CircleBlockchain;
     testnet: CircleTestnetBlockchain;
   };

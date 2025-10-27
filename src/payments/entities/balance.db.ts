@@ -1,5 +1,9 @@
 import { db } from "@/database";
-import { Balance } from "@/payments/entities";
+import {
+  Balance,
+  Location,
+  saveLocationViaPipeline,
+} from "@/payments/entities";
 import { Currency } from "@/payments/values";
 
 const storageKey = ({
@@ -12,7 +16,7 @@ const storageKey = ({
   currency: Currency | "*";
 }) => `user:${userId}:balances:${live ? "live" : "test"}:${currency}`;
 
-export const saveBalance = async ({ balance }: { balance: Balance }) => {
+export const saveBalance = async (balance: Balance) => {
   await db.hset(
     storageKey({
       userId: balance.owner,
@@ -23,6 +27,48 @@ export const saveBalance = async ({ balance }: { balance: Balance }) => {
   );
 
   return balance;
+};
+
+export const saveMultipleBalances = async (balances: Balance[]) => {
+  const pipeline = db.multi();
+
+  for (const balance of balances) {
+    pipeline.hset(
+      storageKey({
+        userId: balance.owner,
+        live: balance.live,
+        currency: balance.currency,
+      }),
+      balance
+    );
+  }
+
+  await pipeline.exec();
+};
+
+export const saveBalancesWithLocation = async ({
+  balances,
+  location,
+}: {
+  balances: Balance[];
+  location: Location;
+}) => {
+  const pipeline = db.multi();
+
+  for (const balance of balances) {
+    pipeline.hset(
+      storageKey({
+        userId: balance.owner,
+        live: balance.live,
+        currency: balance.currency,
+      }),
+      balance
+    );
+  }
+
+  saveLocationViaPipeline({ location, pipeline });
+
+  await pipeline.exec();
 };
 
 export const loadBalance = async ({

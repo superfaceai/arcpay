@@ -1,7 +1,11 @@
 import { ok, Result } from "@/lib";
 
-import { Balance, balanceId, loadBalance } from "@/payments/entities";
+import { BlockchainActionError } from "@/payments/errors";
+import { Balance, loadBalance, saveBalance } from "@/payments/entities";
+
 import { Currency } from "@/payments/values";
+import { listLocations } from "./list-locations";
+import { syncBalanceWithLocations } from "./sync-balance-with-locations";
 
 export const getBalance = async ({
   userId,
@@ -11,25 +15,31 @@ export const getBalance = async ({
   userId: string;
   live: boolean;
   currency: Currency;
-}): Promise<Result<Balance, void>> => {
+}): Promise<Result<Balance | null, BlockchainActionError>> => {
   const dbBalance = await loadBalance({
     userId,
     live,
     currency,
   });
 
-  if (dbBalance) return ok(dbBalance);
+  if (!dbBalance) return ok(null);
 
-  // TODO: Fetch real holdings & sync
-
-  const phantomBalance: Balance = {
-    id: balanceId(currency),
-    owner: userId,
+  const locationsResult = await listLocations({
+    userId,
     live,
-    currency,
-    amount: "0",
-    holdings: [],
-  };
+    locationIds: dbBalance.holdings,
+  });
 
-  return ok(phantomBalance);
+  if (!locationsResult.ok) return locationsResult;
+
+  const { balance: syncedBalance, changed } = syncBalanceWithLocations({
+    balance: dbBalance,
+    locations: locationsResult.value,
+  });
+
+  if (changed) {
+    await saveBalance(syncedBalance);
+  }
+
+  return ok(syncedBalance);
 };
