@@ -7,10 +7,10 @@
 	},
 	"item": [
 		{
-			"name": "Identity & Registration",
+			"name": "Accounts",
 			"item": [
 				{
-					"name": "Register new account",
+					"name": "Open new account",
 					"event": [
 						{
 							"listen": "test",
@@ -125,10 +125,65 @@
 			]
 		},
 		{
-			"name": "Wallets",
+			"name": "Balances",
 			"item": [
 				{
-					"name": "List all wallets",
+					"name": "List balances",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/balances",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"balances"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get currency balance",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/balances/usdc",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"balances",
+								"usdc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List all locations",
 					"event": [
 						{
 							"listen": "test",
@@ -137,7 +192,7 @@
 									"const jsonData = pm.response.json();",
 									"",
 									"if (jsonData.data && jsonData.data.length > 0) {",
-									"    pm.collectionVariables.set(\"PRIMARY_WALLET_ID\", jsonData.data[0].id);",
+									"    pm.collectionVariables.set(\"PRIMARY_LOCATION_ID\", jsonData.data[0].id);",
 									"}",
 									""
 								],
@@ -161,19 +216,19 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/wallets",
+							"raw": "{{HOST}}/locations",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"wallets"
+								"locations"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Wallet balance",
+					"name": "Retrieve a location",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -188,42 +243,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/wallets/{{PRIMARY_WALLET_ID}}/balance",
+							"raw": "{{HOST}}/locations/{{PRIMARY_LOCATION_ID}}",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"wallets",
-								"{{PRIMARY_WALLET_ID}}",
-								"balance"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Retrieve a wallet",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{SECRET_KEY}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{HOST}}/wallets/{{PRIMARY_WALLET_ID}}",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"wallets",
-								"{{PRIMARY_WALLET_ID}}"
+								"locations",
+								"{{PRIMARY_LOCATION_ID}}"
 							]
 						}
 					},
@@ -235,7 +261,40 @@
 			"name": "Payments",
 			"item": [
 				{
-					"name": "Create wallet deposit",
+					"name": "List transactions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/transactions?from=2025-10-16T19:30:00.000Z",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"transactions"
+							],
+							"query": [
+								{
+									"key": "from",
+									"value": "2025-10-16T19:30:00.000Z"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request deposit",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -265,13 +324,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{HOST}}/wallets/{{PRIMARY_WALLET_ID}}/deposits",
+							"raw": "{{HOST}}/deposits",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"wallets",
-								"{{PRIMARY_WALLET_ID}}",
 								"deposits"
 							]
 						}
@@ -279,36 +336,7 @@
 					"response": []
 				},
 				{
-					"name": "List wallet deposits",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{SECRET_KEY}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{HOST}}/wallets/{{PRIMARY_WALLET_ID}}/deposits",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"wallets",
-								"{{PRIMARY_WALLET_ID}}",
-								"deposits"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Send money",
+					"name": "Pay",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -324,13 +352,13 @@
 						"header": [
 							{
 								"key": "Idempotency-Key",
-								"value": "transaction-1",
+								"value": "payment-1",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"to\": \"0x0defb1adf02a2cd7cafffc461bf4f2ce8c0e2147\",\n    \"currency\": \"USDC\",\n    \"amount\": \"0.5\"\n}",
+							"raw": "{\n    \"currency\": \"USDC\",\n    \"amount\": \"0.5\",\n    \"method\": \"crypto\",\n    \"crypto\": {\n        \"address\": \"0x0defb1adf02a2cd7cafffc461bf4f2ce8c0e2147\",\n        \"blockchain\": \"polygon\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -338,21 +366,19 @@
 							}
 						},
 						"url": {
-							"raw": "{{HOST}}/wallets/{{PRIMARY_WALLET_ID}}/transactions",
+							"raw": "{{HOST}}/payments",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"wallets",
-								"{{PRIMARY_WALLET_ID}}",
-								"transactions"
+								"payments"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "List wallet transactions",
+					"name": "List payments",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -367,20 +393,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/wallets/{{PRIMARY_WALLET_ID}}/transactions?from=2025-10-16T19:30:00.000Z",
+							"raw": "{{HOST}}/payments",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"wallets",
-								"{{PRIMARY_WALLET_ID}}",
-								"transactions"
-							],
-							"query": [
-								{
-									"key": "from",
-									"value": "2025-10-16T19:30:00.000Z"
-								}
+								"payments"
 							]
 						}
 					},
@@ -441,9 +459,9 @@
 			"description": "Populates automatically after a sign up"
 		},
 		{
-			"key": "PRIMARY_WALLET_ID",
+			"key": "PRIMARY_LOCATION_ID",
 			"value": "",
-			"description": "Populates automatically after listing all wallets"
+			"description": "Populates automatically after listing all locations"
 		}
 	]
 }
