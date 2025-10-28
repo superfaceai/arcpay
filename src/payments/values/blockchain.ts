@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const BLOCKCHAINS = [
+  "arc",
   "polygon",
   "ethereum",
   "avalanche",

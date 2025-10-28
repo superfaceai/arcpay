@@ -103,8 +103,9 @@ export const mapCircleTransaction = async ({
 };
 
 const STATUS_MAPPING: Record<CircleTransactionState, TransactionStatus> = {
-  PENDING_RISK_SCREENING: "queued",
   QUEUED: "queued",
+  STUCK: "sent",
+  CLEARED: "sent",
   INITIATED: "sent",
   SENT: "sent",
   CONFIRMED: "confirmed",

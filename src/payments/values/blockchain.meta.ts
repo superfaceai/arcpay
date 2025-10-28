@@ -81,6 +81,25 @@ export const getNativeTokenFor = ({
 };
 
 const BLOCKCHAIN_META: { [key in Blockchain]: BlockchainMetadata } = {
+  arc: {
+    name: "Arc",
+    nativeToken: {
+      mainnet: "USDC", // testnet only for now
+      testnet: "USDC-TESTNET",
+    },
+    supportedStablecoins: [
+      {
+        token: "USDC",
+        mainnetAddress: "0x3600000000000000000000000000000000000000", // testnet only for now
+        testnetAddress: "0x3600000000000000000000000000000000000000",
+      },
+      {
+        token: "EURC",
+        mainnetAddress: "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a", // testnet only for now
+        testnetAddress: "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a",
+      },
+    ],
+  },
   polygon: {
     name: "Polygon",
     nativeToken: {

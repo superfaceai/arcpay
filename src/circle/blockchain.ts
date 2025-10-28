@@ -52,6 +52,10 @@ const MAPPING: {
     testnet: CircleTestnetBlockchain;
   };
 } = {
+  arc: {
+    mainnet: "ARC-TESTNET", // testnet only for now
+    testnet: "ARC-TESTNET",
+  },
   polygon: {
     mainnet: "MATIC",
     testnet: "MATIC-AMOY",
@@ -87,6 +91,7 @@ const MAPPING: {
 } as const;
 
 const BLOCKCHAIN_EXPLORER_URL: Record<CircleBlockchain, string | null> = {
+  'ARC-TESTNET': "https://testnet.arcscan.app/tx/",
   MATIC: "https://polygonscan.com/tx/",
   "MATIC-AMOY": "https://amoy.polygonscan.com/tx/",
   ETH: "https://etherscan.io/tx/",

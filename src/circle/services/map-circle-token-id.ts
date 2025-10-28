@@ -35,6 +35,8 @@ const lookupToken = async (
         throw new Error("Token not found");
       }
 
+      console.info("NEW_TOKEN_FOUND", token.data.token);
+
       const symbol = token.data.token?.symbol;
 
       if (!isValidToken(symbol)) {
@@ -57,6 +59,9 @@ const CIRCLE_TOKEN_IDS: { [key: string]: Token } = {
   // Arbitrum
   "c87ffcb4-e2cf-5e67-84c6-388c965d2a66": "USDC",
   "4b8daacc-5f47-5909-a3ba-30d171ebad98": "USDC",
+
+  // Arc
+  "15dc2b5d-0994-58b0-bf8c-3a0501148ee8": "USDC-TESTNET",
 
   // Avalanche
   "7efdfdbf-1799-5089-a588-31beb97ba755": "USDC",

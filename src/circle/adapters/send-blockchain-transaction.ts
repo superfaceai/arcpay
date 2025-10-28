@@ -9,7 +9,6 @@ import { PaymentTransaction } from "@/payments/entities";
 
 import { client } from "../client";
 import { chooseCircleBlockchain } from "../blockchain";
-import { getCircleWalletIds } from "../services/get-circle-wallet-ids";
 import { mapCircleTransactionState } from "../services/map-circle-transaction";
 import { pollCircleTransaction } from "../services/poll-circle-transaction";
 import { getNativeTokenFor, tokenToCurrency } from "@/payments/values";
@@ -34,24 +33,8 @@ export const sendBlockchainTransaction: SendBlockchainTransaction = async ({
         };
       }
 
-      const { circleWalletIds } = await getCircleWalletIds({
-        wallets: [{ address: sourceAddress, blockchain, locationId: "" }],
-        live,
-      });
-
-      if (circleWalletIds.length === 0) {
-        return {
-          payment: {
-            ...transaction,
-            status: "canceled",
-            cancellation_reason:
-              "Source address is not associated with a Circle wallet",
-          },
-        };
-      }
-
       const circleTx = await client.createTransaction({
-        walletId: circleWalletIds[0],
+        walletAddress: sourceAddress,
         blockchain: chooseCircleBlockchain({
           blockchain,
           live,

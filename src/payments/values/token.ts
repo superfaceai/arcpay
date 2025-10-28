@@ -1,12 +1,13 @@
 import { z } from "zod";
 
 export const STABLECOIN_TOKENS = ["USDC", "EURC"] as const;
-export const NATIVE_TOKENS = ["POL", "ETH", "AVAX", "SOL"] as const;
+export const NATIVE_TOKENS = ["POL", "ETH", "AVAX", "SOL", "USDC"] as const;
 export const NATIVE_TESTNET_TOKENS = [
   "POL-AMOY",
   "ETH-SEPOLIA",
   "AVAX-FUJI",
   "SOL-DEVNET",
+  "USDC-TESTNET",
 ] as const;
 
 export const TOKENS = [
@@ -29,7 +30,7 @@ export type Token = z.infer<typeof Token>;
 
 export const isValidToken = (token: string | undefined): token is Token => {
   return token !== undefined && TOKENS.includes(token as Token);
-}
+};
 
 const TEST_TO_MAINNET_MAP: { [key in NativeTestnetToken]: NativeMainnetToken } =
   {
@@ -37,6 +38,7 @@ const TEST_TO_MAINNET_MAP: { [key in NativeTestnetToken]: NativeMainnetToken } =
     "ETH-SEPOLIA": "ETH",
     "AVAX-FUJI": "AVAX",
     "SOL-DEVNET": "SOL",
+    "USDC-TESTNET": "USDC", // Arc only supports testnet for now
   } as const;
 
 /**

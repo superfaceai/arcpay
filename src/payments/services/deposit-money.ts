@@ -50,7 +50,7 @@ export const depositMoney = async (
     userId,
     live,
     currency: dto.currency,
-    preferredBlockchains: ["polygon", "base"], // TODO: Make this configurable
+    preferredBlockchains: ["arc", "base", "polygon"], // TODO: Make this configurable
   });
 
   if (!locationResult.ok) return locationResult;

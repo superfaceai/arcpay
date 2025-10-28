@@ -8,7 +8,7 @@
     "arc:generate-wallet": "tsx src/arc/generate-wallet.script.ts"
   },
   "dependencies": {
-    "@circle-fin/developer-controlled-wallets": "^8.4.1",
+    "@circle-fin/developer-controlled-wallets": "^9.2.0",
     "@hono/zod-validator": "^0.7.4",
     "@upstash/redis": "^1.35.6",
     "big.js": "^7.0.1",
