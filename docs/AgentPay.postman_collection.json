@@ -42,19 +42,19 @@
 							}
 						},
 						"url": {
-							"raw": "{{HOST}}/new",
+							"raw": "{{HOST}}/accounts",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"new"
+								"accounts"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Me",
+					"name": "My account",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -69,26 +69,26 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/me",
+							"raw": "{{HOST}}/account",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"me"
+								"account"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Erase account data",
+					"name": "Erase account",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
 									"pm.collectionVariables.set(\"SECRET_KEY\", \"\");",
-									"pm.collectionVariables.set(\"PRIMARY_WALLET_ID\", \"\");",
+									"pm.collectionVariables.set(\"PRIMARY_LOCATION_ID\", \"\");",
 									""
 								],
 								"type": "text/javascript",
@@ -111,12 +111,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/me",
+							"raw": "{{HOST}}/account",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"me"
+								"account"
 							]
 						}
 					},
@@ -358,7 +358,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"currency\": \"USDC\",\n    \"amount\": \"0.5\",\n    \"method\": \"crypto\",\n    \"crypto\": {\n        \"address\": \"0x0defb1adf02a2cd7cafffc461bf4f2ce8c0e2147\",\n        \"blockchain\": \"polygon\"\n    }\n}",
+							"raw": "{\n    \"currency\": \"USDC\",\n    \"amount\": \"0.5\",\n    \"method\": \"crypto\",\n    \"crypto\": {\n        \"address\": \"0xFF378b68a174a9090BEA6ea4f51B0e901D334338\",\n        \"blockchain\": \"arc\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -456,12 +456,18 @@
 		{
 			"key": "SECRET_KEY",
 			"value": "",
-			"description": "Populates automatically after a sign up"
+			"description": {
+				"content": "Populates automatically after a sign up",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "PRIMARY_LOCATION_ID",
 			"value": "",
-			"description": "Populates automatically after listing all locations"
+			"description": {
+				"content": "Populates automatically after listing all locations",
+				"type": "text/plain"
+			}
 		}
 	]
 }
