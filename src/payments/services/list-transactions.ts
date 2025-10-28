@@ -4,10 +4,10 @@ import { DateCodec, ok, Result } from "@/lib";
 import {
   Transaction,
   transactionSortDesc,
-  loadTransactionsByUser,
+  loadTransactionsByAccount,
   saveManyTransactions,
   transactionId,
-  loadLocationsByUser,
+  loadLocationsByAccount,
   isTransactionFinalized,
   remoteTransactionId,
 } from "@/payments/entities";
@@ -26,18 +26,18 @@ export const ListTransactionsDTO = z.object({
 
 export const listTransactions = async ({
   filter,
-  userId,
+  accountId,
   live,
   listBlockchainWalletTransactionsAdapter = listBlockchainWalletTransactions,
 }: {
   filter: z.infer<typeof ListTransactionsDTO>;
-  userId: string;
+  accountId: string;
   live: boolean;
   listBlockchainWalletTransactionsAdapter?: ListBlockchainWalletTransactions;
 }): Promise<Result<Transaction[], BlockchainActionError>> => {
   const [dbTransactions, locations] = await Promise.all([
-    loadTransactionsByUser({ userId, from: filter.from, to: filter.to }),
-    loadLocationsByUser({ userId, live: false }),
+    loadTransactionsByAccount({ accountId, from: filter.from, to: filter.to }),
+    loadLocationsByAccount({ accountId, live: false }),
   ]);
 
   const onchainWalletTransactions =
@@ -68,7 +68,7 @@ export const listTransactions = async ({
   if (mergeResult.newTransactions.length > 0) {
     await saveManyTransactions({
       transactions: mergeResult.newTransactions,
-      userId,
+      accountId,
     });
   }
 
@@ -77,7 +77,7 @@ export const listTransactions = async ({
       transactions: mergeResult.transactions.filter((tx) =>
         mergeResult.updatedTransactionIds.includes(tx.id)
       ),
-      userId,
+      accountId,
     });
   }
 

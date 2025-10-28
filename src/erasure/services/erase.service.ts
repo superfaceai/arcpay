@@ -1,26 +1,26 @@
 import { ok, Result } from "@/lib";
 
-import { eraseCallsForUser } from "@/api/entities/call.db";
-import { eraseUser, eraseApiKeysForUser } from "@/identity/entities";
+import { eraseCallsForAccount } from "@/api/entities";
+import { eraseAccount, eraseApiKeysForAccount } from "@/identity/entities";
 import {
-  eraseLocationsForUser,
-  eraseTransactionsForUser,
-  eraseBalancesForUser,
-  erasePaymentsForUser,
+  eraseLocationsForAccount,
+  eraseTransactionsForAccount,
+  eraseBalancesForAccount,
+  erasePaymentsForAccount,
 } from "@/payments/entities";
 
 export const erase = async ({
-  userId,
+  accountId,
 }: {
-  userId: string;
+  accountId: string;
 }): Promise<Result<void, void>> => {
-  await erasePaymentsForUser({ userId });
-  await eraseTransactionsForUser({ userId });
-  await eraseCallsForUser({ userId });
-  await eraseLocationsForUser({ userId });
-  await eraseBalancesForUser({ userId });
-  await eraseUser({ userId });
-  await eraseApiKeysForUser({ userId });
+  await erasePaymentsForAccount({ accountId });
+  await eraseTransactionsForAccount({ accountId });
+  await eraseCallsForAccount({ accountId });
+  await eraseLocationsForAccount({ accountId });
+  await eraseBalancesForAccount({ accountId });
+  await eraseAccount({ accountId });
+  await eraseApiKeysForAccount({ accountId });
 
   return ok();
 };

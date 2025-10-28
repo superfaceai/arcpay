@@ -2,19 +2,19 @@ import { db, Pipeline } from "@/database";
 import { Location } from "@/payments/entities";
 
 const storageKey = ({
-  userId,
+  accountId,
   live,
   id,
 }: {
-  userId: string;
+  accountId: string;
   live: boolean;
   id: string;
-}) => `user:${userId}:wallets:${live ? "live" : "test"}:${id}`;
+}) => `acct:${accountId}:wallets:${live ? "live" : "test"}:${id}`;
 
 export const saveLocation = async (location: Location) => {
   await db.hset(
     storageKey({
-      userId: location.owner,
+      accountId: location.owner,
       live: location.live,
       id: location.id,
     }),
@@ -31,7 +31,7 @@ export const saveLocationViaPipeline = ({
 }) => {
   pipeline.hset(
     storageKey({
-      userId: location.owner,
+      accountId: location.owner,
       live: location.live,
       id: location.id,
     }),
@@ -53,18 +53,18 @@ export const saveMultipleLocations = async (locations: Location[]) => {
 
 export const loadLocationById = async ({
   locationId,
-  userId,
+  accountId,
   live,
 }: {
   locationId: string;
-  userId: string;
+  accountId: string;
   live: boolean;
 }): Promise<Location | null> => {
   const location = await db.hgetall<Location>(
-    storageKey({ userId, live, id: locationId })
+    storageKey({ accountId, live, id: locationId })
   );
 
-  if (!location || location.live !== live || location.owner !== userId) {
+  if (!location || location.live !== live || location.owner !== accountId) {
     return null;
   }
 
@@ -73,11 +73,11 @@ export const loadLocationById = async ({
 
 export const loadManyLocationsById = async ({
   locationIds,
-  userId,
+  accountId,
   live,
 }: {
   locationIds: string[];
-  userId: string;
+  accountId: string;
   live: boolean;
 }): Promise<Location[]> => {
   if (locationIds.length === 0) return [];
@@ -87,7 +87,7 @@ export const loadManyLocationsById = async ({
       [...new Set(locationIds)].map(async (locationId) => {
         return loadLocationById({
           locationId,
-          userId,
+          accountId,
           live,
         });
       })
@@ -95,14 +95,14 @@ export const loadManyLocationsById = async ({
   ).filter((wallet) => !!wallet);
 };
 
-export const loadLocationsByUser = async ({
-  userId,
+export const loadLocationsByAccount = async ({
+  accountId,
   live,
 }: {
-  userId: string;
+  accountId: string;
   live: boolean;
 }): Promise<Location[]> => {
-  const pattern = storageKey({ userId, live, id: "*" });
+  const pattern = storageKey({ accountId, live, id: "*" });
 
   let cursor = "0";
   const allKeys: string[] = [];
@@ -131,7 +131,11 @@ export const loadLocationsByUser = async ({
     .map((location) => Location.parse(location));
 };
 
-export const eraseLocationsForUser = async ({ userId }: { userId: string }) => {
+export const eraseLocationsForAccount = async ({
+  accountId,
+}: {
+  accountId: string;
+}) => {
   // TODO: Transfer remaining funds somewhere?
 
   const eraseLocations = async ({ live }: { live: boolean }) => {
@@ -140,7 +144,7 @@ export const eraseLocationsForUser = async ({ userId }: { userId: string }) => {
 
     do {
       const [nextCursor, keys] = await db.scan(cursor, {
-        match: storageKey({ userId, live, id: "*" }),
+        match: storageKey({ accountId, live, id: "*" }),
         count: 100_000,
       });
       cursor = nextCursor;
@@ -152,7 +156,7 @@ export const eraseLocationsForUser = async ({ userId }: { userId: string }) => {
     } while (cursor !== "0");
 
     console.debug(
-      `Removed ${deletedCount} Locations for User '${userId}' (Live: ${live})`
+      `Removed ${deletedCount} Locations for Account '${accountId}' (Live: ${live})`
     );
   };
 

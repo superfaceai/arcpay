@@ -2,9 +2,9 @@ import { getOrThrow, ok, Result } from "@/lib";
 
 import {
   loadManyLocationsById,
-  loadLocationsByUser,
   Location,
   saveMultipleLocations,
+  loadLocationsByAccount,
 } from "@/payments/entities";
 
 import { getBlockchainWalletBalance } from "@/circle/adapters";
@@ -12,12 +12,12 @@ import { GetBlockchainWalletBalance } from "@/payments/interfaces";
 import { BlockchainActionError } from "@/payments/errors";
 
 export const listLocations = async ({
-  userId,
+  accountId,
   live,
   locationIds,
   getBlockchainWalletBalanceAdapter = getBlockchainWalletBalance,
 }: {
-  userId: string;
+  accountId: string;
   live: boolean;
   locationIds?: string[];
   getBlockchainWalletBalanceAdapter?: GetBlockchainWalletBalance;
@@ -26,11 +26,11 @@ export const listLocations = async ({
     locationIds && locationIds.length > 0
       ? await loadManyLocationsById({
           locationIds: [...new Set(locationIds)],
-          userId,
+          accountId,
           live,
         })
-      : await loadLocationsByUser({
-          userId,
+      : await loadLocationsByAccount({
+          accountId,
           live,
         });
 

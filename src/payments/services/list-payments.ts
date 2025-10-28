@@ -3,7 +3,7 @@ import { z } from "zod";
 import { DateCodec, ok, Result } from "@/lib";
 import {
   Payment,
-  loadPaymentsByUser,
+  loadPaymentsByAccount,
   saveManyPayments,
 } from "@/payments/entities";
 import { BlockchainActionError } from "@/payments/errors";
@@ -18,15 +18,15 @@ export const ListPaymentsDTO = z.object({
 
 export const listPayments = async ({
   dto,
-  userId,
+  accountId,
   live,
 }: {
   dto: z.infer<typeof ListPaymentsDTO>;
-  userId: string;
+  accountId: string;
   live: boolean;
 }): Promise<Result<Payment[], BlockchainActionError>> => {
-  const dbPayments = await loadPaymentsByUser({
-    userId,
+  const dbPayments = await loadPaymentsByAccount({
+    accountId,
     from: dto.from,
     to: dto.to,
   });
@@ -37,7 +37,7 @@ export const listPayments = async ({
   const changedPayments: Payment[] = [];
 
   const allTransactions = await listTransactions({
-    userId,
+    accountId,
     filter: dto,
     live,
   });
@@ -62,7 +62,7 @@ export const listPayments = async ({
   }
 
   if (changedPayments.length > 0) {
-    await saveManyPayments({ payments: changedPayments, userId });
+    await saveManyPayments({ payments: changedPayments, accountId });
   }
 
   return ok(syncedPayments);

@@ -21,11 +21,11 @@ export const DepositMoneyDTO = z.object({
 
 export const depositMoney = async (
   {
-    userId,
+    accountId,
     live,
     depositTestnetMoneyAdapter = depositTestnetMoney,
   }: {
-    userId: string;
+    accountId: string;
     live: boolean;
     depositTestnetMoneyAdapter?: DepositTestnetMoney;
   },
@@ -47,7 +47,7 @@ export const depositMoney = async (
   }
 
   const locationResult = await ensureLocation({
-    userId,
+    accountId,
     live,
     currency: dto.currency,
     preferredBlockchains: ["arc", "base", "polygon"], // TODO: Make this configurable

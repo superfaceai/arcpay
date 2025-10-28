@@ -2,7 +2,7 @@ import { createApi } from "@/api/services";
 import { ProblemJson, ApiObject } from "@/api/values";
 import { withAuth, withValidation } from "@/api/middlewares";
 
-import { loadUserById } from "@/identity/entities";
+import { loadAccountById } from "@/identity/entities";
 import { signUp, SignUpDTO } from "@/identity/services";
 import { getOrThrow } from "@/lib";
 
@@ -15,9 +15,9 @@ export const identityApi = createApi()
     return c.json(ApiObject("apikey", getOrThrow(apiKeyResult)));
   })
   .get("/account", withAuth(), async (c) => {
-    const user = await loadUserById(c.get("userId"));
+    const account = await loadAccountById(c.get("accountId"));
 
-    if (!user) return ProblemJson(c, 404, "Not Found");
+    if (!account) return ProblemJson(c, 404, "Not Found");
 
-    return c.json(ApiObject("user", user));
+    return c.json(ApiObject("account", account));
   });

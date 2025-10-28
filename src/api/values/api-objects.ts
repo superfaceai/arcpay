@@ -1,4 +1,4 @@
-import { ApiKey, User } from "@/identity/entities";
+import { ApiKey, Account } from "@/identity/entities";
 import { Deposit, Transaction, Location } from "@/payments/entities";
 import { Balance as BalanceEntity } from "@/payments/entities";
 import { Payment } from "@/payments/entities";
@@ -8,18 +8,18 @@ import { Payment } from "@/payments/entities";
 // 2) Add the object type to the ExpectedObject type
 
 export type ObjectName =
+  | "account"
   | "apikey"
   | "balance"
-  | "user"
-  | "location"
   | "deposit"
-  | "transaction"
-  | "payment";
+  | "location"
+  | "payment"
+  | "transaction";
 
 export type ExpectedObject<Name extends ObjectName> = Name extends "apikey"
   ? ApiKey
-  : Name extends "user"
-  ? User
+  : Name extends "account"
+  ? Account
   : Name extends "location"
   ? Location
   : Name extends "balance"

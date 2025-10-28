@@ -9,7 +9,7 @@ export const apiKeyId = () => generateId("api");
 export const ApiKey = z.object({
   id: z.string(),
   key: z.string(),
-  user: z.string(),
+  account: z.string(),
   live: z.boolean(),
   created_at: DateCodec,
 });

@@ -10,11 +10,11 @@ export const depositsApi = createApi().post(
   withIdempotency(),
   withValidation("json", DepositMoneyDTO),
   async (c) => {
-    const userId = c.get("userId");
+    const accountId = c.get("accountId");
     const live = c.get("isLive");
 
     const depositResult = await depositMoney(
-      { userId, live },
+      { accountId, live },
       c.req.valid("json")
     );
 

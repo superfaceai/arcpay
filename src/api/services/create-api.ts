@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 
 type Variables = {
-  userId: string;
+  accountId: string;
   isLive: boolean;
 };
 

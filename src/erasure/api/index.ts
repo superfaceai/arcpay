@@ -7,7 +7,7 @@ export const erasureApi = createApi().delete(
   "/account",
   withAuth(),
   async (c) => {
-    await erase({ userId: c.get("userId") });
+    await erase({ accountId: c.get("accountId") });
 
     return c.newResponse(null, 204);
   }

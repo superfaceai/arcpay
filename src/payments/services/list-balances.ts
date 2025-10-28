@@ -2,7 +2,7 @@ import { ok, Result } from "@/lib";
 
 import {
   Balance,
-  loadBalancesByUser,
+  loadBalancesByAccount,
   saveMultipleBalances,
 } from "@/payments/entities";
 import { BlockchainActionError } from "@/payments/errors";
@@ -11,14 +11,14 @@ import { listLocations } from "./list-locations";
 import { syncBalanceWithLocations } from "./sync-balance-with-locations";
 
 export const listBalances = async ({
-  userId,
+  accountId,
   live,
 }: {
-  userId: string;
+  accountId: string;
   live: boolean;
 }): Promise<Result<Balance[], BlockchainActionError>> => {
-  const dbBalances = await loadBalancesByUser({
-    userId,
+  const dbBalances = await loadBalancesByAccount({
+    accountId,
     live,
   });
 
@@ -29,7 +29,7 @@ export const listBalances = async ({
   ];
 
   const allHoldingsResult = await listLocations({
-    userId,
+    accountId,
     live,
     locationIds: allHoldingIds,
   });

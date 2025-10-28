@@ -3,15 +3,15 @@ import { ApiKey } from "@/identity/entities";
 
 const storageKeyById = ({ id }: { id: string }) => `apikey:id:${id}`;
 const storageKeyBySecret = ({ key }: { key: string }) => `apikey:key:${key}`;
-const storageKeyByUser = ({ userId }: { userId: string }) =>
-  `user:${userId}:apikeys`;
+const storageKeyByAccount = ({ accountId }: { accountId: string }) =>
+  `account:${accountId}:apikeys`;
 
 export const saveApiKey = async (apiKey: ApiKey) => {
   await db
     .multi()
     .hset(storageKeyById({ id: apiKey.id }), apiKey)
     .hset(storageKeyBySecret({ key: apiKey.key }), apiKey)
-    .zadd(storageKeyByUser({ userId: apiKey.user }), {
+    .zadd(storageKeyByAccount({ accountId: apiKey.account }), {
       score: apiKey.created_at.getTime(),
       member: apiKey.id,
     })
@@ -32,9 +32,13 @@ export const loadApiKeyBySecret = async (
   return ApiKey.parse(apiKey);
 };
 
-export const eraseApiKeysForUser = async ({ userId }: { userId: string }) => {
+export const eraseApiKeysForAccount = async ({
+  accountId,
+}: {
+  accountId: string;
+}) => {
   const apiKeyIds = await db.zrange<string[]>(
-    storageKeyByUser({ userId }),
+    storageKeyByAccount({ accountId }),
     0,
     -1
   );
@@ -46,9 +50,9 @@ export const eraseApiKeysForUser = async ({ userId }: { userId: string }) => {
 
     await db.del(storageKeyBySecret({ key: apiKey.key }));
     await db.del(storageKeyById({ id: apiKeyId }));
-    console.debug(`Removed API Key '${apiKeyId}' for User '${userId}'`);
+    console.debug(`Removed API Key '${apiKeyId}' for Account '${accountId}'`);
   }
-  await db.del(storageKeyByUser({ userId }));
+  await db.del(storageKeyByAccount({ accountId }));
 
-  console.debug(`Removed API Keys for User '${userId}'`);
+  console.debug(`Removed API Keys for Account '${accountId}'`);
 };

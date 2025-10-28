@@ -7,20 +7,20 @@ import {
 } from "@/payments/entities";
 
 const storageKeyById = ({ id }: { id: string }) => `pay:${id}`;
-const storageKeyByUser = ({ userId }: { userId: string }) =>
-  `user:${userId}:payments`;
+const storageKeyByAccount = ({ accountId }: { accountId: string }) =>
+  `acct:${accountId}:payments`;
 
 export const savePayment = async ({
   payment,
-  userId,
+  accountId,
 }: {
   payment: Payment;
-  userId: string;
+  accountId: string;
 }) => {
   await db
     .multi()
     .hset(storageKeyById({ id: payment.id }), payment)
-    .zadd(storageKeyByUser({ userId }), {
+    .zadd(storageKeyByAccount({ accountId }), {
       score: payment.created_at.getTime(),
       member: payment.id,
     })
@@ -30,15 +30,15 @@ export const savePayment = async ({
 };
 export const savePaymentViaPipeline = async ({
   payment,
-  userId,
+  accountId,
   pipeline,
 }: {
   payment: Payment;
-  userId: string;
+  accountId: string;
   pipeline: Pipeline;
 }) => {
   pipeline.hset(storageKeyById({ id: payment.id }), payment);
-  pipeline.zadd(storageKeyByUser({ userId }), {
+  pipeline.zadd(storageKeyByAccount({ accountId }), {
     score: payment.created_at.getTime(),
     member: payment.id,
   });
@@ -48,15 +48,15 @@ export const savePaymentViaPipeline = async ({
 
 export const saveManyPayments = async ({
   payments,
-  userId,
+  accountId,
 }: {
   payments: Payment[];
-  userId: string;
+  accountId: string;
 }) => {
   const pipeline = db.multi();
 
   for (const payment of payments) {
-    savePaymentViaPipeline({ payment, userId, pipeline });
+    savePaymentViaPipeline({ payment, accountId, pipeline });
   }
 
   await pipeline.exec();
@@ -65,17 +65,17 @@ export const saveManyPayments = async ({
 export const savePaymentWithTransactions = async ({
   payment,
   transactions,
-  userId,
+  accountId,
 }: {
   payment: Payment;
   transactions: Transaction[];
-  userId: string;
+  accountId: string;
 }) => {
   const pipeline = db.multi();
 
-  savePaymentViaPipeline({ payment, userId, pipeline });
+  savePaymentViaPipeline({ payment, accountId, pipeline });
   for (const transaction of transactions) {
-    saveTransactionViaPipeline({ transaction, userId, pipeline });
+    saveTransactionViaPipeline({ transaction, accountId, pipeline });
   }
 
   await pipeline.exec();
@@ -96,17 +96,17 @@ export const loadPaymentById = async ({
 
   return Payment.parse(payment);
 };
-export const loadPaymentsByUser = async ({
-  userId,
+export const loadPaymentsByAccount = async ({
+  accountId,
   from,
   to,
 }: {
-  userId: string;
+  accountId: string;
   from?: Date;
   to?: Date;
 }): Promise<Payment[]> => {
   const paymentIds = await db.zrange<string[]>(
-    storageKeyByUser({ userId }),
+    storageKeyByAccount({ accountId }),
     from?.getTime() ?? 0,
     to?.getTime() ?? Number.MAX_SAFE_INTEGER,
     {
@@ -121,9 +121,13 @@ export const loadPaymentsByUser = async ({
   return payments.filter((payment) => payment !== null).sort(paymentSortDesc);
 };
 
-export const erasePaymentsForUser = async ({ userId }: { userId: string }) => {
+export const erasePaymentsForAccount = async ({
+  accountId,
+}: {
+  accountId: string;
+}) => {
   const paymentIds = await db.zrange<string[]>(
-    storageKeyByUser({ userId }),
+    storageKeyByAccount({ accountId }),
     0,
     -1
   );
@@ -132,11 +136,11 @@ export const erasePaymentsForUser = async ({ userId }: { userId: string }) => {
 
   for (const paymentId of paymentIds) {
     pipeline.del(storageKeyById({ id: paymentId }));
-    console.debug(`Removing Payment '${paymentId}' for User '${userId}'`);
+    console.debug(`Removing Payment '${paymentId}' for Account '${accountId}'`);
   }
-  pipeline.del(storageKeyByUser({ userId }));
+  pipeline.del(storageKeyByAccount({ accountId }));
 
   await pipeline.exec();
 
-  console.debug(`Removed Payments for User '${userId}'`);
+  console.debug(`Removed Payments for Account '${accountId}'`);
 };

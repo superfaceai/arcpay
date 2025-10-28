@@ -1,4 +1,4 @@
-export * from "./user.entity.js";
-export * from "./user.db.js";
+export * from "./account.entity.js";
+export * from "./account.db.js";
 export * from "./api-key.entity.js";
 export * from "./api-key.db.js";

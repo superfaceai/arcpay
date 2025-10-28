@@ -7,19 +7,19 @@ import {
 import { Currency } from "@/payments/values";
 
 const storageKey = ({
-  userId,
+  accountId,
   live,
   currency,
 }: {
-  userId: string;
+  accountId: string;
   live: boolean;
   currency: Currency | "*";
-}) => `user:${userId}:balances:${live ? "live" : "test"}:${currency}`;
+}) => `acct:${accountId}:balances:${live ? "live" : "test"}:${currency}`;
 
 export const saveBalance = async (balance: Balance) => {
   await db.hset(
     storageKey({
-      userId: balance.owner,
+      accountId: balance.owner,
       live: balance.live,
       currency: balance.currency,
     }),
@@ -35,7 +35,7 @@ export const saveMultipleBalances = async (balances: Balance[]) => {
   for (const balance of balances) {
     pipeline.hset(
       storageKey({
-        userId: balance.owner,
+        accountId: balance.owner,
         live: balance.live,
         currency: balance.currency,
       }),
@@ -58,7 +58,7 @@ export const saveBalancesWithLocation = async ({
   for (const balance of balances) {
     pipeline.hset(
       storageKey({
-        userId: balance.owner,
+        accountId: balance.owner,
         live: balance.live,
         currency: balance.currency,
       }),
@@ -72,17 +72,17 @@ export const saveBalancesWithLocation = async ({
 };
 
 export const loadBalance = async ({
-  userId,
+  accountId,
   live,
   currency,
 }: {
-  userId: string;
+  accountId: string;
   live: boolean;
   currency: Currency;
 }): Promise<Balance | null> => {
   const balance = await db.hgetall<Balance>(
     storageKey({
-      userId,
+      accountId,
       live,
       currency,
     })
@@ -93,14 +93,14 @@ export const loadBalance = async ({
   return Balance.parse(balance);
 };
 
-export const loadBalancesByUser = async ({
-  userId,
+export const loadBalancesByAccount = async ({
+  accountId,
   live,
 }: {
-  userId: string;
+  accountId: string;
   live: boolean;
 }): Promise<Balance[]> => {
-  const pattern = storageKey({ userId, live, currency: "*" });
+  const pattern = storageKey({ accountId, live, currency: "*" });
 
   let cursor = "0";
   const allKeys: string[] = [];
@@ -129,7 +129,11 @@ export const loadBalancesByUser = async ({
     .map((balance) => Balance.parse(balance));
 };
 
-export const eraseBalancesForUser = async ({ userId }: { userId: string }) => {
+export const eraseBalancesForAccount = async ({
+  accountId,
+}: {
+  accountId: string;
+}) => {
   // TODO: Transfer remaining funds somewhere?
 
   const eraseBalances = async ({ live }: { live: boolean }) => {
@@ -138,7 +142,7 @@ export const eraseBalancesForUser = async ({ userId }: { userId: string }) => {
 
     do {
       const [nextCursor, keys] = await db.scan(cursor, {
-        match: storageKey({ userId, live, currency: "*" }),
+        match: storageKey({ accountId, live, currency: "*" }),
         count: 100_000,
       });
       cursor = nextCursor;
@@ -150,7 +154,7 @@ export const eraseBalancesForUser = async ({ userId }: { userId: string }) => {
     } while (cursor !== "0");
 
     console.debug(
-      `Removed ${deletedCount} Balances for User '${userId}' (Live: ${live})`
+      `Removed ${deletedCount} Balances for Account '${accountId}' (Live: ${live})`
     );
   };
 

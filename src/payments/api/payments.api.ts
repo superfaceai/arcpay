@@ -16,7 +16,7 @@ export const paymentsApi = createApi()
     withValidation("query", ListPaymentsDTO),
     async (c) => {
       const paymentsListResult = await listPayments({
-        userId: c.get("userId"),
+        accountId: c.get("accountId"),
         live: c.get("isLive"),
         dto: c.req.valid("query"),
       });
@@ -40,7 +40,7 @@ export const paymentsApi = createApi()
     withValidation("json", PayDTO),
     async (c) => {
       const paymentResult = await pay({
-        userId: c.get("userId"),
+        accountId: c.get("accountId"),
         live: c.get("isLive"),
         dto: c.req.valid("json"),
       });

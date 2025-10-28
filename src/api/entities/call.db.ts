@@ -2,25 +2,25 @@ import { db } from "@/database";
 import { Call } from "./call.entity";
 
 const storageKeyByIdempotencyKey = ({
-  userId,
+  accountId,
   idempotencyKey,
 }: {
-  userId: string;
+  accountId: string;
   idempotencyKey: string;
-}) => `idem:${userId}:${idempotencyKey}`;
+}) => `idem:${accountId}:${idempotencyKey}`;
 
 export const saveCall = async ({
   call,
-  userId,
+  accountId,
 }: {
   call: Call;
-  userId: string;
+  accountId: string;
 }) => {
   await db
     .multi()
     .hset(
       storageKeyByIdempotencyKey({
-        userId,
+        accountId,
         idempotencyKey: call.idempotencyKey,
       }),
       call
@@ -28,7 +28,7 @@ export const saveCall = async ({
 
     .expireat(
       storageKeyByIdempotencyKey({
-        userId,
+        accountId,
         idempotencyKey: call.idempotencyKey,
       }),
       Math.floor(call.expires_at.getTime() / 1000)
@@ -39,14 +39,14 @@ export const saveCall = async ({
 };
 
 export const loadCallByIdempotencyKey = async ({
-  userId,
+  accountId,
   idempotencyKey,
 }: {
-  userId: string;
+  accountId: string;
   idempotencyKey: string;
 }): Promise<Call | null> => {
   const call = await db.hgetall<Call>(
-    storageKeyByIdempotencyKey({ userId, idempotencyKey })
+    storageKeyByIdempotencyKey({ accountId, idempotencyKey })
   );
 
   if (!call) {
@@ -56,7 +56,11 @@ export const loadCallByIdempotencyKey = async ({
   return Call.parse(call);
 };
 
-export const eraseCallsForUser = async ({ userId }: { userId: string }) => {
+export const eraseCallsForAccount = async ({
+  accountId,
+}: {
+  accountId: string;
+}) => {
   let cursor = "0";
   let deletedCount = 0;
 
@@ -64,7 +68,7 @@ export const eraseCallsForUser = async ({ userId }: { userId: string }) => {
     // scan returns [nextCursor, keys[]]
     const [nextCursor, keys] = await db.scan(cursor, {
       match: storageKeyByIdempotencyKey({
-        userId,
+        accountId,
         idempotencyKey: "*",
       }),
       count: 100_000,
@@ -77,5 +81,5 @@ export const eraseCallsForUser = async ({ userId }: { userId: string }) => {
     }
   } while (cursor !== "0");
 
-  console.debug(`Removed ${deletedCount} Calls for User '${userId}'`);
+  console.debug(`Removed ${deletedCount} Calls for Account '${accountId}'`);
 };

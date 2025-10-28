@@ -8,16 +8,16 @@ import { listLocations } from "./list-locations";
 import { syncBalanceWithLocations } from "./sync-balance-with-locations";
 
 export const getBalance = async ({
-  userId,
+  accountId,
   live,
   currency,
 }: {
-  userId: string;
+  accountId: string;
   live: boolean;
   currency: Currency;
 }): Promise<Result<Balance | null, BlockchainActionError>> => {
   const dbBalance = await loadBalance({
-    userId,
+    accountId,
     live,
     currency,
   });
@@ -25,7 +25,7 @@ export const getBalance = async ({
   if (!dbBalance) return ok(null);
 
   const locationsResult = await listLocations({
-    userId,
+    accountId,
     live,
     locationIds: dbBalance.holdings,
   });

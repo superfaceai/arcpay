@@ -7,7 +7,7 @@ import { listLocations } from "@/payments/services";
 export const locationsApi = createApi()
   .get("/locations", withAuth(), async (c) => {
     const locations = await listLocations({
-      userId: c.get("userId"),
+      accountId: c.get("accountId"),
       live: c.get("isLive"),
     });
 
@@ -23,7 +23,7 @@ export const locationsApi = createApi()
   })
   .get("/locations/:locationId", withAuth(), async (c) => {
     const locations = await listLocations({
-      userId: c.get("userId"),
+      accountId: c.get("accountId"),
       live: c.get("isLive"),
       locationIds: [c.req.param("locationId")],
     });

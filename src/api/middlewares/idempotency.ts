@@ -39,8 +39,8 @@ export const withIdempotency = () =>
       );
     }
 
-    const userId = c.get("userId");
-    if (!userId) {
+    const accountId = c.get("accountId");
+    if (!accountId) {
       console.error("Idempotency can only be used with authenticated requests");
       return ProblemJson(c, 500, "Internal Server Error");
     }
@@ -48,7 +48,7 @@ export const withIdempotency = () =>
     c.res.headers.set(IDEMPOTENCY_KEY_HEADER, idempotencyKey);
 
     const call = await loadCallByIdempotencyKey({
-      userId: c.get("userId"),
+      accountId,
       idempotencyKey,
     });
 
@@ -93,7 +93,7 @@ export const withIdempotency = () =>
       expires_at: new Date(Date.now() + EXPIRATION_TIME),
     });
 
-    await saveCall({ call: newCall, userId });
+    await saveCall({ call: newCall, accountId });
   });
 
 const RELEVANT_REQ_HEADERS = ["Content-Type"].map((header) =>

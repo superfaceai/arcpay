@@ -16,12 +16,12 @@ import { CreateBlockchainWallet } from "@/payments/interfaces";
 import { BlockchainActionError } from "@/payments/errors.js";
 
 export const createLocation = async ({
-  userId,
+  accountId,
   live,
   blockchain,
   createBlockchainWalletAdapter = createBlockchainWallet,
 }: {
-  userId: string;
+  accountId: string;
   live: boolean;
   blockchain: Blockchain;
   createBlockchainWalletAdapter?: CreateBlockchainWallet;
@@ -36,7 +36,7 @@ export const createLocation = async ({
 
   const newLocation = Location.parse({
     id: locationId(),
-    owner: userId,
+    owner: accountId,
     live,
     type: "crypto_wallet",
     address: createWalletResult.value.address,
@@ -50,7 +50,7 @@ export const createLocation = async ({
 
   const newBalances: Balance[] = await Promise.all(
     currencies.map(async (currency) => {
-      const existingBalance = await loadBalance({ userId, live, currency });
+      const existingBalance = await loadBalance({ accountId, live, currency });
 
       if (existingBalance)
         return {
@@ -60,7 +60,7 @@ export const createLocation = async ({
 
       return Balance.parse({
         id: balanceId(currency),
-        owner: userId,
+        owner: accountId,
         live,
         currency,
         amount: "0",

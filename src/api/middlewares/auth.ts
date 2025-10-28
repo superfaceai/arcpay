@@ -14,7 +14,7 @@ const verifyToken = async (token: string, c: Context) => {
     });
   }
 
-  c.set("userId", apiKey.user);
+  c.set("accountId", apiKey.account);
   c.set("isLive", apiKey.live);
   return true;
 };

@@ -50,13 +50,13 @@ const PayDTOMethodCrypto = PayDTOBase.extend({
 export const PayDTO = z.discriminatedUnion("method", [PayDTOMethodCrypto]);
 
 export const pay = async ({
-  userId,
+  accountId,
   live,
   dto,
   validateBlockchainAddressAdapter = validateBlockchainAddress,
   sendBlockchainTransactionAdapter = sendBlockchainTransaction,
 }: {
-  userId: string;
+  accountId: string;
   live: boolean;
   dto: z.infer<typeof PayDTO>;
   validateBlockchainAddressAdapter?: ValidateBlockchainAddress;
@@ -104,7 +104,7 @@ export const pay = async ({
 
   // Check if the user has enough currency balance
   const balanceResult = await getBalance({
-    userId,
+    accountId,
     live,
     currency: dto.currency,
   });
@@ -125,7 +125,7 @@ export const pay = async ({
 
   // Check if the balance is available in a single location
   const locationsResult = await listLocations({
-    userId,
+    accountId,
     live,
     locationIds: balanceResult.value?.holdings || [],
   });
@@ -184,7 +184,7 @@ export const pay = async ({
   await savePaymentWithTransactions({
     payment,
     transactions: [newTransaction],
-    userId,
+    accountId,
   });
 
   const sentTransactionResult = await sendBlockchainTransactionAdapter({
@@ -211,7 +211,7 @@ export const pay = async ({
 
   await saveManyTransactions({
     transactions: [sentPaymentTx, ...(feeTransaction ? [feeTransaction] : [])],
-    userId,
+    accountId,
   });
 
   return ok(payment);

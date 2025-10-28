@@ -11,7 +11,7 @@ export const transactionsApi = createApi().get(
   async (c) => {
     const transactions = await listTransactions({
       filter: c.req.valid("query"),
-      userId: c.get("userId"),
+      accountId: c.get("accountId"),
       live: c.get("isLive"),
     });
 

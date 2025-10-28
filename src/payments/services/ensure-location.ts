@@ -12,26 +12,26 @@ import { getBalance } from "./get-balance";
 import { createLocation } from "./create-location";
 
 export const ensureLocation = async ({
-  userId,
+  accountId,
   live,
   currency,
   preferredBlockchains,
 }: {
-  userId: string;
+  accountId: string;
   live: boolean;
   currency: Currency;
   preferredBlockchains: Blockchain[]; // expected to be ordered by priority
 }): Promise<
   Result<Location, UnsupportedBlockchainError | BlockchainActionError>
 > => {
-  const currencyBalance = await getBalance({ userId, live, currency });
+  const currencyBalance = await getBalance({ accountId, live, currency });
   if (!currencyBalance.ok) return currencyBalance;
 
   const balance = currencyBalance.value;
 
   const locations = await loadManyLocationsById({
     locationIds: balance?.holdings || [],
-    userId,
+    accountId,
     live,
   });
 
@@ -57,7 +57,7 @@ export const ensureLocation = async ({
   }
 
   const newLocationResult = await createLocation({
-    userId,
+    accountId,
     live,
     blockchain: supportedBlockchain,
   });

@@ -12,7 +12,7 @@ import { Currency } from "@/payments/values";
 export const balancesApi = createApi()
   .get("/balances", withAuth(), async (c) => {
     const balancesResult = await listBalances({
-      userId: c.get("userId"),
+      accountId: c.get("accountId"),
       live: c.get("isLive"),
     });
 
@@ -29,7 +29,7 @@ export const balancesApi = createApi()
         ApiList("balance", [
           {
             id: "usdc",
-            owner: c.get("userId"),
+            owner: c.get("accountId"),
             live: c.get("isLive"),
             currency: "USDC",
             amount: "0",
@@ -56,7 +56,7 @@ export const balancesApi = createApi()
       const currency: Currency = c.req.valid("param").currency;
 
       const balanceResult = await getBalance({
-        userId: c.get("userId"),
+        accountId: c.get("accountId"),
         live: c.get("isLive"),
         currency,
       });
@@ -67,7 +67,7 @@ export const balancesApi = createApi()
         return c.json(
           ApiObject("balance", {
             id: currency.toLowerCase(),
-            owner: c.get("userId"),
+            owner: c.get("accountId"),
             live: c.get("isLive"),
             currency,
             amount: "0",

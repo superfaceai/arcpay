@@ -5,7 +5,6 @@ import {
   LocationAsset,
   PaymentTransaction,
   FeeTransaction,
-  Transaction,
 } from "@/payments/entities";
 import {
   BlockchainActionError,
