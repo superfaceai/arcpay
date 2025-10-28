@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { generateId, DateCodec } from "@/lib";
-import { Blockchain, Currency, PositiveAmount } from "@/payments/values";
+import { Blockchain, Currency, PositiveAmount } from "@/balances/values";
 
 export const locationId = () => generateId("loc");
 

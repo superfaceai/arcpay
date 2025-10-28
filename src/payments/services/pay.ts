@@ -4,6 +4,15 @@ import { v4 as uuidv4 } from "uuid";
 
 import { err, ok, Result } from "@/lib";
 
+import { getBalance } from "@/balances/services";
+import { listLocations } from "@/balances/services";
+import {
+  Amount,
+  getStablecoinTokenAddress,
+  StablecoinToken,
+} from "@/balances/values";
+import { BlockchainWalletActionError } from "@/balances/errors";
+
 import {
   Payment,
   transactionId,
@@ -13,17 +22,14 @@ import {
   saveManyTransactions,
 } from "@/payments/entities";
 import {
-  Amount,
   PaymentMethodCrypto,
   PaymentMethodTypeCrypto,
-  StablecoinToken,
-  getStablecoinTokenAddress,
 } from "@/payments/values";
 import {
   PaymentInsufficientBalanceError,
   PaymentUnsupportedTokenError,
   PaymentInvalidAddressError,
-  BlockchainActionError,
+  BlockchainPaymentActionError,
 } from "@/payments/errors";
 
 import {
@@ -34,9 +40,6 @@ import {
   sendBlockchainTransaction,
   validateBlockchainAddress,
 } from "@/circle/adapters";
-
-import { getBalance } from "./get-balance";
-import { listLocations } from "./list-locations";
 
 const PayDTOBase = z.object({
   amount: Amount,
@@ -64,7 +67,8 @@ export const pay = async ({
 }): Promise<
   Result<
     Payment,
-    | BlockchainActionError
+    | BlockchainPaymentActionError
+    | BlockchainWalletActionError
     | PaymentInvalidAddressError
     | PaymentUnsupportedTokenError
     | PaymentInsufficientBalanceError

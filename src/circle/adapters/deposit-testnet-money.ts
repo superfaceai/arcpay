@@ -40,14 +40,14 @@ export const depositTestnetMoney: DepositTestnetMoney = async ({
             : JSON.stringify(error.response.data);
 
           return {
-            type: "BlockchainActionError",
+            type: "BlockchainPaymentActionError",
             blockchain,
             message,
           };
         }
       } else {
         return {
-          type: "BlockchainActionError",
+          type: "BlockchainPaymentActionError",
           message: error.message ?? "Unknown error",
           blockchain,
         };

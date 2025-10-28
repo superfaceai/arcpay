@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Blockchain } from "./blockchain";
+import { Blockchain } from "@/balances/values";
 
 export const PaymentMethodTypeCrypto = z.literal("crypto");
 export type PaymentMethodTypeCrypto = z.infer<typeof PaymentMethodTypeCrypto>;

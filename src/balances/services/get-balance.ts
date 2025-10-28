@@ -1,9 +1,9 @@
 import { ok, Result } from "@/lib";
 
-import { BlockchainActionError } from "@/payments/errors";
-import { Balance, loadBalance, saveBalance } from "@/payments/entities";
+import { BlockchainWalletActionError } from "@/balances/errors";
+import { Balance, loadBalance, saveBalance } from "@/balances/entities";
 
-import { Currency } from "@/payments/values";
+import { Currency } from "@/balances/values";
 import { listLocations } from "./list-locations";
 import { syncBalanceWithLocations } from "./sync-balance-with-locations";
 
@@ -15,7 +15,7 @@ export const getBalance = async ({
   accountId: string;
   live: boolean;
   currency: Currency;
-}): Promise<Result<Balance | null, BlockchainActionError>> => {
+}): Promise<Result<Balance | null, BlockchainWalletActionError>> => {
   const dbBalance = await loadBalance({
     accountId,
     live,

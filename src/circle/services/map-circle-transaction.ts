@@ -10,7 +10,7 @@ import {
   getNativeTokenFor,
   mainToken,
   tokenToCurrency,
-} from "@/payments/values";
+} from "@/balances/values";
 import { BlockchainTransaction } from "@/payments/interfaces";
 import { isTransactionFinalized, TransactionStatus } from "@/payments/entities";
 

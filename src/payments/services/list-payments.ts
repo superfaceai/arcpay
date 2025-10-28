@@ -6,7 +6,7 @@ import {
   loadPaymentsByAccount,
   saveManyPayments,
 } from "@/payments/entities";
-import { BlockchainActionError } from "@/payments/errors";
+import { BlockchainPaymentActionError } from "@/payments/errors";
 
 import { syncPaymentWithTransactions } from "./sync-payment-with-transactions";
 import { listTransactions } from "./list-transactions";
@@ -24,7 +24,7 @@ export const listPayments = async ({
   dto: z.infer<typeof ListPaymentsDTO>;
   accountId: string;
   live: boolean;
-}): Promise<Result<Payment[], BlockchainActionError>> => {
+}): Promise<Result<Payment[], BlockchainPaymentActionError>> => {
   const dbPayments = await loadPaymentsByAccount({
     accountId,
     live,

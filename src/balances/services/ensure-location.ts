@@ -1,12 +1,12 @@
 import { err, ok, Result } from "@/lib";
 
-import { Location, loadManyLocationsById } from "@/payments/entities";
-import { Blockchain, Currency, isCurrencySupported } from "@/payments/values";
+import { Location, loadManyLocationsById } from "@/balances/entities";
+import { Blockchain, Currency, isCurrencySupported } from "@/balances/values";
 
 import {
-  BlockchainActionError,
+  BlockchainWalletActionError,
   UnsupportedBlockchainError,
-} from "@/payments/errors.js";
+} from "@/balances/errors";
 
 import { getBalance } from "./get-balance";
 import { createLocation } from "./create-location";
@@ -22,7 +22,7 @@ export const ensureLocation = async ({
   currency: Currency;
   preferredBlockchains: Blockchain[]; // expected to be ordered by priority
 }): Promise<
-  Result<Location, UnsupportedBlockchainError | BlockchainActionError>
+  Result<Location, UnsupportedBlockchainError | BlockchainWalletActionError>
 > => {
   const currencyBalance = await getBalance({ accountId, live, currency });
   if (!currencyBalance.ok) return currencyBalance;

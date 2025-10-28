@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { generateId, DateCodec } from "@/lib";
-import { StablecoinToken } from "../values/token.js";
+import { StablecoinToken } from "@/balances/values";
 
 export const depositId = () => generateId("dp");
 

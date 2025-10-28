@@ -1,5 +1,5 @@
 import { db, Pipeline } from "@/database";
-import { Location } from "@/payments/entities";
+import { Location } from "@/balances/entities";
 
 const storageKey = ({
   accountId,

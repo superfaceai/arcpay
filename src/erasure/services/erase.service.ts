@@ -4,8 +4,10 @@ import { eraseCallsForAccount } from "@/api/entities";
 import { eraseAccount, eraseApiKeysForAccount } from "@/identity/entities";
 import {
   eraseLocationsForAccount,
-  eraseTransactionsForAccount,
   eraseBalancesForAccount,
+} from "@/balances/entities";
+import {
+  eraseTransactionsForAccount,
   erasePaymentsForAccount,
 } from "@/payments/entities";
 

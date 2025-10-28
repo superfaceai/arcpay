@@ -1,7 +1,9 @@
 import { ApiKey, Account } from "@/identity/entities";
-import { Deposit, Transaction, Location } from "@/payments/entities";
-import { Balance as BalanceEntity } from "@/payments/entities";
+import { Location } from "@/balances/entities";
+import { Balance } from "@/balances/entities";
+import { Deposit } from "@/payments/entities";
 import { Payment } from "@/payments/entities";
+import { Transaction } from "@/payments/entities";
 
 // When adding new API object,
 // 1) Add the object name to the ObjectName type
@@ -23,7 +25,7 @@ export type ExpectedObject<Name extends ObjectName> = Name extends "apikey"
   : Name extends "location"
   ? Location
   : Name extends "balance"
-  ? BalanceEntity
+  ? Balance
   : Name extends "deposit"
   ? Deposit
   : Name extends "payment"

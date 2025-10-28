@@ -1,17 +1,19 @@
 import { z } from "zod";
 
 import { DateCodec, ok, Result } from "@/lib";
+import { loadLocationsByAccount } from "@/balances/entities";
+
 import {
   Transaction,
   transactionSortDesc,
   loadTransactionsByAccount,
   saveManyTransactions,
   transactionId,
-  loadLocationsByAccount,
   isTransactionFinalized,
   remoteTransactionId,
 } from "@/payments/entities";
-import { BlockchainActionError } from "@/payments/errors";
+
+import { BlockchainPaymentActionError } from "@/payments/errors";
 
 import {
   BlockchainTransaction,
@@ -34,7 +36,7 @@ export const listTransactions = async ({
   accountId: string;
   live: boolean;
   listBlockchainWalletTransactionsAdapter?: ListBlockchainWalletTransactions;
-}): Promise<Result<Transaction[], BlockchainActionError>> => {
+}): Promise<Result<Transaction[], BlockchainPaymentActionError>> => {
   const [dbTransactions, locations] = await Promise.all([
     loadTransactionsByAccount({
       accountId,

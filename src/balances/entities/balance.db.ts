@@ -3,8 +3,8 @@ import {
   Balance,
   Location,
   saveLocationViaPipeline,
-} from "@/payments/entities";
-import { Currency } from "@/payments/values";
+} from "@/balances/entities";
+import { Currency } from "@/balances/values";
 
 const storageKey = ({
   accountId,

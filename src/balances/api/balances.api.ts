@@ -6,8 +6,8 @@ import { createApi } from "@/api/services";
 import { ApiObject, ApiList, ProblemJson } from "@/api/values";
 import { withAuth, withValidation } from "@/api/middlewares";
 
-import { getBalance, listBalances } from "@/payments/services";
-import { Currency } from "@/payments/values";
+import { getBalance, listBalances } from "@/balances/services";
+import { Currency } from "@/balances/values";
 
 export const balancesApi = createApi()
   .get("/balances", withAuth(), async (c) => {

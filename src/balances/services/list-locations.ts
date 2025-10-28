@@ -5,11 +5,11 @@ import {
   Location,
   saveMultipleLocations,
   loadLocationsByAccount,
-} from "@/payments/entities";
+} from "@/balances/entities";
+import { BlockchainWalletActionError } from "@/balances/errors";
 
 import { getBlockchainWalletBalance } from "@/circle/adapters";
-import { GetBlockchainWalletBalance } from "@/payments/interfaces";
-import { BlockchainActionError } from "@/payments/errors";
+import { GetBlockchainWalletBalance } from "@/balances/interfaces";
 
 export const listLocations = async ({
   accountId,
@@ -21,7 +21,7 @@ export const listLocations = async ({
   live: boolean;
   locationIds?: string[];
   getBlockchainWalletBalanceAdapter?: GetBlockchainWalletBalance;
-}): Promise<Result<Location[], BlockchainActionError>> => {
+}): Promise<Result<Location[], BlockchainWalletActionError>> => {
   const dbLocations =
     locationIds && locationIds.length > 0
       ? await loadManyLocationsById({

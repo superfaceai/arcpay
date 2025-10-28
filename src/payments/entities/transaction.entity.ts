@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { generateId, DateCodec } from "@/lib";
-import { Amount, Currency } from "@/payments/values";
-import { Location } from "./location.entity.js";
-import { Payment } from "./payment.entity.js";
+import { Amount, Currency } from "@/balances/values";
+import { Location } from "@/balances/entities";
+import { Payment } from "./payment.entity";
 
 export const transactionId = () => generateId("txn");
 

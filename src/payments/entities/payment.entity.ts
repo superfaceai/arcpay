@@ -1,11 +1,7 @@
 import { z } from "zod";
 import { generateId, DateCodec } from "@/lib";
-import {
-  Amount,
-  Currency,
-  PaymentMethodCrypto,
-  PaymentMethodType,
-} from "@/payments/values";
+import { Amount, Currency } from "@/balances/values";
+import { PaymentMethodCrypto, PaymentMethodType } from "@/payments/values";
 
 export const paymentId = () => generateId("pay");
 

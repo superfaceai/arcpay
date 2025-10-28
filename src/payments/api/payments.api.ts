@@ -70,11 +70,19 @@ export const paymentsApi = createApi()
             `The address '${paymentResult.error.address}' is not a valid ${paymentResult.error.blockchain} address`
           );
         }
-        if (paymentResult.error.type === "BlockchainActionError") {
+        if (paymentResult.error.type === "BlockchainPaymentActionError") {
           return ProblemJson(
             c,
             500,
-            `Blockchain action error on ${paymentResult.error.blockchain}`,
+            `Blockchain payment action error on ${paymentResult.error.blockchain}`,
+            paymentResult.error.message
+          );
+        }
+        if (paymentResult.error.type === "BlockchainWalletActionError") {
+          return ProblemJson(
+            c,
+            500,
+            `Blockchain wallet action error on ${paymentResult.error.blockchain}`,
             paymentResult.error.message
           );
         }

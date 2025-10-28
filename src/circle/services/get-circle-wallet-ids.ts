@@ -1,4 +1,4 @@
-import { Blockchain } from "@/payments/values";
+import { Blockchain } from "@/balances/values";
 
 import { client } from "../client";
 import { chooseCircleBlockchain } from "../blockchain";

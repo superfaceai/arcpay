@@ -1,4 +1,4 @@
-import { Blockchain as CoreBlockchain } from "@/payments/values";
+import { Blockchain as CoreBlockchain } from "@/balances/values";
 
 import {
   TestnetBlockchain as CircleTestnetBlockchain,

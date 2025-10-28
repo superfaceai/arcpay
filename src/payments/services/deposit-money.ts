@@ -1,15 +1,17 @@
 import { z } from "zod";
 import { err, ok, Result } from "@/lib";
 
+import { StablecoinToken } from "@/balances/values";
+import { ensureLocation } from "@/balances/services";
+
 import { Deposit, depositId } from "@/payments/entities";
-import { StablecoinToken } from "@/payments/values";
 import {
   PaymentLiveModeError,
   UnsupportedBlockchainError,
-  BlockchainActionError,
   BlockchainActionRateExceeded,
-} from "@/payments/errors.js";
-import { ensureLocation } from "./ensure-location";
+  BlockchainPaymentActionError,
+} from "@/payments/errors";
+import { BlockchainWalletActionError } from "@/balances/errors";
 
 import { DepositTestnetMoney } from "@/payments/interfaces";
 import { depositTestnetMoney } from "@/circle/adapters";
@@ -35,8 +37,9 @@ export const depositMoney = async (
     Deposit,
     | PaymentLiveModeError
     | UnsupportedBlockchainError
-    | BlockchainActionError
+    | BlockchainPaymentActionError
     | BlockchainActionRateExceeded
+    | BlockchainWalletActionError
   >
 > => {
   if (live) {

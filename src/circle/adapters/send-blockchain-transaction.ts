@@ -1,6 +1,8 @@
 import { TokenBlockchain } from "@circle-fin/developer-controlled-wallets";
 
 import { tryAsync } from "@/lib";
+import { getNativeTokenFor, tokenToCurrency } from "@/balances/values";
+
 import {
   BlockchainTransaction,
   SendBlockchainTransaction,
@@ -11,7 +13,6 @@ import { client } from "../client";
 import { chooseCircleBlockchain } from "../blockchain";
 import { mapCircleTransactionState } from "../services/map-circle-transaction";
 import { pollCircleTransaction } from "../services/poll-circle-transaction";
-import { getNativeTokenFor, tokenToCurrency } from "@/payments/values";
 
 export const sendBlockchainTransaction: SendBlockchainTransaction = async ({
   transaction,
@@ -94,7 +95,7 @@ export const sendBlockchainTransaction: SendBlockchainTransaction = async ({
     (error) => {
       console.error((error as any).response.data);
       return {
-        type: "BlockchainActionError",
+        type: "BlockchainPaymentActionError",
         message: String(error),
         blockchain,
       };

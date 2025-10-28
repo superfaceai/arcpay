@@ -1,20 +1,12 @@
 import { Result } from "@/lib";
 
-import { Blockchain, Currency } from "@/payments/values";
+import { Blockchain } from "@/balances/values";
+import { Currency } from "@/balances/values";
+import { PaymentTransaction, FeeTransaction } from "@/payments/entities";
 import {
-  LocationAsset,
-  PaymentTransaction,
-  FeeTransaction,
-} from "@/payments/entities";
-import {
-  BlockchainActionError,
+  BlockchainPaymentActionError,
   BlockchainActionRateExceeded,
 } from "@/payments/errors";
-
-export type CreateBlockchainWallet = (params: {
-  blockchain: Blockchain;
-  live: boolean;
-}) => Promise<Result<{ address: string }, BlockchainActionError>>;
 
 export type DepositTestnetMoney = (params: {
   address: string;
@@ -22,14 +14,8 @@ export type DepositTestnetMoney = (params: {
   live: false;
   currencies: Currency[];
 }) => Promise<
-  Result<void, BlockchainActionError | BlockchainActionRateExceeded>
+  Result<void, BlockchainPaymentActionError | BlockchainActionRateExceeded>
 >;
-
-export type GetBlockchainWalletBalance = (params: {
-  address: string;
-  blockchain: Blockchain;
-  live: boolean;
-}) => Promise<Result<Array<LocationAsset>, BlockchainActionError>>;
 
 export type BlockchainTransaction = Readonly<
   | Omit<PaymentTransaction, "id" | "fingerprint" | "live" | "payment">
@@ -45,13 +31,13 @@ export type ListBlockchainWalletTransactions = (params: {
   live: boolean;
   from?: Date;
   to?: Date;
-}) => Promise<Result<BlockchainTransaction[], BlockchainActionError>>;
+}) => Promise<Result<BlockchainTransaction[], BlockchainPaymentActionError>>;
 
 export type ValidateBlockchainAddress = (params: {
   address: string;
   blockchain: Blockchain;
   live: boolean;
-}) => Promise<Result<{ isValid: boolean }, BlockchainActionError>>;
+}) => Promise<Result<{ isValid: boolean }, BlockchainPaymentActionError>>;
 
 export type SendBlockchainTransaction = (params: {
   transaction: PaymentTransaction;
@@ -63,6 +49,6 @@ export type SendBlockchainTransaction = (params: {
 }) => Promise<
   Result<
     { payment: PaymentTransaction; fee?: BlockchainTransaction },
-    BlockchainActionError
+    BlockchainPaymentActionError
   >
 >;

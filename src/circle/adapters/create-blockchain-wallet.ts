@@ -1,6 +1,6 @@
 import Config from "@/config";
 import { tryAsync } from "@/lib";
-import { CreateBlockchainWallet } from "@/payments/interfaces";
+import { CreateBlockchainWallet } from "@/balances/interfaces";
 
 import { client } from "../client";
 import { chooseCircleBlockchain } from "../blockchain";
@@ -30,7 +30,7 @@ export const createBlockchainWallet: CreateBlockchainWallet = async ({
       return { address: walletsResponse.data.wallets[0].address };
     },
     (error) => ({
-      type: "BlockchainActionError",
+      type: "BlockchainWalletActionError",
       message: String(error),
       blockchain,
     })

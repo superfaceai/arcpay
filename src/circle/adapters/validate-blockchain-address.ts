@@ -1,6 +1,6 @@
 import { tryAsync } from "@/lib";
 
-import { Blockchain } from "@/payments/values";
+import { Blockchain } from "@/balances/values";
 import { ValidateBlockchainAddress } from "@/payments/interfaces";
 
 import { client } from "../client.js";
@@ -31,7 +31,7 @@ export const validateBlockchainAddress: ValidateBlockchainAddress = async ({
       return { isValid: validation.data.isValid };
     },
     (error) => ({
-      type: "BlockchainActionError",
+      type: "BlockchainPaymentActionError",
       message: String(error),
       blockchain,
     })

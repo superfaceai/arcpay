@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { generateId } from "@/lib";
 
-import { Currency, PositiveAmount } from "@/payments/values";
+import { Currency, PositiveAmount } from "@/balances/values";
 import { Location } from "./location.entity";
 
 export const balanceId = (currency: Currency) =>

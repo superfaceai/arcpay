@@ -4,8 +4,8 @@ import {
   Balance,
   loadBalancesByAccount,
   saveMultipleBalances,
-} from "@/payments/entities";
-import { BlockchainActionError } from "@/payments/errors";
+} from "@/balances/entities";
+import { BlockchainWalletActionError } from "@/balances/errors";
 
 import { listLocations } from "./list-locations";
 import { syncBalanceWithLocations } from "./sync-balance-with-locations";
@@ -16,7 +16,7 @@ export const listBalances = async ({
 }: {
   accountId: string;
   live: boolean;
-}): Promise<Result<Balance[], BlockchainActionError>> => {
+}): Promise<Result<Balance[], BlockchainWalletActionError>> => {
   const dbBalances = await loadBalancesByAccount({
     accountId,
     live,

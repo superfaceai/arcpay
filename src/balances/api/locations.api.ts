@@ -2,7 +2,7 @@ import { createApi } from "@/api/services";
 import { ProblemJson, ApiObject, ApiList } from "@/api/values";
 import { withAuth } from "@/api/middlewares";
 
-import { listLocations } from "@/payments/services";
+import { listLocations } from "@/balances/services";
 
 export const locationsApi = createApi()
   .get("/locations", withAuth(), async (c) => {

@@ -44,7 +44,7 @@ export const listBlockchainWalletTransactions: ListBlockchainWalletTransactions 
         return mappedTransactions;
       },
       (error) => ({
-        type: "BlockchainActionError",
+        type: "BlockchainPaymentActionError",
         message: String(error),
       })
     );

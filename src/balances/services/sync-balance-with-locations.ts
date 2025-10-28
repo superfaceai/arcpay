@@ -1,6 +1,6 @@
 import Big from "big.js";
 
-import { Balance, Location } from "@/payments/entities";
+import { Balance, Location } from "@/balances/entities";
 
 export const syncBalanceWithLocations = ({
   balance,

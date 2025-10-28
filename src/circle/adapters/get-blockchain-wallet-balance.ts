@@ -1,8 +1,8 @@
 import Big from "big.js";
 
 import { tryAsync } from "@/lib";
-import { GetBlockchainWalletBalance } from "@/payments/interfaces";
-import { isValidToken, tokenToCurrency } from "@/payments/values";
+import { isValidToken, tokenToCurrency } from "@/balances/values";
+import { GetBlockchainWalletBalance } from "@/balances/interfaces";
 
 import { getCircleWalletIds } from "../services/get-circle-wallet-ids";
 import { client } from "../client";
@@ -58,7 +58,7 @@ export const getBlockchainWalletBalance: GetBlockchainWalletBalance = async ({
       });
     },
     (error) => ({
-      type: "BlockchainActionError",
+      type: "BlockchainWalletActionError",
       message: String(error),
       blockchain,
     })

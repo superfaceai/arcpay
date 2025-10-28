@@ -1,3 +1,5 @@
+import Big from "big.js";
+
 import {
   FeeTransaction,
   Payment,
@@ -5,7 +7,6 @@ import {
   PaymentTransaction,
   Transaction,
 } from "@/payments/entities";
-import Big from "big.js";
 
 export const syncPaymentWithTransactions = ({
   payment,

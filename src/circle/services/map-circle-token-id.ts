@@ -1,8 +1,8 @@
 import { Result, tryAsync } from "@/lib";
-import { client } from "../client.js";
 
-import { isValidToken, Token } from "@/payments/values";
-import { BlockchainActionError } from "@/payments/errors";
+import { client } from "../client.js";
+import { isValidToken, Token } from "@/balances/values";
+import { BlockchainWalletActionError } from "@/balances/errors";
 
 export const mapCircleTokenIdToToken = async (
   tokenId: string
@@ -24,7 +24,7 @@ export const mapCircleTokenIdToToken = async (
 
 const lookupToken = async (
   tokenId: string
-): Promise<Result<Token, BlockchainActionError>> =>
+): Promise<Result<Token, BlockchainWalletActionError>> =>
   tryAsync(
     async () => {
       const token = await client.getToken({
@@ -46,7 +46,7 @@ const lookupToken = async (
       return symbol as Token;
     },
     (error) => ({
-      type: "BlockchainActionError",
+      type: "BlockchainWalletActionError",
       message: String(error),
     })
   );

@@ -7,13 +7,13 @@ import {
   loadBalance,
   saveBalancesWithLocation,
   locationId,
-} from "@/payments/entities";
-import { Blockchain, getCurrenciesForBlockchain } from "@/payments/values";
+} from "@/balances/entities";
+import { Blockchain, getCurrenciesForBlockchain } from "@/balances/values";
 
 import { createBlockchainWallet } from "@/circle/adapters";
-import { CreateBlockchainWallet } from "@/payments/interfaces";
+import { CreateBlockchainWallet } from "@/balances/interfaces";
 
-import { BlockchainActionError } from "@/payments/errors.js";
+import { BlockchainWalletActionError } from "@/balances/errors";
 
 export const createLocation = async ({
   accountId,
@@ -25,7 +25,7 @@ export const createLocation = async ({
   live: boolean;
   blockchain: Blockchain;
   createBlockchainWalletAdapter?: CreateBlockchainWallet;
-}): Promise<Result<Location, BlockchainActionError>> => {
+}): Promise<Result<Location, BlockchainWalletActionError>> => {
   const createWalletResult = await createBlockchainWalletAdapter({
     blockchain,
     live,

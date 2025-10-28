@@ -1,10 +1,7 @@
-import { Blockchain } from "./values/blockchain.js";
-import { Amount } from "./values/amount.js";
-import { Currency } from "./values/currency.js";
-import { Token } from "./values/token.js";
+import { Amount, Blockchain, Currency, Token } from "@/balances/values";
 
-export interface BlockchainActionError {
-  readonly type: "BlockchainActionError";
+export interface BlockchainPaymentActionError {
+  readonly type: "BlockchainPaymentActionError";
   readonly message: string;
   readonly blockchain?: Blockchain;
 }
