@@ -1,20 +1,15 @@
 import { db } from "@/database";
 import { ApiKey } from "@/identity/entities";
 
-const storageKeyById = ({ id }: { id: string }) => `apikey:id:${id}`;
+const storageKey = ({ id, accountId }: { id: string; accountId: string }) =>
+  `apikey:${accountId}:${id}`;
 const storageKeyBySecret = ({ key }: { key: string }) => `apikey:key:${key}`;
-const storageKeyByAccount = ({ accountId }: { accountId: string }) =>
-  `account:${accountId}:apikeys`;
 
 export const saveApiKey = async (apiKey: ApiKey) => {
   await db
     .multi()
-    .hset(storageKeyById({ id: apiKey.id }), apiKey)
+    .hset(storageKey({ id: apiKey.id, accountId: apiKey.account }), apiKey)
     .hset(storageKeyBySecret({ key: apiKey.key }), apiKey)
-    .zadd(storageKeyByAccount({ accountId: apiKey.account }), {
-      score: apiKey.created_at.getTime(),
-      member: apiKey.id,
-    })
     .exec();
 
   return apiKey;
@@ -37,22 +32,31 @@ export const eraseApiKeysForAccount = async ({
 }: {
   accountId: string;
 }) => {
-  const apiKeyIds = await db.zrange<string[]>(
-    storageKeyByAccount({ accountId }),
-    0,
-    -1
-  );
-  if (!apiKeyIds) return;
+  let cursor = "0";
+  const apiKeyStorageKeys: string[] = [];
 
-  for (const apiKeyId of apiKeyIds) {
-    const apiKey = await db.hgetall<ApiKey>(storageKeyById({ id: apiKeyId }));
+  do {
+    const [nextCursor, keys] = await db.scan(cursor, {
+      match: storageKey({ accountId, id: "*" }),
+      count: 100_000,
+    });
+    cursor = nextCursor;
+
+    if (keys.length) {
+      apiKeyStorageKeys.push(...keys);
+    }
+  } while (cursor !== "0");
+
+  if (!apiKeyStorageKeys.length) return;
+
+  for (const apiKeyStorageKey of apiKeyStorageKeys) {
+    const apiKey = await db.hgetall<ApiKey>(apiKeyStorageKey);
     if (!apiKey) continue;
 
     await db.del(storageKeyBySecret({ key: apiKey.key }));
-    await db.del(storageKeyById({ id: apiKeyId }));
-    console.debug(`Removed API Key '${apiKeyId}' for Account '${accountId}'`);
+    await db.del(storageKey({ id: apiKey.id, accountId }));
+    console.debug(`Removed API Key '${apiKey.id}' for Account '${accountId}'`);
   }
-  await db.del(storageKeyByAccount({ accountId }));
 
   console.debug(`Removed API Keys for Account '${accountId}'`);
 };
