@@ -27,7 +27,7 @@ export const getBalance = async ({
   const locationsResult = await listLocations({
     accountId,
     live,
-    locationIds: dbBalance.holdings,
+    locationIds: dbBalance.locations,
   });
 
   if (!locationsResult.ok) return locationsResult;

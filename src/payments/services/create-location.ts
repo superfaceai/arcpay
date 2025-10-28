@@ -55,7 +55,7 @@ export const createLocation = async ({
       if (existingBalance)
         return {
           ...existingBalance,
-          holdings: [...existingBalance.holdings, newLocation.id],
+          locations: [...existingBalance.locations, newLocation.id],
         };
 
       return Balance.parse({
@@ -64,7 +64,7 @@ export const createLocation = async ({
         live,
         currency,
         amount: "0",
-        holdings: [newLocation.id],
+        locations: [newLocation.id],
       });
     })
   );

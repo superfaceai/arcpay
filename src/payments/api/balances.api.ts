@@ -33,7 +33,7 @@ export const balancesApi = createApi()
             live: c.get("isLive"),
             currency: "USDC",
             amount: "0",
-            holdings: [],
+            locations: [],
           },
         ])
       );
@@ -71,7 +71,7 @@ export const balancesApi = createApi()
             live: c.get("isLive"),
             currency,
             amount: "0",
-            holdings: [],
+            locations: [],
           })
         );
 

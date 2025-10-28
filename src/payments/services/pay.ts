@@ -127,7 +127,7 @@ export const pay = async ({
   const locationsResult = await listLocations({
     accountId,
     live,
-    locationIds: balanceResult.value?.holdings || [],
+    locationIds: balanceResult.value?.locations || [],
   });
   if (!locationsResult.ok) return locationsResult;
 

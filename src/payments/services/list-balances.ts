@@ -24,17 +24,17 @@ export const listBalances = async ({
 
   if (dbBalances.length === 0) return ok([]);
 
-  const allHoldingIds = [
-    ...new Set(dbBalances.flatMap((balance) => balance.holdings)),
+  const allLocationIds = [
+    ...new Set(dbBalances.flatMap((balance) => balance.locations)),
   ];
 
-  const allHoldingsResult = await listLocations({
+  const allLocationsResult = await listLocations({
     accountId,
     live,
-    locationIds: allHoldingIds,
+    locationIds: allLocationIds,
   });
 
-  if (!allHoldingsResult.ok) return allHoldingsResult;
+  if (!allLocationsResult.ok) return allLocationsResult;
 
   const syncedBalances: Balance[] = [];
   const changedBalances: Balance[] = [];
@@ -42,8 +42,8 @@ export const listBalances = async ({
   for (const balance of dbBalances) {
     const { balance: syncedBalance, changed } = syncBalanceWithLocations({
       balance,
-      locations: allHoldingsResult.value.filter((location) =>
-        balance.holdings.includes(location.id)
+      locations: allLocationsResult.value.filter((location) =>
+        balance.locations.includes(location.id)
       ),
     });
 

@@ -30,7 +30,7 @@ export const ensureLocation = async ({
   const balance = currencyBalance.value;
 
   const locations = await loadManyLocationsById({
-    locationIds: balance?.holdings || [],
+    locationIds: balance?.locations || [],
     accountId,
     live,
   });
@@ -40,7 +40,7 @@ export const ensureLocation = async ({
   });
   if (matchedLocation) return ok(matchedLocation);
 
-  // Create new holding on the first supported blockchain
+  // Create new location on the first supported blockchain
   const supportedBlockchain = preferredBlockchains.find((blockchain) =>
     isCurrencySupported({
       blockchain,

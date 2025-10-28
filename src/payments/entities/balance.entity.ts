@@ -13,7 +13,7 @@ export const Balance = z.object({
   currency: Currency,
   amount: PositiveAmount,
   live: z.boolean(),
-  holdings: z.array(Location.shape.id),
+  locations: z.array(Location.shape.id),
 });
 
 export type Balance = z.infer<typeof Balance>;
