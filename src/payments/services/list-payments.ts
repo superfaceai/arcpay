@@ -27,6 +27,7 @@ export const listPayments = async ({
 }): Promise<Result<Payment[], BlockchainActionError>> => {
   const dbPayments = await loadPaymentsByAccount({
     accountId,
+    live,
     from: dto.from,
     to: dto.to,
   });

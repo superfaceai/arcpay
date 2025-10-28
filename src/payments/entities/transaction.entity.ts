@@ -20,6 +20,7 @@ const TransactionBase = z.object({
   id: z.string(),
   amount: Amount,
   currency: Currency,
+  live: z.boolean(),
   status: TransactionStatus,
   failure_reason: z.string().optional(),
   cancellation_reason: z.string().optional(),

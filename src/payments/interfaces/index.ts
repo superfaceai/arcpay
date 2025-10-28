@@ -32,8 +32,8 @@ export type GetBlockchainWalletBalance = (params: {
 }) => Promise<Result<Array<LocationAsset>, BlockchainActionError>>;
 
 export type BlockchainTransaction = Readonly<
-  | Omit<PaymentTransaction, "id" | "fingerprint" | "payment">
-  | Omit<FeeTransaction, "id" | "payment">
+  | Omit<PaymentTransaction, "id" | "fingerprint" | "live" | "payment">
+  | Omit<FeeTransaction, "id" | "live" | "payment">
 >;
 
 export type ListBlockchainWalletTransactions = (params: {

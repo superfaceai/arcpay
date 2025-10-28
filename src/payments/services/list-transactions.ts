@@ -36,8 +36,13 @@ export const listTransactions = async ({
   listBlockchainWalletTransactionsAdapter?: ListBlockchainWalletTransactions;
 }): Promise<Result<Transaction[], BlockchainActionError>> => {
   const [dbTransactions, locations] = await Promise.all([
-    loadTransactionsByAccount({ accountId, from: filter.from, to: filter.to }),
-    loadLocationsByAccount({ accountId, live: false }),
+    loadTransactionsByAccount({
+      accountId,
+      live,
+      from: filter.from,
+      to: filter.to,
+    }),
+    loadLocationsByAccount({ accountId, live }),
   ]);
 
   const onchainWalletTransactions =
@@ -62,6 +67,7 @@ export const listTransactions = async ({
   const mergeResult = mergeTransactionsWithRemote({
     dbTransactions,
     remoteTransactions: onchainWalletTransactions.value,
+    live,
   });
 
   // TODO: Move this to a background job after responding
@@ -99,9 +105,11 @@ type TransactionMerge = {
 const mergeTransactionsWithRemote = ({
   dbTransactions,
   remoteTransactions,
+  live,
 }: {
   dbTransactions: Transaction[];
   remoteTransactions: BlockchainTransaction[];
+  live: boolean;
 }): TransactionMerge => {
   const newTransactions: Transaction[] = [];
   const mergedTransactions: Transaction[] = dbTransactions.slice();
@@ -119,6 +127,7 @@ const mergeTransactionsWithRemote = ({
       newTransactions.push(
         Transaction.parse({
           id: transactionId(),
+          live,
           ...remoteTx,
         })
       );
@@ -132,10 +141,12 @@ const mergeTransactionsWithRemote = ({
           ? {
               ...dbTx,
               ...remoteTx,
+              live,
             }
           : {
               ...dbTx,
               ...remoteTx,
+              live,
             };
       updatedTransactionIds.push(updatedTx.id);
       mergedTransactions.splice(dbTxIx, 1, updatedTx);

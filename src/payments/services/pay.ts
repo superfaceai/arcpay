@@ -161,12 +161,14 @@ export const pay = async ({
     crypto: dto.method === "crypto" ? dto.crypto : undefined,
     fees: [],
     status: "pending",
+    live,
     created_at: new Date(),
   };
 
   const newTransaction: PaymentTransaction = {
     id: transactionId(),
     status: "queued",
+    live,
     amount: dto.amount,
     currency: dto.currency,
     type: "payment",
@@ -204,6 +206,7 @@ export const pay = async ({
   const feeTransaction = sentFeeTx
     ? {
         id: transactionId(),
+        live,
         payment: payment.id,
         ...sentFeeTx,
       }

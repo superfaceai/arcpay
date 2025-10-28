@@ -1,9 +1,22 @@
 import { db, Pipeline } from "@/database";
 import { Transaction, transactionSortDesc } from "@/payments/entities";
 
-const storageKeyById = ({ id }: { id: string }) => `tx:${id}`;
-const storageKeyByAccount = ({ accountId }: { accountId: string }) =>
-  `acct:${accountId}:transactions`;
+const storageKeyById = ({
+  id,
+  accountId,
+  live,
+}: {
+  id: string;
+  accountId: string;
+  live: boolean;
+}) => `txn:${accountId}:${live ? "live" : "test"}:${id}`;
+const storageKeyByAccount = ({
+  accountId,
+  live,
+}: {
+  accountId: string;
+  live: boolean;
+}) => `txns:${accountId}:${live ? "live" : "test"}`;
 
 export const saveTransaction = async ({
   transaction,
@@ -29,8 +42,11 @@ export const saveTransactionViaPipeline = ({
   pipeline: Pipeline;
 }) => {
   pipeline
-    .hset(storageKeyById({ id: transaction.id }), transaction)
-    .zadd(storageKeyByAccount({ accountId }), {
+    .hset(
+      storageKeyById({ id: transaction.id, accountId, live: transaction.live }),
+      transaction
+    )
+    .zadd(storageKeyByAccount({ accountId, live: transaction.live }), {
       score: transaction.created_at.getTime(),
       member: transaction.id,
     });
@@ -54,12 +70,16 @@ export const saveManyTransactions = async ({
 };
 
 export const loadTransactionById = async ({
+  accountId,
   transactionId,
+  live,
 }: {
+  accountId: string;
   transactionId: string;
+  live: boolean;
 }): Promise<Transaction | null> => {
   const transaction = await db.hgetall<Transaction>(
-    storageKeyById({ id: transactionId })
+    storageKeyById({ id: transactionId, accountId, live })
   );
 
   if (!transaction) {
@@ -71,15 +91,17 @@ export const loadTransactionById = async ({
 
 export const loadTransactionsByAccount = async ({
   accountId,
+  live,
   from,
   to,
 }: {
   accountId: string;
+  live: boolean;
   from?: Date;
   to?: Date;
 }): Promise<Transaction[]> => {
   const transactionIds = await db.zrange<string[]>(
-    storageKeyByAccount({ accountId }),
+    storageKeyByAccount({ accountId, live }),
     from?.getTime() ?? 0,
     to?.getTime() ?? Number.MAX_SAFE_INTEGER,
     {
@@ -89,7 +111,7 @@ export const loadTransactionsByAccount = async ({
 
   const transactions = await Promise.all(
     transactionIds.map((transactionId) =>
-      loadTransactionById({ transactionId })
+      loadTransactionById({ accountId, transactionId, live })
     )
   );
 
@@ -103,23 +125,28 @@ export const eraseTransactionsForAccount = async ({
 }: {
   accountId: string;
 }) => {
-  const transactionIds = await db.zrange<string[]>(
-    storageKeyByAccount({ accountId }),
-    0,
-    -1
-  );
-
-  const pipeline = db.pipeline();
-
-  for (const transactionId of transactionIds) {
-    pipeline.del(storageKeyById({ id: transactionId }));
-    console.debug(
-      `Removing Transaction '${transactionId}' for Account '${accountId}'`
+  const eraseTransactions = async ({ live }: { live: boolean }) => {
+    const transactionIds = await db.zrange<string[]>(
+      storageKeyByAccount({ accountId, live }),
+      0,
+      -1
     );
-  }
-  pipeline.del(storageKeyByAccount({ accountId }));
 
-  await pipeline.exec();
+    const pipeline = db.pipeline();
+
+    for (const transactionId of transactionIds) {
+      pipeline.del(storageKeyById({ id: transactionId, accountId, live }));
+      console.debug(
+        `Removing Transaction '${transactionId}' for Account '${accountId}' (Live: ${live})`
+      );
+    }
+    pipeline.del(storageKeyByAccount({ accountId, live }));
+
+    await pipeline.exec();
+  };
+
+  await eraseTransactions({ live: true });
+  await eraseTransactions({ live: false });
 
   console.debug(`Removed Transactions for Account '${accountId}'`);
 };

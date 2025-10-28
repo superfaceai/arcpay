@@ -27,6 +27,7 @@ export const Payment = z.object({
   crypto: PaymentMethodCrypto.optional(), // only when method=crypto
   fees: z.array(PaymentFee),
   status: PaymentStatus,
+  live: z.boolean(),
   failure_reason: z.string().optional(),
   created_at: DateCodec,
   finished_at: DateCodec.optional(),
