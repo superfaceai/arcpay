@@ -9,7 +9,7 @@ const storageKey = ({
   accountId: string;
   live: boolean;
   id: string;
-}) => `acct:${accountId}:wallets:${live ? "live" : "test"}:${id}`;
+}) => `loc:${accountId}:${live ? "live" : "test"}:${id}`;
 
 export const saveLocation = async (location: Location) => {
   await db.hset(

@@ -14,7 +14,7 @@ const storageKey = ({
   accountId: string;
   live: boolean;
   currency: Currency | "*";
-}) => `acct:${accountId}:balances:${live ? "live" : "test"}:${currency}`;
+}) => `bal:${accountId}:${live ? "live" : "test"}:${currency}`;
 
 export const saveBalance = async (balance: Balance) => {
   await db.hset(
