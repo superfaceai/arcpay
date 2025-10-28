@@ -108,7 +108,7 @@ const HOME_DOCS_HTML = ({
     <p>To obtain an API key, you must register with the API:</p>
     
     <pre>
-POST /new
+POST /accounts
 
 {
   "name": "Son of Anton"
@@ -127,7 +127,7 @@ POST /new
     <p>Authentication is done via bearer auth. Use your API key as the bearer token in the request header:</p>
 
     <pre>
-curl ${host}/me \\
+curl ${host}/account \\
   -H "Authorization: Bearer sk_test_YOUR_API_KEY"</pre>
 
     <h2>Test mode</h2>

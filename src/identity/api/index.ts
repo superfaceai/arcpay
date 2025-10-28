@@ -7,14 +7,14 @@ import { signUp, SignUpDTO } from "@/identity/services";
 import { getOrThrow } from "@/lib";
 
 export const identityApi = createApi()
-  .post("/new", withValidation("json", SignUpDTO), async (c) => {
+  .post("/accounts", withValidation("json", SignUpDTO), async (c) => {
     const input = c.req.valid("json");
 
     const apiKeyResult = await signUp(input);
 
     return c.json(ApiObject("apikey", getOrThrow(apiKeyResult)));
   })
-  .get("/me", withAuth(), async (c) => {
+  .get("/account", withAuth(), async (c) => {
     const user = await loadUserById(c.get("userId"));
 
     if (!user) return ProblemJson(c, 404, "Not Found");
