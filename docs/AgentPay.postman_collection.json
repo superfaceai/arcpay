@@ -407,6 +407,54 @@
 			]
 		},
 		{
+			"name": "MCP",
+			"item": [
+				{
+					"name": "List MCP tools",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/event-stream",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/list\",\n  \"params\": { }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/mcp/wallets",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"mcp",
+								"wallets"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Index",
 			"request": {
 				"method": "GET",
@@ -456,18 +504,12 @@
 		{
 			"key": "SECRET_KEY",
 			"value": "",
-			"description": {
-				"content": "Populates automatically after a sign up",
-				"type": "text/plain"
-			}
+			"description": "Populates automatically after a sign up"
 		},
 		{
 			"key": "PRIMARY_LOCATION_ID",
 			"value": "",
-			"description": {
-				"content": "Populates automatically after listing all locations",
-				"type": "text/plain"
-			}
+			"description": "Populates automatically after listing all locations"
 		}
 	]
 }

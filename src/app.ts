@@ -25,7 +25,7 @@ const app = createApplicationApi((app) => {
 
   app.get("/", (c) => {
     const host = new URL(c.req.url);
-    const resources = listResources(app);
+    const resources = listResources(app, ["/mcp/wallets"]);
 
     return c.html(HOME_DOCS_HTML({ host: host.origin, resources }));
   });
@@ -121,7 +121,7 @@ POST /accounts
 
     <p>Keep your API key secret and do not share it with anyone.</p>
 
-    <h2>Authentication</h2>
+    <h2 id="authentication">Authentication</h2>
     <p>Authentication is done via bearer auth. Use your API key as the bearer token in the request header:</p>
 
     <pre>
@@ -173,6 +173,17 @@ curl ${host}/deposits \\
   -H "Authorization: Bearer sk_test_YOUR_API_KEY" \\
   -H "Idempotency-Key: OHGqyQ9oXRZQHGbv" \\
   -d '{ "type": "testnet_faucet", "currency": "USDC" }'</pre>
+
+  <h2>Agentic Wallet (MCP)</h2>
+
+  <p>The Agentic Wallet MCP lets your AI agents pay for physical or digital goods and services.</p>
+  
+  <pre>${host}/mcp/wallets</pre>
+  
+  <p>Use the same <a href="#authentication">authentication</a> method as the API.</p>
+  
+  <p>Agentic Wallet MCP <em>streamable HTTP</em> connections.</p>
+
   </main>
 </body>
 </html>

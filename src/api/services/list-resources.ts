@@ -6,7 +6,8 @@ export type Resource = {
 };
 
 export const listResources = <App extends ReturnType<typeof createApi>>(
-  app: App
+  app: App,
+  ignoreUrls?: string[]
 ): Resource[] => {
   const resourceToMethods: Record<string, Set<string>> = {};
 
@@ -27,5 +28,6 @@ export const listResources = <App extends ReturnType<typeof createApi>>(
     }))
     .filter(({ methods }) => methods.length > 0)
     .filter(({ url }) => url !== "/*")
+    .filter(({ url }) => !ignoreUrls?.includes(url))
     .sort((a, b) => a.url.localeCompare(b.url));
 };
