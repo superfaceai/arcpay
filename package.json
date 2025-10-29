@@ -5,11 +5,14 @@
   "scripts": {
     "dev": "tsx watch development.ts",
     "build": "tsc && tsc-alias -f",
-    "arc:generate-wallet": "tsx src/arc/generate-wallet.script.ts"
+    "arc:generate-wallet": "tsx src/arc/generate-wallet.script.ts",
+    "mcp:inspect": "npx @modelcontextprotocol/inspector --config mcp.json"
   },
   "dependencies": {
     "@circle-fin/developer-controlled-wallets": "^9.2.0",
+    "@hono/mcp": "^0.1.4",
     "@hono/zod-validator": "^0.7.4",
+    "@modelcontextprotocol/sdk": "^1.20.2",
     "@upstash/redis": "^1.35.6",
     "big.js": "^7.0.1",
     "dotenv": "^17.2.3",
@@ -21,6 +24,7 @@
   },
   "devDependencies": {
     "@hono/node-server": "^1.19.5",
+    "@modelcontextprotocol/inspector": "^0.17.2",
     "@types/big.js": "^6.2.2",
     "@types/node": "^20.11.17",
     "@types/uuid": "^10.0.0",

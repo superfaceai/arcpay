@@ -10,7 +10,8 @@
     "jsxImportSource": "hono/jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "zod-v3": ["./node_modules/@modelcontextprotocol/sdk/node_modules/zod"]
     },
     "outDir": "./dist"
   },

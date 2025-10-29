@@ -9,6 +9,7 @@ import { erasureApi } from "@/erasure/api";
 import { identityApi } from "@/identity/api";
 import { balancesApi, locationsApi } from "@/balances/api";
 import { depositsApi, transactionsApi, paymentsApi } from "@/payments/api";
+import { walletsMcp } from "@/wallets/mcp";
 
 const app = createApplicationApi((app) => {
   app.route("/", erasureApi);
@@ -19,6 +20,8 @@ const app = createApplicationApi((app) => {
   app.route("/", depositsApi);
   app.route("/", paymentsApi);
   app.route("/", transactionsApi);
+
+  app.route("/", walletsMcp);
 
   app.get("/", (c) => {
     const host = new URL(c.req.url);
