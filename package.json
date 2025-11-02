@@ -15,6 +15,7 @@
     "@modelcontextprotocol/sdk": "^1.20.2",
     "@upstash/redis": "^1.35.6",
     "big.js": "^7.0.1",
+    "currency-codes": "^2.2.0",
     "dotenv": "^17.2.3",
     "hono": "^4.9.12",
     "nanoid": "^5.1.6",

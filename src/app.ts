@@ -14,7 +14,7 @@ import {
   paymentsApi,
   paymentMandatesApi,
 } from "@/payments/api";
-import { depositsApi, transactionsApi, paymentsApi } from "@/payments/api";
+import { acpDelegatedPaymentsApi } from "@/acp/api/delegated-payments";
 import { walletsMcp } from "@/wallets/mcp";
 
 const app = createApplicationApi((app) => {
@@ -28,6 +28,7 @@ const app = createApplicationApi((app) => {
   app.route("/", paymentMandatesApi);
   app.route("/", transactionsApi);
 
+  app.route("/", acpDelegatedPaymentsApi);
   app.route("/", walletsMcp);
 
   app.get("/", (c) => {
