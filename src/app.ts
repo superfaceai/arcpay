@@ -121,7 +121,8 @@ const HOME_DOCS_HTML = ({
 POST /accounts
 
 {
-  "name": "Son of Anton"
+  "name": "Son of Anton",
+  "handle": "son_of_anton" // Optional
 }</pre>
       
     <p>You'll receive a response including your API key:</p>

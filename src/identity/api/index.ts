@@ -4,7 +4,6 @@ import { withAuth, withValidation } from "@/api/middlewares";
 
 import { loadAccountById } from "@/identity/entities";
 import { signUp, SignUpDTO } from "@/identity/services";
-import { getOrThrow } from "@/lib";
 
 export const identityApi = createApi()
   .post("/accounts", withValidation("json", SignUpDTO), async (c) => {
@@ -12,7 +11,20 @@ export const identityApi = createApi()
 
     const apiKeyResult = await signUp(input);
 
-    return c.json(ApiObject("apikey", getOrThrow(apiKeyResult)));
+    if (!apiKeyResult.ok) {
+      if (apiKeyResult.error.type === "AccountHandleNotAvailableError") {
+        return ProblemJson(
+          c,
+          400,
+          "Handle not available",
+          `The handle '${apiKeyResult.error.handle}' is not available`
+        );
+      }
+
+      throw new Error(apiKeyResult.error.type);
+    }
+
+    return c.json(ApiObject("apikey", apiKeyResult.value), { status: 201 });
   })
   .get("/account", withAuth(), async (c) => {
     const account = await loadAccountById(c.get("accountId"));
