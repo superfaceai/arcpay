@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { generateId, DateCodec } from "@/lib";
 import { Amount, Currency } from "@/balances/values";
-import { PaymentMethodType } from "@/payments/values";
+import { PaymentMetadata, PaymentMethodType } from "@/payments/values";
 import { Account } from "@/identity/entities";
 
 export const paymentMandateId = () => generateId("paym");
@@ -15,6 +15,9 @@ export const mandateIdFromSecret = (secret: string) =>
 export const PaymentMandateStatus = z.enum(["active", "inactive"]);
 export type PaymentMandateStatus = z.infer<typeof PaymentMandateStatus>;
 
+export const PaymentMandateSecret = z.string().min(128);
+export type PaymentMandateSecret = z.infer<typeof PaymentMandateSecret>;
+
 const PaymentMandateBase = z.object({
   id: z.string(),
   // type
@@ -24,14 +27,14 @@ const PaymentMandateBase = z.object({
   // single_use
   // multi_use
   inactive_reason: z.enum(["expired", "used", "revoked"]).optional(),
-  secret: z.string().min(128),
+  secret: PaymentMandateSecret,
   on_behalf_of: Account.shape.id,
   merchant_id: z.string().optional(),
   created_at: DateCodec,
   expires_at: DateCodec.optional(),
   revoked_at: DateCodec.optional(),
   used_at: DateCodec.optional(),
-  metadata: z.record(z.string(), z.string()),
+  metadata: PaymentMetadata,
 });
 const PaymentMandateSingleUse = PaymentMandateBase.extend({
   type: z.literal("single_use"),

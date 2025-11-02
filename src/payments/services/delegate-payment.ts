@@ -7,7 +7,7 @@ import { Amount, Currency } from "@/balances/values";
 import { getBalance } from "@/balances/services";
 import { BlockchainWalletActionError } from "@/balances/errors";
 
-import { PaymentMethodType } from "@/payments/values";
+import { PaymentMetadata, PaymentMethodType } from "@/payments/values";
 import {
   PaymentMandate,
   paymentMandateId,
@@ -30,7 +30,7 @@ export const DelegatePaymentDTO = z.object({
   method: PaymentMethodType,
   merchant_id: z.string().optional(),
   expires_at: DateCodec.optional(),
-  metadata: z.record(z.string(), z.string()),
+  metadata: PaymentMetadata,
 });
 export type DelegatePaymentDTO = z.infer<typeof DelegatePaymentDTO>;
 
