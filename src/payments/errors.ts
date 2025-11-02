@@ -1,4 +1,5 @@
 import { Amount, Blockchain, Currency, Token } from "@/balances/values";
+import { PaymentMandate } from "./entities";
 
 export interface BlockchainPaymentActionError {
   readonly type: "BlockchainPaymentActionError";
@@ -40,4 +41,24 @@ export interface PaymentInvalidAddressError {
   readonly type: "PaymentInvalidAddressError";
   readonly address: string;
   readonly blockchain: Blockchain;
+}
+
+export interface PaymentUnsupportedPaymentMethodError {
+  readonly type: "PaymentUnsupportedPaymentMethodError";
+  readonly method: string;
+}
+
+export interface PaymentUnsupportedCurrencyError {
+  readonly type: "PaymentUnsupportedCurrencyError";
+  readonly currency: string;
+}
+
+export interface PaymentMandateExpiredError {
+  readonly type: "PaymentMandateExpiredError";
+  readonly expiredAt: Date;
+}
+
+export interface PaymentMandateInactiveError {
+  readonly type: "PaymentMandateInactiveError";
+  readonly inactiveReason: PaymentMandate["inactive_reason"];
 }

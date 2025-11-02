@@ -8,6 +8,12 @@ import { createApplicationApi, listResources, Resource } from "@/api/services";
 import { erasureApi } from "@/erasure/api";
 import { identityApi } from "@/identity/api";
 import { balancesApi, locationsApi } from "@/balances/api";
+import {
+  depositsApi,
+  transactionsApi,
+  paymentsApi,
+  paymentMandatesApi,
+} from "@/payments/api";
 import { depositsApi, transactionsApi, paymentsApi } from "@/payments/api";
 import { walletsMcp } from "@/wallets/mcp";
 
@@ -19,6 +25,7 @@ const app = createApplicationApi((app) => {
   app.route("/", locationsApi);
   app.route("/", depositsApi);
   app.route("/", paymentsApi);
+  app.route("/", paymentMandatesApi);
   app.route("/", transactionsApi);
 
   app.route("/", walletsMcp);

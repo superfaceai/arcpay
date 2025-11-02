@@ -9,6 +9,7 @@ import {
 import {
   eraseTransactionsForAccount,
   erasePaymentsForAccount,
+  erasePaymentMandatesForAccount,
 } from "@/payments/entities";
 
 export const erase = async ({
@@ -16,6 +17,7 @@ export const erase = async ({
 }: {
   accountId: string;
 }): Promise<Result<void, void>> => {
+  await erasePaymentMandatesForAccount({ accountId });
   await erasePaymentsForAccount({ accountId });
   await eraseTransactionsForAccount({ accountId });
   await eraseCallsForAccount({ accountId });

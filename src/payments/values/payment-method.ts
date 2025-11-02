@@ -4,7 +4,15 @@ import { Blockchain } from "@/balances/values";
 export const PaymentMethodTypeCrypto = z.literal("crypto");
 export type PaymentMethodTypeCrypto = z.infer<typeof PaymentMethodTypeCrypto>;
 
-export const PaymentMethodType = z.union([PaymentMethodTypeCrypto]);
+export const PaymentMethodTypeAgentPay = z.literal("agent_pay");
+export type PaymentMethodTypeAgentPay = z.infer<
+  typeof PaymentMethodTypeAgentPay
+>;
+
+export const PaymentMethodType = z.union([
+  PaymentMethodTypeCrypto,
+  PaymentMethodTypeAgentPay,
+]);
 export type PaymentMethodType = z.infer<typeof PaymentMethodType>;
 
 export const PaymentMethodCrypto = z.object({
