@@ -34,7 +34,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Son of Anton\"\n}",
+							"raw": "{\n    \"name\": \"Son of Anton\",\n    \"handle\": \"sonofanton\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -558,12 +558,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/mandates",
+							"raw": "{{HOST}}/payment_mandates",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"mandates"
+								"payment_mandates"
 							]
 						}
 					},
@@ -591,12 +591,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{HOST}}/mandates/{{PAYMENT_MANDATE_ID}}/revoke",
+							"raw": "{{HOST}}/payment_mandates/{{PAYMENT_MANDATE_ID}}/revoke",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"mandates",
+								"payment_mandates",
 								"{{PAYMENT_MANDATE_ID}}",
 								"revoke"
 							]

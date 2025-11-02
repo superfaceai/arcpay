@@ -16,7 +16,7 @@ export type ObjectName =
   | "deposit"
   | "location"
   | "payment"
-  | "mandate"
+  | "payment_mandate"
   | "transaction";
 
 export type ExpectedObject<Name extends ObjectName> = Name extends "apikey"
@@ -31,7 +31,7 @@ export type ExpectedObject<Name extends ObjectName> = Name extends "apikey"
   ? Deposit
   : Name extends "payment"
   ? Payment
-  : Name extends "mandate"
+  : Name extends "payment_mandate"
   ? PaymentMandate
   : Name extends "transaction"
   ? Transaction

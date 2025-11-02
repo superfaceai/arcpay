@@ -10,7 +10,7 @@ import {
 
 export const paymentMandatesApi = createApi()
   .get(
-    "/mandates",
+    "/payment_mandates",
     withAuth(),
     withValidation("query", ListPaymentMandatesDTO),
     async (c) => {
@@ -28,11 +28,13 @@ export const paymentMandatesApi = createApi()
         );
       }
 
-      return c.json(ApiList("mandate", paymentMandatesListResult.value));
+      return c.json(
+        ApiList("payment_mandate", paymentMandatesListResult.value)
+      );
     }
   )
   .post(
-    "/mandates/:mandateId/revoke",
+    "/payment_mandates/:mandateId/revoke",
     withAuth(),
     withIdempotency(),
     async (c) => {
@@ -61,6 +63,8 @@ export const paymentMandatesApi = createApi()
         return ProblemJson(c, 404, "Payment mandate not found");
       }
 
-      return c.json(ApiObject("mandate", revokePaymentMandateResult.value));
+      return c.json(
+        ApiObject("payment_mandate", revokePaymentMandateResult.value)
+      );
     }
   );
