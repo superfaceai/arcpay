@@ -102,6 +102,10 @@ const HOME_DOCS_HTML = ({
       background-color: #f9f9f9;
       border-radius: 0.3rem;
     }
+    .not-implemented {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 
@@ -190,7 +194,73 @@ curl ${host}/deposits \\
   
   <p>Use the same <a href="#authentication">authentication</a> method as the API.</p>
   
-  <p>Agentic Wallet MCP <em>streamable HTTP</em> connections.</p>
+  <p>Agentic Wallet MCP accepts <em>streamable HTTP</em> connections.</p>
+
+  <h2>Agentic Commerce Protocol (ACP)</h2>
+
+  <p>Agent Pay supports the Delegated Payments flow of <a href="https://www.agenticcommerce.dev" target="_blank">ACP</a>.</p>
+  
+  <p>This allows merchants to accept payments in their stores from their customers' AI agents.</p>
+
+  <p>Agent Pay extends ACP with the following features:</p>
+  
+  <ul>
+  <li>Payment provider: <code>agentpay</code></li>
+  <li>Supported payment methods: <code>wallet</code></li>
+  </ul>
+  
+  <p>To start accepting payments from AI agents via Agent Pay, the merchant must include Agent Pay as the payment provider in all ACP Checkout Session responses:</p>
+
+  <pre>
+# In all ACP Checkout Session responses
+
+{
+  "id": "checkout_session_123",
+  ...,
+  "payment_provider": {
+    "provider": "agentpay",
+    "supported_payment_methods": [
+      "wallet"
+    ]
+  }
+}</pre>
+
+  <p>Then, the AI agents can use the <code>wallet</code> payment method with Agent Pay to pay for the checkout session using ACP's Delegated Payments flow:</p>
+
+  <pre>
+POST /agentic_commerce/delegate_payment
+
+{
+  "payment_method": {
+    "type": "wallet"
+  },
+  "allowance": {
+    "reason": "one_time",
+    "max_amount": 2000,
+    "currency": "usd",
+    "checkout_session_id": "cart_y6W9dpzxpAzQRmtfr9lUC",
+    "merchant_id": "acme",
+    "expires_at": "2025-11-30T09:00:00.00Z"
+  },
+  "risk_signals": [],
+  "metadata": {
+    "campaign": "q4"
+  }
+}</pre>
+
+  <p class="not-implemented" title="Not implemented yet">Upon checkout competion, the merchant will receive a secret token that can be used to pull the payment from the AI agent's wallet:</p>
+
+  <pre class="not-implemented" title="Not implemented yet">
+POST /payment_intents
+
+{
+  "amount": "20",
+  "currency": "USDC",
+  "method": "mandate",
+  "mandate": {
+    "secret": "paym_eNSM2UiaOaUdlfKU6xaL5_secret_2k8ZabXpPehi..."
+  }
+}</pre>
 
   </main>
 </body>
