@@ -89,6 +89,7 @@
 								"exec": [
 									"pm.collectionVariables.set(\"SECRET_KEY\", \"\");",
 									"pm.collectionVariables.set(\"PRIMARY_LOCATION_ID\", \"\");",
+									"pm.collectionVariables.set(\"PAYMENT_MANDATE_ID\", \"\");",
 									""
 								],
 								"type": "text/javascript",
@@ -403,6 +404,205 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "[ACP] Delegate Payment (CARD)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()",
+									"",
+									"if ('id' in response) {",
+									"    pm.collectionVariables.set('PAYMENT_MANDATE_ID', response.id)",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Idempotency-Key",
+								"value": "delegate-payment-card-1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"payment_method\": {\n    \"type\": \"card\",\n    \"card_number_type\": \"fpan\",\n    \"number\": \"4242424242424242\",\n    \"exp_month\": \"11\",\n    \"exp_year\": \"2026\",\n    \"name\": \"Jane Doe\",\n    \"cvc\": \"223\",\n    \"checks_performed\": [\"avs\", \"cvv\"],\n    \"iin\": \"424242\",\n    \"display_card_funding_type\": \"credit\",\n    \"display_brand\": \"visa\",\n    \"display_last4\": \"4242\",\n    \"metadata\": {\n      \"issuing_bank\": \"temp\"\n    }\n  },\n  \"allowance\": {\n    \"reason\": \"one_time\",\n    \"max_amount\": 2000,\n    \"currency\": \"usd\",\n    \"checkout_session_id\": \"cart_y6W9dpzxpAzQRmtfr9lUC\",\n    \"merchant_id\": \"acme\",\n    \"expires_at\": \"2025-10-09T07:20:50.52Z\"\n  },\n  \"billing_address\": {\n    \"name\": \"John Doe\",\n    \"line_one\": \"123 Fake St.\",\n    \"line_two\": \"Unit 1\",\n    \"city\": \"San Francisco\",\n    \"state\": \"CA\",\n    \"country\": \"US\",\n    \"postal_code\": \"12345\"\n  },\n  \"risk_signals\": [\n    {\n      \"type\": \"card_testing\",\n      \"score\": 10,\n      \"action\": \"manual_review\"\n    }\n  ],\n  \"metadata\": {\n    \"campaign\": \"q4\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/agentic_commerce/delegate_payment",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"agentic_commerce",
+								"delegate_payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[ACP] Delegate Payment (WALLET)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()",
+									"",
+									"if ('id' in response) {",
+									"    pm.collectionVariables.set('PAYMENT_MANDATE_ID', response.id)",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Idempotency-Key",
+								"value": "delegate-payment-wallet-1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"payment_method\": {\n    \"type\": \"wallet\"\n  },\n  \"allowance\": {\n    \"reason\": \"one_time\",\n    \"max_amount\": 2000,\n    \"currency\": \"usd\",\n    \"checkout_session_id\": \"cart_y6W9dpzxpAzQRmtfr9lUC\",\n    \"merchant_id\": \"acme\",\n    \"expires_at\": \"2025-11-30T09:00:00.00Z\"\n  },\n  \"risk_signals\": [],\n  \"metadata\": {\n    \"campaign\": \"q4\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/agentic_commerce/delegate_payment",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"agentic_commerce",
+								"delegate_payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List payment mandates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()",
+									"",
+									"if ('data' in response && Array.isArray(response.data) && response.data.length > 0) {",
+									"    pm.collectionVariables.set('PAYMENT_MANDATE_ID', response.data[0].id)",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/mandates",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"mandates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Revoke Payment Mandate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Idempotency-Key",
+								"value": "revoke-mandate-1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{HOST}}/mandates/{{PAYMENT_MANDATE_ID}}/revoke",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"mandates",
+								"{{PAYMENT_MANDATE_ID}}",
+								"revoke"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -504,12 +704,26 @@
 		{
 			"key": "SECRET_KEY",
 			"value": "",
-			"description": "Populates automatically after a sign up"
+			"description": {
+				"content": "Populates automatically after a sign up",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "PRIMARY_LOCATION_ID",
 			"value": "",
-			"description": "Populates automatically after listing all locations"
+			"description": {
+				"content": "Populates automatically after listing all locations",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "PAYMENT_MANDATE_ID",
+			"value": "",
+			"description": {
+				"content": "Populates automatically after payment delegation/listing payment mandates",
+				"type": "text/plain"
+			}
 		}
 	]
 }
