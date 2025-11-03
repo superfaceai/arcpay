@@ -83,6 +83,7 @@ export const delegatePayment = async ({
       currency: dto.single_use.currency,
       requiredAmount: dto.single_use.amount_limit,
       availableAmount: balanceResult.value?.amount ?? "0",
+      reason: "no_balance",
     });
   }
 
