@@ -62,12 +62,12 @@ export const paymentsApi = createApi()
             `The currency '${paymentResult.error.token}' is not supported on this network`
           );
         }
-        if (paymentResult.error.type === "PaymentInvalidAddressError") {
+        if (paymentResult.error.type === "PaymentInvalidCryptoAddressError") {
           return ProblemJson(
             c,
             400,
             "Bad Request",
-            `The address '${paymentResult.error.address}' is not a valid ${paymentResult.error.blockchain} address`
+            `The crypto address '${paymentResult.error.address}' is not a valid ${paymentResult.error.blockchain} address`
           );
         }
         if (paymentResult.error.type === "BlockchainPaymentActionError") {

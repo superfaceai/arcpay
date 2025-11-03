@@ -28,7 +28,7 @@ import {
 import {
   PaymentInsufficientBalanceError,
   PaymentUnsupportedTokenError,
-  PaymentInvalidAddressError,
+  PaymentInvalidCryptoAddressError,
   BlockchainPaymentActionError,
 } from "@/payments/errors";
 
@@ -69,7 +69,7 @@ export const pay = async ({
     Payment,
     | BlockchainPaymentActionError
     | BlockchainWalletActionError
-    | PaymentInvalidAddressError
+    | PaymentInvalidCryptoAddressError
     | PaymentUnsupportedTokenError
     | PaymentInsufficientBalanceError
   >
@@ -86,7 +86,7 @@ export const pay = async ({
     return validation;
   } else if (!validation.value.isValid) {
     return err({
-      type: "PaymentInvalidAddressError",
+      type: "PaymentInvalidCryptoAddressError",
       address: dto.crypto.address,
       blockchain: dto.crypto.blockchain,
     });

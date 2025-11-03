@@ -37,8 +37,8 @@ export interface PaymentInsufficientBalanceError {
   readonly availableAmount: Amount;
 }
 
-export interface PaymentInvalidAddressError {
-  readonly type: "PaymentInvalidAddressError";
+export interface PaymentInvalidCryptoAddressError {
+  readonly type: "PaymentInvalidCryptoAddressError";
   readonly address: string;
   readonly blockchain: Blockchain;
 }
