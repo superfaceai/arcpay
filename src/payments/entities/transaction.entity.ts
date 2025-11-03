@@ -3,6 +3,7 @@ import { generateId, DateCodec } from "@/lib";
 import { Amount, Currency } from "@/balances/values";
 import { Location } from "@/balances/entities";
 import { Payment } from "./payment.entity";
+import { PaymentCapture } from "./payment-capture.entity";
 
 export const transactionId = () => generateId("txn");
 
@@ -26,6 +27,7 @@ const TransactionBase = z.object({
   cancellation_reason: z.string().optional(),
   location: Location.shape.id,
   payment: Payment.shape.id.optional(),
+  capture: PaymentCapture.shape.id.optional(),
   created_at: DateCodec,
   finished_at: DateCodec.optional(),
 });
