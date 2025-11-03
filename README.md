@@ -8,8 +8,8 @@ Agent Pay supports the following payment methods:
 
 ## How to use (docs)
 
-- See server root path ([GET /](https://pay.superface.dev/))
-- Use included [Postman collection](./docs/AgentPay.postman_collection.json)
+- See server root path ([GET /](https://dev.arcpay.ai/))
+- Use included [Postman collection](./docs/ArcPay.postman_collection.json)
 - Use `npm run mcp:inspect` to interact with MCP server
 
 ## Development

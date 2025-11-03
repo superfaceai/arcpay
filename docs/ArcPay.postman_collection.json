@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "efe17c59-a456-4819-af65-3d76e2090fdc",
-		"name": "AgentPay",
+		"name": "ArcPay",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "11364430"
 	},
@@ -381,7 +381,7 @@
 					"response": []
 				},
 				{
-					"name": "Pay (to Agent Pay)",
+					"name": "Pay (to Arc Pay)",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -403,7 +403,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"currency\": \"USDC\",\n    \"amount\": \"0.5\",\n    \"method\": \"agent_pay\",\n    \"agent_pay\": {\n        \"account\": \"paygrounds\"\n    }\n}",
+							"raw": "{\n    \"currency\": \"USDC\",\n    \"amount\": \"0.5\",\n    \"method\": \"arc_pay\",\n    \"arc_pay\": {\n        \"account\": \"paygrounds\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
