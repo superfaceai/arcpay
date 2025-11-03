@@ -338,7 +338,7 @@
 					"response": []
 				},
 				{
-					"name": "Pay",
+					"name": "Pay (to Crypto)",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -354,13 +354,55 @@
 						"header": [
 							{
 								"key": "Idempotency-Key",
-								"value": "payment-1",
+								"value": "payment-crypto-1",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"currency\": \"USDC\",\n    \"amount\": \"0.5\",\n    \"method\": \"crypto\",\n    \"crypto\": {\n        \"address\": \"0xFF378b68a174a9090BEA6ea4f51B0e901D334338\",\n        \"blockchain\": \"arc\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/payments",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"payments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pay (to Agent Pay)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Idempotency-Key",
+								"value": "payment-ap-1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"currency\": \"USDC\",\n    \"amount\": \"0.5\",\n    \"method\": \"agent_pay\",\n    \"agent_pay\": {\n        \"account\": \"paygrounds\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
