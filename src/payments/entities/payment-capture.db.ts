@@ -21,7 +21,7 @@ const storageKeyByAccount = ({
   live: boolean;
 }) => `paycs:${accountId}:${live ? "live" : "test"}`;
 
-const savePaymentCaptureViaPipeline = ({
+export const savePaymentCaptureViaPipeline = ({
   paymentCapture,
   accountId,
   pipeline,

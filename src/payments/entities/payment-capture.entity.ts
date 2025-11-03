@@ -1,14 +1,19 @@
 import { z } from "zod";
 import { generateId, DateCodec } from "@/lib";
 import { Amount, Currency } from "@/balances/values";
-import { PaymentMetadata, PaymentMethodType } from "@/payments/values";
+import {
+  PaymentMetadata,
+  PaymentMethodAgentPay,
+  PaymentMethodCrypto,
+  PaymentMethodType,
+} from "@/payments/values";
 
 import { PaymentMandateSecret } from "./payment-mandate.entity";
 
 export const paymentCaptureId = () => generateId("payc");
 
 export const PaymentCaptureStatus = z.enum([
-  "new",
+  "requires_capture",
   "processing",
   "succeeded",
   "cancelled",
@@ -21,6 +26,8 @@ export const PaymentCapture = z.object({
   amount: Amount,
   currency: Currency,
   method: PaymentMethodType,
+  crypto: PaymentMethodCrypto.optional(), // only when method=crypto
+  agent_pay: PaymentMethodAgentPay.optional(), // only when method=agent_pay
   status: PaymentCaptureStatus,
   granted_mandate_secret: PaymentMandateSecret.optional(),
   cancellation_reason: z.string().optional(),

@@ -17,8 +17,6 @@ import {
   transactionId,
   PaymentTransaction,
   paymentId,
-  savePaymentWithTransactions,
-  saveManyTransactions,
 } from "@/payments/entities";
 import {
   PaymentMethodCrypto,
@@ -39,6 +37,7 @@ import {
   sendBlockchainTransaction,
   validateBlockchainAddress,
 } from "@/circle/adapters";
+import { savePaymentsWithTransactionsAndCaptures } from "@/payments/repositories";
 
 export const PayToCryptoDTO = z.object({
   amount: Amount,
@@ -169,11 +168,14 @@ export const payToCrypto = async ({
     fingerprint: uuidv4(),
   };
 
-  await savePaymentWithTransactions({
-    payment,
-    transactions: [newTransaction],
-    accountId,
-  });
+  await savePaymentsWithTransactionsAndCaptures([
+    {
+      accountId,
+      payments: [payment],
+      transactions: [newTransaction],
+      paymentCaptures: [],
+    },
+  ]);
 
   const sentTransactionResult = await sendBlockchainTransactionAdapter({
     transaction: newTransaction,
@@ -198,10 +200,17 @@ export const payToCrypto = async ({
       }
     : undefined;
 
-  await saveManyTransactions({
-    transactions: [sentPaymentTx, ...(feeTransaction ? [feeTransaction] : [])],
-    accountId,
-  });
+  await savePaymentsWithTransactionsAndCaptures([
+    {
+      accountId,
+      payments: [],
+      transactions: [
+        sentPaymentTx,
+        ...(feeTransaction ? [feeTransaction] : []),
+      ],
+      paymentCaptures: [],
+    },
+  ]);
 
   return ok(payment);
 };

@@ -82,27 +82,6 @@ export const saveManyPayments = async ({
   await pipeline.exec();
 };
 
-export const savePaymentWithTransactions = async ({
-  payment,
-  transactions,
-  accountId,
-}: {
-  payment: Payment;
-  transactions: Transaction[];
-  accountId: string;
-}) => {
-  const pipeline = db.multi();
-
-  savePaymentViaPipeline({ payment, accountId, pipeline });
-  for (const transaction of transactions) {
-    saveTransactionViaPipeline({ transaction, accountId, pipeline });
-  }
-
-  await pipeline.exec();
-
-  return payment;
-};
-
 export const loadPaymentById = async ({
   accountId,
   paymentId,
