@@ -3,8 +3,6 @@ import { generateId, DateCodec } from "@/lib";
 import { Amount, Currency } from "@/balances/values";
 import {
   PaymentMetadata,
-  PaymentMethodAgentPay,
-  PaymentMethodCrypto,
   PaymentMethodType,
 } from "@/payments/values";
 

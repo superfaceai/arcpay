@@ -20,8 +20,8 @@ import {
 } from "@/balances/errors";
 
 import {
-  PaymentMethodTypeAgentPay,
-  PaymentMethodAgentPay,
+  PaymentMethodTypeArcPay,
+  PaymentMethodArcPay,
 } from "@/payments/values";
 import {
   BlockchainPaymentActionError,
@@ -43,14 +43,14 @@ import { savePaymentsWithTransactionsAndCaptures } from "@/payments/repositories
 import { SendBlockchainTransaction } from "@/payments/interfaces";
 import { sendBlockchainTransaction } from "@/circle/adapters";
 
-export const PayToAgentPayDTO = z.object({
+export const PayToArcPayDTO = z.object({
   amount: Amount,
   currency: StablecoinToken,
-  method: PaymentMethodTypeAgentPay,
-  agent_pay: PaymentMethodAgentPay,
+  method: PaymentMethodTypeArcPay,
+  arc_pay: PaymentMethodArcPay,
 });
 
-export const payToAgentPay = async ({
+export const payToArcPay = async ({
   accountId,
   live,
   dto,
@@ -58,7 +58,7 @@ export const payToAgentPay = async ({
 }: {
   accountId: string;
   live: boolean;
-  dto: z.infer<typeof PayToAgentPayDTO>;
+  dto: z.infer<typeof PayToArcPayDTO>;
   sendBlockchainTransactionAdapter?: SendBlockchainTransaction;
 }): Promise<
   Result<
@@ -73,7 +73,7 @@ export const payToAgentPay = async ({
   >
 > => {
   const [receiverAccount, senderAccount] = await Promise.all([
-    loadAccountByHandle(dto.agent_pay.account),
+    loadAccountByHandle(dto.arc_pay.account),
     loadAccountById(accountId),
   ]);
 
@@ -81,7 +81,7 @@ export const payToAgentPay = async ({
     return err({
       type: "PaymentInvalidAccountError",
       invalidReason: "not_found",
-      handle: dto.agent_pay.account,
+      handle: dto.arc_pay.account,
     });
   }
 
@@ -89,7 +89,7 @@ export const payToAgentPay = async ({
     return err({
       type: "PaymentInvalidAccountError",
       invalidReason: "self",
-      handle: dto.agent_pay.account,
+      handle: dto.arc_pay.account,
     });
   }
 
@@ -99,7 +99,7 @@ export const payToAgentPay = async ({
     live,
     amount: dto.amount,
     currency: dto.currency,
-    preferredBlockchain: undefined, // no preferred blockchain for Agent Pay
+    preferredBlockchain: undefined, // no preferred blockchain for Arc Pay
   });
   if (!senderBalanceCheckResult.ok) return senderBalanceCheckResult;
 
@@ -162,7 +162,7 @@ export const payToAgentPay = async ({
     amount: mapAmount(dto.amount, { negative: false }),
     currency: dto.currency,
     method: dto.method,
-    agent_pay: dto.method === "agent_pay" ? dto.agent_pay : undefined,
+    arc_pay: dto.method === "arc_pay" ? dto.arc_pay : undefined,
     fees: [],
     status: "pending",
     live,

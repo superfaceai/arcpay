@@ -20,13 +20,13 @@ import {
 
 import { payToCrypto, PayToCryptoDTO } from "@/payments/services/pay-to-crypto";
 import {
-  payToAgentPay,
-  PayToAgentPayDTO,
-} from "@/payments/services/pay-to-agentpay";
+  payToArcPay,
+  PayToArcPayDTO,
+} from "@/payments/services/pay-to-arcpay";
 
 export const PayDTO = z.discriminatedUnion("method", [
   PayToCryptoDTO,
-  PayToAgentPayDTO,
+  PayToArcPayDTO,
 ]);
 
 export const pay = async ({
@@ -40,9 +40,9 @@ export const pay = async ({
 }): Promise<
   Result<
     Payment,
-    | PaymentUnsupportedPaymentMethodError // from Agent Pay
-    | PaymentInvalidAccountError // from Agent Pay
-    | UnsupportedBlockchainError // from Agent Pay
+    | PaymentUnsupportedPaymentMethodError // from Arc Pay
+    | PaymentInvalidAccountError // from Arc Pay
+    | UnsupportedBlockchainError // from Arc Pay
     | BlockchainPaymentActionError
     | BlockchainWalletActionError
     | PaymentInvalidCryptoAddressError
@@ -56,8 +56,8 @@ export const pay = async ({
       live,
       dto,
     });
-  } else if (dto.method === "agent_pay") {
-    return payToAgentPay({
+  } else if (dto.method === "arc_pay") {
+    return payToArcPay({
       accountId,
       live,
       dto,

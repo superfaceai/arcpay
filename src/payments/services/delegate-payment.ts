@@ -51,7 +51,7 @@ export const delegatePayment = async ({
     | BlockchainWalletActionError
   >
 > => {
-  if (dto.method !== "agent_pay")
+  if (dto.method !== "arc_pay")
     return err({
       type: "PaymentUnsupportedPaymentMethodError",
       method: dto.method,

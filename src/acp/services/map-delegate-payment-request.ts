@@ -37,7 +37,7 @@ export const mapDelegatePaymentRequest = (
       amount_limit: currencyAmountResult.value.amount,
       currency: currencyAmountResult.value.currency,
     },
-    method: "agent_pay",
+    method: "arc_pay",
     metadata: {
       ...request.metadata,
       acp_checkout_session_id: request.allowance.checkout_session_id,

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { generateId, DateCodec } from "@/lib";
 import { Amount, Currency } from "@/balances/values";
 import {
-  PaymentMethodAgentPay,
+  PaymentMethodArcPay,
   PaymentMethodCrypto,
   PaymentMethodType,
 } from "@/payments/values";
@@ -25,7 +25,7 @@ export const Payment = z.object({
   currency: Currency,
   method: PaymentMethodType,
   crypto: PaymentMethodCrypto.optional(), // only when method=crypto
-  agent_pay: PaymentMethodAgentPay.optional(), // only when method=agent_pay
+  arc_pay: PaymentMethodArcPay.optional(), // only when method=arc_pay
   fees: z.array(PaymentFee),
   status: PaymentStatus,
   live: z.boolean(),
