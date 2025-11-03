@@ -74,7 +74,7 @@ export const paymentsApi = createApi()
           const reasonMessage =
             paymentResult.error.invalidReason === "not_found"
               ? `The account '${paymentResult.error.handle}' does not exist`
-              : undefined;
+              : `The payment is not allowed to be sent to yourself`;
 
           return ProblemJson(c, 400, "Bad Request", reasonMessage);
         }

@@ -46,6 +46,14 @@ export const payToAgentPay = async ({
     });
   }
 
+  if (receiverAccount.id === accountId) {
+    return err({
+      type: "PaymentInvalidAccountError",
+      invalidReason: "self",
+      handle: dto.agent_pay.account,
+    });
+  }
+
   return err({
     type: "PaymentUnsupportedPaymentMethodError",
     method: dto.method,

@@ -45,7 +45,7 @@ export interface PaymentInvalidCryptoAddressError {
 
 export interface PaymentInvalidAccountError {
   readonly type: "PaymentInvalidAccountError";
-  readonly invalidReason: "not_found";
+  readonly invalidReason: "not_found" | "self";
   readonly handle?: string;
 }
 
