@@ -12,6 +12,7 @@ import {
   PaymentInvalidCryptoAddressError,
   BlockchainPaymentActionError,
   PaymentUnsupportedPaymentMethodError,
+  PaymentInvalidAccountError,
 } from "@/payments/errors";
 
 import { payToCrypto, PayToCryptoDTO } from "@/payments/services/pay-to-crypto";
@@ -37,6 +38,7 @@ export const pay = async ({
   Result<
     Payment,
     | PaymentUnsupportedPaymentMethodError // from Agent Pay
+    | PaymentInvalidAccountError // from Agent Pay
     | BlockchainPaymentActionError
     | BlockchainWalletActionError
     | PaymentInvalidCryptoAddressError

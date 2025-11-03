@@ -43,6 +43,12 @@ export interface PaymentInvalidCryptoAddressError {
   readonly blockchain: Blockchain;
 }
 
+export interface PaymentInvalidAccountError {
+  readonly type: "PaymentInvalidAccountError";
+  readonly invalidReason: "not_found";
+  readonly handle?: string;
+}
+
 export interface PaymentUnsupportedPaymentMethodError {
   readonly type: "PaymentUnsupportedPaymentMethodError";
   readonly method: string;

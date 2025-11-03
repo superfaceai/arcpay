@@ -70,6 +70,14 @@ export const paymentsApi = createApi()
             `The crypto address '${paymentResult.error.address}' is not a valid ${paymentResult.error.blockchain} address`
           );
         }
+        if (paymentResult.error.type === "PaymentInvalidAccountError") {
+          const reasonMessage =
+            paymentResult.error.invalidReason === "not_found"
+              ? `The account '${paymentResult.error.handle}' does not exist`
+              : undefined;
+
+          return ProblemJson(c, 400, "Bad Request", reasonMessage);
+        }
         if (paymentResult.error.type === "BlockchainPaymentActionError") {
           return ProblemJson(
             c,
