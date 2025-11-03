@@ -2,7 +2,10 @@ import { z } from "zod";
 
 import { Result } from "@/lib";
 
-import { BlockchainWalletActionError } from "@/balances/errors";
+import {
+  BlockchainWalletActionError,
+  UnsupportedBlockchainError,
+} from "@/balances/errors";
 
 import { Payment } from "@/payments/entities";
 
@@ -39,6 +42,7 @@ export const pay = async ({
     Payment,
     | PaymentUnsupportedPaymentMethodError // from Agent Pay
     | PaymentInvalidAccountError // from Agent Pay
+    | UnsupportedBlockchainError // from Agent Pay
     | BlockchainPaymentActionError
     | BlockchainWalletActionError
     | PaymentInvalidCryptoAddressError

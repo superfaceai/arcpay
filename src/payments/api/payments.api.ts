@@ -99,6 +99,16 @@ export const paymentsApi = createApi()
             paymentResult.error.message
           );
         }
+        if (paymentResult.error.type === "UnsupportedBlockchainError") {
+          return ProblemJson(
+            c,
+            409,
+            "Bad Request",
+            `The blockchain '${paymentResult.error.blockchains.join(
+              ", "
+            )}' is not supported for ${paymentResult.error.currency}`
+          );
+        }
         if (
           paymentResult.error.type === "PaymentUnsupportedPaymentMethodError"
         ) {
