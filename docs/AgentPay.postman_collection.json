@@ -90,6 +90,7 @@
 									"pm.collectionVariables.set(\"SECRET_KEY\", \"\");",
 									"pm.collectionVariables.set(\"PRIMARY_LOCATION_ID\", \"\");",
 									"pm.collectionVariables.set(\"PAYMENT_MANDATE_ID\", \"\");",
+									"pm.collectionVariables.set(\"PAYMENT_MANDATE_SECRET\", \"\");",
 									""
 								],
 								"type": "text/javascript",
@@ -416,6 +417,7 @@
 									"",
 									"if ('id' in response) {",
 									"    pm.collectionVariables.set('PAYMENT_MANDATE_ID', response.id)",
+									"    pm.collectionVariables.set('PAYMENT_MANDATE_SECRET', response.id)",
 									"}"
 								],
 								"type": "text/javascript",
@@ -476,6 +478,7 @@
 									"",
 									"if ('id' in response) {",
 									"    pm.collectionVariables.set('PAYMENT_MANDATE_ID', response.id)",
+									"    pm.collectionVariables.set('PAYMENT_MANDATE_SECRET', response.id)",
 									"}"
 								],
 								"type": "text/javascript",
@@ -603,6 +606,92 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Capture payment (via Mandate)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Idempotency-Key",
+								"value": "payment-capture-1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": \"20\",\n  \"currency\": \"USDC\",\n  \"granted_mandate_secret\": \"{{PAYMENT_MANDATE_SECRET}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/payment_captures",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"payment_captures"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List payment captures",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()",
+									"",
+									"if ('data' in response && Array.isArray(response.data) && response.data.length > 0) {",
+									"    pm.collectionVariables.set('PAYMENT_MANDATE_ID', response.data[0].id)",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/payment_captures",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"payment_captures"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -722,6 +811,14 @@
 			"value": "",
 			"description": {
 				"content": "Populates automatically after payment delegation/listing payment mandates",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "PAYMENT_MANDATE_SECRET",
+			"value": "",
+			"description": {
+				"content": "Populates automatically after payment delegation",
 				"type": "text/plain"
 			}
 		}
