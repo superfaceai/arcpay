@@ -16,6 +16,7 @@ export const PaymentCaptureStatus = z.enum([
   "requires_capture",
   "processing",
   "succeeded",
+  "failed",
   "cancelled",
 ]);
 export type PaymentCaptureStatus = z.infer<typeof PaymentCaptureStatus>;
@@ -30,6 +31,9 @@ export const PaymentCapture = z.object({
   granted_mandate_secret: PaymentMandateSecret.optional(),
   cancellation_reason: z.string().optional(),
   cancelled_at: DateCodec.optional(),
+  failure_reason: z.string().optional(),
+  failed_at: DateCodec.optional(),
+  finished_at: DateCodec.optional(),
   created_at: DateCodec,
   metadata: PaymentMetadata.optional(),
 });

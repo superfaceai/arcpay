@@ -4,7 +4,10 @@ import { DateCodec, ok, Result } from "@/lib";
 import {
   PaymentCapture,
   loadPaymentCapturesByAccount,
+  saveManyPaymentCaptures,
 } from "@/payments/entities";
+import { listTransactions } from "./list-transactions";
+import { syncPaymentCapturesWithTransactions } from "./sync-paymentcaptures-with-transactions";
 
 export const ListPaymentCapturesDTO = z.object({
   from: DateCodec.optional(),
@@ -27,7 +30,43 @@ export const listPaymentCaptures = async ({
     to: dto.to,
   });
 
-  // TODO: Sync with transactions
+  if (dbPaymentCaptures.length === 0) return ok([]);
 
-  return ok(dbPaymentCaptures);
+  const syncedPaymentCaptures: PaymentCapture[] = [];
+  const changedPaymentCaptures: PaymentCapture[] = [];
+
+  const allTransactions = await listTransactions({
+    accountId,
+    filter: dto,
+    live,
+  });
+
+  if (!allTransactions.ok) return allTransactions;
+
+  for (const paymentCapture of dbPaymentCaptures) {
+    const captureRelatedTransactions = allTransactions.value.filter(
+      (tx) => tx.capture === paymentCapture.id
+    );
+
+    const { paymentCapture: syncedPaymentCapture, changed } =
+      syncPaymentCapturesWithTransactions({
+        paymentCapture,
+        transactions: captureRelatedTransactions,
+      });
+
+    syncedPaymentCaptures.push(syncedPaymentCapture);
+
+    if (changed) {
+      changedPaymentCaptures.push(syncedPaymentCapture);
+    }
+  }
+
+  if (changedPaymentCaptures.length > 0) {
+    await saveManyPaymentCaptures({
+      paymentCaptures: changedPaymentCaptures,
+      accountId,
+    });
+  }
+
+  return ok(syncedPaymentCaptures);
 };

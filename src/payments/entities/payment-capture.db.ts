@@ -59,6 +59,22 @@ export const savePaymentCapture = async ({
   return paymentCapture;
 };
 
+export const saveManyPaymentCaptures = async ({
+  paymentCaptures,
+  accountId,
+}: {
+  paymentCaptures: PaymentCapture[];
+  accountId: string;
+}) => {
+  const pipeline = db.multi();
+
+  for (const paymentCapture of paymentCaptures) {
+    savePaymentCaptureViaPipeline({ paymentCapture, accountId, pipeline });
+  }
+
+  await pipeline.exec();
+};
+
 export const loadPaymentCaptureById = async ({
   accountId,
   paymentCaptureId,
