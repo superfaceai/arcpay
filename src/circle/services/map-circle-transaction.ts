@@ -1,14 +1,12 @@
-import Big from "big.js";
-
 import {
   TransactionState as CircleTransactionState,
   Transaction as CircleTransaction,
 } from "@circle-fin/developer-controlled-wallets";
 
 import {
-  Amount,
   getNativeTokenFor,
   mainToken,
+  mapAmount,
   tokenToCurrency,
 } from "@/balances/values";
 import { BlockchainTransaction } from "@/payments/interfaces";
@@ -113,17 +111,4 @@ const STATUS_MAPPING: Record<CircleTransactionState, TransactionStatus> = {
   DENIED: "failed",
   FAILED: "failed",
   CANCELLED: "canceled",
-};
-
-const mapAmount = (
-  amount: string | undefined,
-  { negative }: { negative: boolean }
-): Amount => {
-  if (!amount) {
-    return "0";
-  }
-  return Big(amount)
-    .abs()
-    .mul(negative ? -1 : 1)
-    .toString();
 };

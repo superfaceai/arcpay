@@ -6,6 +6,7 @@ import { err, ok, Result } from "@/lib";
 import {
   Amount,
   getStablecoinTokenAddress,
+  mapAmount,
   StablecoinToken,
 } from "@/balances/values";
 import { hasBalanceInSingleLocation } from "@/balances/services";
@@ -140,7 +141,7 @@ export const payToCrypto = async ({
   // Start transaction
   const payment: Payment = {
     id: paymentId(),
-    amount: dto.amount,
+    amount: mapAmount(dto.amount, { negative: false }),
     currency: dto.currency,
     method: dto.method,
     crypto: dto.method === "crypto" ? dto.crypto : undefined,
@@ -154,7 +155,7 @@ export const payToCrypto = async ({
     id: transactionId(),
     status: "queued",
     live,
-    amount: dto.amount,
+    amount: mapAmount(dto.amount, { negative: true }),
     currency: dto.currency,
     type: "payment",
     network: "blockchain",

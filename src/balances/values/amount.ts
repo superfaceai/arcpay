@@ -28,3 +28,16 @@ export type NegativeAmount = z.infer<typeof NegativeAmount>;
 
 export const Amount = z.union([PositiveAmount, NegativeAmount]);
 export type Amount = z.infer<typeof Amount>;
+
+export const mapAmount = (
+  amount: string | undefined,
+  { negative }: { negative: boolean }
+): Amount => {
+  if (!amount) {
+    return "0";
+  }
+  return Big(amount)
+    .abs()
+    .mul(negative ? -1 : 1)
+    .toString();
+};
