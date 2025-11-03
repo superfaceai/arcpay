@@ -5,3 +5,5 @@ export * from "./payment.entity.js";
 export * from "./payment.db.js";
 export * from "./payment-mandate.entity.js";
 export * from "./payment-mandate.db.js";
+export * from "./payment-capture.entity.js";
+export * from "./payment-capture.db.js";

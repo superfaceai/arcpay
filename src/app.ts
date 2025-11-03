@@ -13,6 +13,7 @@ import {
   transactionsApi,
   paymentsApi,
   paymentMandatesApi,
+  paymentCapturesApi,
 } from "@/payments/api";
 import { acpDelegatedPaymentsApi } from "@/acp/api/delegated-payments";
 import { walletsMcp } from "@/wallets/mcp";
@@ -26,6 +27,7 @@ const app = createApplicationApi((app) => {
   app.route("/", depositsApi);
   app.route("/", paymentsApi);
   app.route("/", paymentMandatesApi);
+  app.route("/", paymentCapturesApi);
   app.route("/", transactionsApi);
 
   app.route("/", acpDelegatedPaymentsApi);
@@ -249,18 +251,15 @@ POST /agentic_commerce/delegate_payment
   }
 }</pre>
 
-  <p class="not-implemented" title="Not implemented yet">Upon checkout competion, the merchant will receive a secret token that can be used to pull the payment from the AI agent's wallet:</p>
+  <p>Upon checkout competion, the merchant will receive a secret token that can be used to pull the payment from the customer's wallet, up to the authorized limit of the mandate:</p>
 
-  <pre class="not-implemented" title="Not implemented yet">
-POST /payment_intents
+  <pre>
+POST /payment_captures
 
 {
   "amount": "20",
   "currency": "USDC",
-  "method": "mandate",
-  "mandate": {
-    "secret": "paym_eNSM2UiaOaUdlfKU6xaL5_secret_2k8ZabXpPehi..."
-  }
+  "granted_mandate_secret": "paym_eNSM2UiaOaUdlfKU6_secret_2k8ZabXp..."
 }</pre>
 
   </main>

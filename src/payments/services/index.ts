@@ -6,3 +6,5 @@ export * from "./delegate-payment.js";
 export * from "./list-payment-mandates.js";
 export * from "./revoke-payment-mandate.js";
 export * from "./get-payment-mandate.js";
+export * from "./capture-payment.js";
+export * from "./list-payment-captures.js";

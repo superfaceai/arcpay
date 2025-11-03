@@ -1,7 +1,7 @@
 import { ApiKey, Account } from "@/identity/entities";
 import { Location } from "@/balances/entities";
 import { Balance } from "@/balances/entities";
-import { Deposit, PaymentMandate } from "@/payments/entities";
+import { Deposit, PaymentMandate, PaymentCapture } from "@/payments/entities";
 import { Payment } from "@/payments/entities";
 import { Transaction } from "@/payments/entities";
 
@@ -17,6 +17,7 @@ export type ObjectName =
   | "location"
   | "payment"
   | "payment_mandate"
+  | "payment_capture"
   | "transaction";
 
 export type ExpectedObject<Name extends ObjectName> = Name extends "apikey"
@@ -33,6 +34,8 @@ export type ExpectedObject<Name extends ObjectName> = Name extends "apikey"
   ? Payment
   : Name extends "payment_mandate"
   ? PaymentMandate
+  : Name extends "payment_capture"
+  ? PaymentCapture
   : Name extends "transaction"
   ? Transaction
   : never;

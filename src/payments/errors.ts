@@ -62,3 +62,19 @@ export interface PaymentMandateInactiveError {
   readonly type: "PaymentMandateInactiveError";
   readonly inactiveReason: PaymentMandate["inactive_reason"];
 }
+
+export interface PaymentMandateNotFoundError {
+  readonly type: "PaymentMandateNotFoundError";
+}
+
+export interface PaymentMandateMismatchError {
+  readonly type: "PaymentMandateMismatchError";
+  readonly mandateGiven: {
+    currency: Currency;
+    amount: Amount;
+  };
+  readonly captureRequired: {
+    currency: Currency;
+    amount: Amount;
+  };
+}
