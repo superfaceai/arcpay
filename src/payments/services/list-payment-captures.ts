@@ -27,5 +27,7 @@ export const listPaymentCaptures = async ({
     to: dto.to,
   });
 
+  // TODO: Sync with transactions
+
   return ok(dbPaymentCaptures);
 };

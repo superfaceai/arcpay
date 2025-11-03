@@ -6,6 +6,7 @@ import {
   CapturePaymentDTO,
   ListPaymentCapturesDTO,
   capturePayment,
+  getPaymentCapture,
   listPaymentCaptures,
 } from "@/payments/services";
 
@@ -81,4 +82,26 @@ export const paymentCapturesApi = createApi()
 
       return c.json(ApiList("payment_capture", paymentCaptures.value));
     }
-  );
+  )
+  .get("/payment_captures/:captureId", withAuth(), async (c) => {
+    const paymentCapture = await getPaymentCapture({
+      accountId: c.get("accountId"),
+      live: c.get("isLive"),
+      captureId: c.req.param("captureId"),
+    });
+
+    if (!paymentCapture.ok) {
+      return ProblemJson(
+        c,
+        500,
+        "Trouble fetching payment captures",
+        paymentCapture.error.message
+      );
+    }
+
+    if (!paymentCapture.value) {
+      return ProblemJson(c, 404, "Payment capture not found");
+    }
+
+    return c.json(ApiObject("payment_capture", paymentCapture.value));
+  });
