@@ -1,10 +1,10 @@
-# Agent Pay
+# Arc Pay
 
-**Agent Pay** is a safe, easy way for your AI agents to pay for physical or digital goods and services — autonomously, but on your terms.
+**Arc Pay** is a safe, easy way for your AI agents to pay for physical or digital goods and services — autonomously, but on your terms.
 
-Agent Pay supports the following payment methods:
+Arc Pay supports the following payment methods:
+- USDC payment
 - Credit Card (soon)
-- USDC payment (soon)
 
 ## How to use (docs)
 
