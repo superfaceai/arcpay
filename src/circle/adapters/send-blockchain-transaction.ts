@@ -1,7 +1,11 @@
 import { TokenBlockchain } from "@circle-fin/developer-controlled-wallets";
 
 import { tryAsync } from "@/lib";
-import { getNativeTokenFor, tokenToCurrency } from "@/balances/values";
+import {
+  getNativeTokenFor,
+  mapAmount,
+  tokenToCurrency,
+} from "@/balances/values";
 
 import {
   BlockchainTransaction,
@@ -40,7 +44,7 @@ export const sendBlockchainTransaction: SendBlockchainTransaction = async ({
           blockchain,
           live,
         }) as TokenBlockchain,
-        amount: [transaction.amount],
+        amount: [mapAmount(transaction.amount, { negative: false })],
         destinationAddress,
         tokenAddress,
         idempotencyKey: transaction.fingerprint,
