@@ -56,7 +56,7 @@ const HOME_DOCS_HTML = ({
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agent Pay API</title>
+  <title>Arc Pay API</title>
   <style>
     body {
       font-family: system-ui, sans-serif;
@@ -113,7 +113,7 @@ const HOME_DOCS_HTML = ({
 
 <body>
   <main>
-    <h1>Agent Pay API</h1>
+    <h1>Arc Pay API</h1>
     
     <h2>Obtain an API key</h2>
 
@@ -144,7 +144,7 @@ curl ${host}/account \\
   -H "Authorization: Bearer sk_test_YOUR_API_KEY"</pre>
 
     <h2>Test mode</h2>
-    <p>Agent Pay supports test mode for testing and development. Test mode uses blockchain testnets & payment sandboxes to avoid real financial risks.</p>
+    <p>Arc Pay supports test mode for testing and development. Test mode uses blockchain testnets & payment sandboxes to avoid real financial risks.</p>
     
     <p>To run in test mode, use the API key with prefix <code>sk_test_</code>. Live mode API keys have the prefix <code>sk_live_</code>.
 
@@ -201,18 +201,18 @@ curl ${host}/deposits \\
 
   <h2>Agentic Commerce Protocol (ACP)</h2>
 
-  <p>Agent Pay supports the Delegated Payments flow of <a href="https://www.agenticcommerce.dev" target="_blank">ACP</a>.</p>
+  <p>Arc Pay supports the Delegated Payments flow of <a href="https://www.agenticcommerce.dev" target="_blank">ACP</a>.</p>
   
   <p>This allows merchants to accept payments in their stores from their customers' AI agents.</p>
 
-  <p>Agent Pay extends ACP with the following features:</p>
+  <p>Arc Pay extends ACP with the following features:</p>
   
   <ul>
-  <li>Payment provider: <code>agentpay</code></li>
+  <li>Payment provider: <code>arc_pay</code></li>
   <li>Supported payment methods: <code>wallet</code></li>
   </ul>
   
-  <p>To start accepting payments from AI agents via Agent Pay, the merchant must include Agent Pay as the payment provider in all ACP Checkout Session responses:</p>
+  <p>To start accepting payments from AI agents via Arc Pay, the merchant must include Arc Pay as the payment provider in all ACP Checkout Session responses:</p>
 
   <pre>
 # In all ACP Checkout Session responses
@@ -221,14 +221,14 @@ curl ${host}/deposits \\
   "id": "checkout_session_123",
   ...,
   "payment_provider": {
-    "provider": "agentpay",
+    "provider": "arc_pay",
     "supported_payment_methods": [
       "wallet"
     ]
   }
 }</pre>
 
-  <p>Then, the AI agents can use the <code>wallet</code> payment method with Agent Pay to pay for the checkout session using ACP's Delegated Payments flow:</p>
+  <p>Then, the AI agents can use the <code>wallet</code> payment method with Arc Pay to pay for the checkout session using ACP's Delegated Payments flow:</p>
 
   <pre>
 POST /agentic_commerce/delegate_payment
