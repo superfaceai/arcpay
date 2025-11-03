@@ -1,16 +1,14 @@
-import Big from "big.js";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 
 import { err, ok, Result } from "@/lib";
 
-import { getBalance } from "@/balances/services";
-import { listLocations } from "@/balances/services";
 import {
   Amount,
   getStablecoinTokenAddress,
   StablecoinToken,
 } from "@/balances/values";
+import { hasBalanceInSingleLocation } from "@/balances/services";
 import { BlockchainWalletActionError } from "@/balances/errors";
 
 import {
@@ -100,51 +98,40 @@ export const payToCrypto = async ({
     });
   }
 
-  // Check if the user has enough currency balance
-  const balanceResult = await getBalance({
+  const balanceCheckResult = await hasBalanceInSingleLocation({
     accountId,
     live,
+    amount: dto.amount,
     currency: dto.currency,
+    preferredBlockchain: dto.crypto.blockchain,
   });
 
-  if (!balanceResult.ok) return balanceResult;
+  if (!balanceCheckResult.ok) return balanceCheckResult;
+
+  const hasBalance = balanceCheckResult.value.hasBalance;
+  const hasBalanceInsideSingleLocation =
+    balanceCheckResult.value.hasBalance &&
+    balanceCheckResult.value.inSingleLocation;
+  const hasBalanceInPreferredBlockchain =
+    balanceCheckResult.value.hasBalance &&
+    balanceCheckResult.value.inSingleLocation &&
+    balanceCheckResult.value.inPreferredBlockchain;
 
   if (
-    !balanceResult.value ||
-    Big(balanceResult.value?.amount ?? "0").lt(Big(dto.amount).abs())
+    !hasBalance ||
+    !hasBalanceInsideSingleLocation ||
+    !hasBalanceInPreferredBlockchain
   ) {
     return err({
       type: "PaymentInsufficientBalanceError",
       currency: dto.currency,
       requiredAmount: dto.amount,
-      availableAmount: balanceResult.value?.amount ?? "0",
-    });
-  }
-
-  // Check if the balance is available in a single location
-  const locationsResult = await listLocations({
-    accountId,
-    live,
-    locationIds: balanceResult.value?.locations || [],
-  });
-  if (!locationsResult.ok) return locationsResult;
-
-  const matchedLocation = locationsResult.value.find(
-    (location) => location.blockchain === dto.crypto.blockchain
-  );
-  const matchedLocationAvailableAmount =
-    matchedLocation?.assets.find((asset) => asset.currency === dto.currency)
-      ?.amount ?? "0";
-
-  if (
-    !matchedLocation ||
-    Big(matchedLocationAvailableAmount).lt(Big(dto.amount).abs())
-  ) {
-    return err({
-      type: "PaymentInsufficientBalanceError",
-      currency: dto.currency,
-      requiredAmount: dto.amount,
-      availableAmount: matchedLocationAvailableAmount,
+      availableAmount: balanceCheckResult.value.availableAmount,
+      reason: !hasBalance
+        ? "no_balance"
+        : !hasBalanceInsideSingleLocation
+        ? "not_in_single_location"
+        : "not_in_preferred_network",
     });
   }
 
@@ -171,7 +158,7 @@ export const payToCrypto = async ({
     currency: dto.currency,
     type: "payment",
     network: "blockchain",
-    location: matchedLocation.id,
+    location: balanceCheckResult.value.location.id,
     blockchain: {
       hash: "n/a",
       counterparty: dto.crypto.address,
@@ -189,7 +176,7 @@ export const payToCrypto = async ({
 
   const sentTransactionResult = await sendBlockchainTransactionAdapter({
     transaction: newTransaction,
-    sourceAddress: matchedLocation.address,
+    sourceAddress: balanceCheckResult.value.location.address,
     destinationAddress: dto.crypto.address,
     tokenAddress,
     blockchain: dto.crypto.blockchain,

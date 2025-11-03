@@ -35,6 +35,10 @@ export interface PaymentInsufficientBalanceError {
   readonly currency: Currency;
   readonly requiredAmount: Amount;
   readonly availableAmount: Amount;
+  readonly reason:
+    | "no_balance"
+    | "not_in_single_location"
+    | "not_in_preferred_network";
 }
 
 export interface PaymentInvalidCryptoAddressError {

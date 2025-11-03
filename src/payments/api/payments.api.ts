@@ -47,12 +47,17 @@ export const paymentsApi = createApi()
 
       if (!paymentResult.ok) {
         if (paymentResult.error.type === "PaymentInsufficientBalanceError") {
-          return ProblemJson(
-            c,
-            409,
-            "Insufficient balance",
-            `You do not have enough ${paymentResult.error.currency} to pay ${paymentResult.error.requiredAmount}`
-          );
+          let message = `You do not have enough ${paymentResult.error.currency} to pay ${paymentResult.error.requiredAmount}`;
+
+          const messageSuffix =
+            paymentResult.error.reason === "not_in_single_location"
+              ? "in a single location"
+              : paymentResult.error.reason === "not_in_preferred_network"
+              ? "on the preferred network"
+              : "";
+
+          message = [message, messageSuffix].join(" ");
+          return ProblemJson(c, 409, "Insufficient balance", message);
         }
         if (paymentResult.error.type === "PaymentUnsupportedTokenError") {
           return ProblemJson(
