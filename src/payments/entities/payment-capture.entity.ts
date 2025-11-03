@@ -26,8 +26,6 @@ export const PaymentCapture = z.object({
   amount: Amount,
   currency: Currency,
   method: PaymentMethodType,
-  crypto: PaymentMethodCrypto.optional(), // only when method=crypto
-  agent_pay: PaymentMethodAgentPay.optional(), // only when method=agent_pay
   status: PaymentCaptureStatus,
   granted_mandate_secret: PaymentMandateSecret.optional(),
   cancellation_reason: z.string().optional(),

@@ -173,12 +173,6 @@ export const payToAgentPay = async ({
     amount: mapAmount(dto.amount, { negative: false }),
     currency: dto.currency,
     method: dto.method,
-    agent_pay:
-      dto.method === "agent_pay"
-        ? {
-            account: senderAccount?.handle ?? "",
-          }
-        : undefined,
     status: "requires_capture",
     live,
     created_at: new Date(),
