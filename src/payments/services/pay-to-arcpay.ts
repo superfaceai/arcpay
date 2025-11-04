@@ -25,7 +25,6 @@ import {
   BlockchainPaymentActionError,
   PaymentInsufficientBalanceError,
   PaymentInvalidAccountError,
-  PaymentUnsupportedPaymentMethodError,
   PaymentUnsupportedTokenError,
 } from "@/payments/errors";
 import { Payment } from "@/payments/entities";
@@ -55,7 +54,6 @@ export const payToArcPay = async ({
     | UnsupportedBlockchainError
     | PaymentUnsupportedTokenError
     | PaymentInvalidAccountError
-    | PaymentUnsupportedPaymentMethodError
     | PaymentInsufficientBalanceError
   >
 > => {

@@ -14,7 +14,6 @@ import {
   PaymentUnsupportedTokenError,
   PaymentInvalidCryptoAddressError,
   BlockchainPaymentActionError,
-  PaymentUnsupportedPaymentMethodError,
   PaymentInvalidAccountError,
 } from "@/payments/errors";
 
@@ -40,7 +39,6 @@ export const pay = async ({
 }): Promise<
   Result<
     Payment,
-    | PaymentUnsupportedPaymentMethodError // from Arc Pay
     | PaymentInvalidAccountError // from Arc Pay
     | UnsupportedBlockchainError // from Arc Pay
     | BlockchainPaymentActionError
