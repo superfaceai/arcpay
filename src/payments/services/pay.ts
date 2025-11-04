@@ -11,8 +11,10 @@ import {
   Payment,
   PaymentCapture,
   PaymentMandate,
+  PaymentTrigger,
   Transaction,
 } from "@/payments/entities";
+import { PaymentMetadata } from "@/payments/values";
 
 import {
   PaymentInsufficientBalanceError,
@@ -24,7 +26,6 @@ import {
 
 import { payToCrypto, PayToCryptoDTO } from "./pay-to-crypto";
 import { payToArcPay, PayToArcPayDTO } from "./pay-to-arcpay";
-import { PaymentTrigger } from "@/payments/entities";
 
 export const PayDTO = z.discriminatedUnion("method", [
   PayToCryptoDTO,
@@ -35,6 +36,7 @@ export type PayDTO = z.infer<typeof PayDTO>;
 export type PayTrigger = {
   senderAccountId: string;
   trigger: PaymentTrigger["method"];
+  captureMetadata?: PaymentMetadata;
   authorization:
     | { method: "mandate"; mandate: PaymentMandate }
     | { method: "user" };

@@ -20,6 +20,7 @@ import {
 import {
   PaymentMethodTypeArcPay,
   PaymentMethodArcPay,
+  PaymentMetadata,
 } from "@/payments/values";
 import {
   BlockchainPaymentActionError,
@@ -36,6 +37,7 @@ export const PayToArcPayDTO = z.object({
   currency: StablecoinToken,
   method: PaymentMethodTypeArcPay,
   arc_pay: PaymentMethodArcPay,
+  metadata: PaymentMetadata.optional(),
 });
 
 export const payToArcPay = async ({
@@ -145,6 +147,7 @@ export const payToArcPay = async ({
       tokenAddress,
       method: dto.method,
       arc_pay: dto.arc_pay,
+      metadata: dto.metadata,
     },
     trigger,
   });

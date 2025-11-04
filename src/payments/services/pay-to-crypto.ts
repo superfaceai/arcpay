@@ -13,6 +13,7 @@ import { BlockchainWalletActionError } from "@/balances/errors";
 import {
   PaymentMethodCrypto,
   PaymentMethodTypeCrypto,
+  PaymentMetadata,
 } from "@/payments/values";
 import {
   PaymentInsufficientBalanceError,
@@ -31,6 +32,7 @@ export const PayToCryptoDTO = z.object({
   currency: StablecoinToken,
   method: PaymentMethodTypeCrypto,
   crypto: PaymentMethodCrypto,
+  metadata: PaymentMetadata.optional(),
 });
 
 export const payToCrypto = async ({
@@ -142,6 +144,7 @@ export const payToCrypto = async ({
       tokenAddress,
       method: dto.method,
       crypto: dto.crypto,
+      metadata: dto.metadata,
     },
     trigger,
   });

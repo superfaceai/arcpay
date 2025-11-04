@@ -23,7 +23,8 @@ import {
   PaymentMethodCrypto,
   PaymentMethodTypeArcPay,
   PaymentMethodTypeCrypto,
-} from "../values";
+  PaymentMetadata,
+} from "@/payments/values";
 import { PayOutcome, PayTrigger } from "./pay";
 import { useValidPaymentMandate } from "./use-payment-mandate";
 
@@ -43,6 +44,7 @@ type PaymentDetails = PaymentDetailsMethod & {
   amount: Amount;
   currency: Currency;
   tokenAddress: string;
+  metadata?: PaymentMetadata;
 };
 
 type Sender = {
@@ -107,7 +109,7 @@ export const transactViaCrypto = async ({
         : { method: "user" },
     live,
     created_at: new Date(),
-    // metadata
+    ...(payment.metadata ? { metadata: payment.metadata } : {}),
   };
 
   const senderTransaction: PaymentTransaction = {
@@ -146,7 +148,7 @@ export const transactViaCrypto = async ({
           : { method: "sender" },
       live,
       created_at: new Date(),
-      // metadata
+      ...(trigger.captureMetadata ? { metadata: trigger.captureMetadata } : {}),
     };
     receiverPaymentCaptureBeforeTx = receiverPaymentCapture;
   }

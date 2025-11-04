@@ -5,6 +5,7 @@ import {
   PaymentMethodArcPay,
   PaymentMethodCrypto,
   PaymentMethodType,
+  PaymentMetadata,
 } from "@/payments/values";
 
 export const paymentId = () => generateId("pay");
@@ -61,6 +62,7 @@ export const Payment = z.object({
   failure_reason: z.string().optional(),
   created_at: DateCodec,
   finished_at: DateCodec.optional(),
+  metadata: PaymentMetadata.optional(),
 });
 export type Payment = z.infer<typeof Payment>;
 

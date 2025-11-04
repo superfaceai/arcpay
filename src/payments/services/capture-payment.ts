@@ -101,6 +101,7 @@ export const capturePayment = async ({
       arc_pay: {
         account: receiverAccount!.handle,
       },
+      metadata: grantedMandate.metadata,
     };
   } else {
     // TODO: Implement other payment methods
@@ -115,6 +116,7 @@ export const capturePayment = async ({
     trigger: {
       senderAccountId,
       trigger: "capture",
+      captureMetadata: dto.metadata,
       authorization: {
         method: "mandate",
         mandate: grantedMandate,
