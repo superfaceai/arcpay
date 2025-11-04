@@ -1,13 +1,11 @@
 import { z } from "zod";
-import { v4 as uuidv4 } from "uuid";
 
 import { err, ok, Result } from "@/lib";
 
-import { loadAccountByHandle, loadAccountById } from "@/identity/entities";
+import { loadAccountByHandle } from "@/identity/entities";
 import {
   Amount,
   getStablecoinTokenAddress,
-  mapAmount,
   StablecoinToken,
 } from "@/balances/values";
 import {
@@ -30,18 +28,9 @@ import {
   PaymentUnsupportedPaymentMethodError,
   PaymentUnsupportedTokenError,
 } from "@/payments/errors";
-import {
-  Payment,
-  PaymentCapture,
-  paymentCaptureId,
-  paymentId,
-  PaymentTransaction,
-  transactionId,
-} from "@/payments/entities";
-import { savePaymentsWithTransactionsAndCaptures } from "@/payments/repositories";
+import { Payment } from "@/payments/entities";
 
-import { SendBlockchainTransaction } from "@/payments/interfaces";
-import { sendBlockchainTransaction } from "@/circle/adapters";
+import { transactViaCrypto } from "./transact-via-crypto";
 
 export const PayToArcPayDTO = z.object({
   amount: Amount,
@@ -54,12 +43,10 @@ export const payToArcPay = async ({
   accountId,
   live,
   dto,
-  sendBlockchainTransactionAdapter = sendBlockchainTransaction,
 }: {
   accountId: string;
   live: boolean;
   dto: z.infer<typeof PayToArcPayDTO>;
-  sendBlockchainTransactionAdapter?: SendBlockchainTransaction;
 }): Promise<
   Result<
     Payment,
@@ -138,139 +125,34 @@ export const payToArcPay = async ({
   });
   if (!receiverLocationResult.ok) return receiverLocationResult;
 
-  // TODO: Execute the crypto payment
-  console.debug("TODO: Execute the crypto payment", {
-    from: {
-      account: accountId,
-      location: senderBalanceCheckResult.value.location.id,
+  // Execute the crypto payment
+  const transactViaCryptoResult = await transactViaCrypto({
+    live,
+    sender: {
+      accountId,
+      locationId: senderBalanceCheckResult.value.location.id,
       blockchain: senderBalanceCheckResult.value.location.blockchain,
       address: senderBalanceCheckResult.value.location.address,
     },
-    to: {
-      account: receiverAccount.id,
-      location: receiverLocationResult.value.id,
+    receiver: {
+      hasArcPay: true,
+      accountId: receiverAccount.id,
+      locationId: receiverLocationResult.value.id,
       blockchain: receiverLocationResult.value.blockchain,
       address: receiverLocationResult.value.address,
     },
+    payment: {
+      amount: dto.amount,
+      currency: dto.currency,
+      tokenAddress,
+      method: dto.method,
+      arc_pay: dto.arc_pay,
+    },
   });
 
-  const senderPayment: Payment = {
-    id: paymentId(),
-    amount: mapAmount(dto.amount, { negative: false }),
-    currency: dto.currency,
-    method: dto.method,
-    arc_pay: dto.method === "arc_pay" ? dto.arc_pay : undefined,
-    fees: [],
-    status: "pending",
-    trigger: { method: "user" },
-    authorization: { method: "user" },
-    live,
-    created_at: new Date(),
-  };
-  const receiverPaymentCapture: PaymentCapture = {
-    id: paymentCaptureId(),
-    amount: mapAmount(dto.amount, { negative: false }),
-    currency: dto.currency,
-    method: dto.method,
-    status: "requires_capture",
-    authorization: { method: "sender" },
-    live,
-    created_at: new Date(),
-  };
-  const senderTransaction: PaymentTransaction = {
-    id: transactionId(),
-    status: "queued",
-    live,
-    amount: mapAmount(dto.amount, { negative: true }),
-    currency: dto.currency,
-    type: "payment",
-    network: "blockchain",
-    location: senderBalanceCheckResult.value.location.id,
-    blockchain: {
-      hash: "n/a",
-      counterparty: receiverLocationResult.value.address,
-    },
-    payment: senderPayment.id,
-    created_at: new Date(),
-    fingerprint: uuidv4(),
-  };
+  if (!transactViaCryptoResult.ok) return transactViaCryptoResult;
 
-  await savePaymentsWithTransactionsAndCaptures([
-    {
-      accountId,
-      payments: [senderPayment],
-      transactions: [senderTransaction],
-      paymentCaptures: [],
-    },
-    {
-      accountId: receiverAccount.id,
-      payments: [],
-      transactions: [],
-      paymentCaptures: [receiverPaymentCapture],
-    },
-  ]);
+  const { sender } = transactViaCryptoResult.value;
 
-  const sentTransactionResult = await sendBlockchainTransactionAdapter({
-    transaction: senderTransaction,
-    sourceAddress: senderBalanceCheckResult.value.location.address,
-    destinationAddress: receiverLocationResult.value.address,
-    tokenAddress,
-    blockchain: senderBalanceCheckResult.value.location.blockchain,
-    live,
-  });
-
-  if (!sentTransactionResult.ok) return sentTransactionResult;
-
-  const { payment: senderPaymentTx, fee: senderFeeTx } =
-    sentTransactionResult.value;
-
-  const senderFeeTransaction = senderFeeTx
-    ? {
-        id: transactionId(),
-        live,
-        payment: senderPayment.id,
-        ...senderFeeTx,
-      }
-    : undefined;
-
-  const receiverTransaction: PaymentTransaction = {
-    id: transactionId(),
-    status: "queued",
-    live,
-    amount: mapAmount(dto.amount, { negative: false }),
-    currency: dto.currency,
-    type: "payment",
-    network: "blockchain",
-    location: receiverLocationResult.value.id,
-    blockchain: {
-      hash: senderPaymentTx.blockchain.hash, // key to match the on-chain tx
-      counterparty: senderBalanceCheckResult.value.location.address,
-    },
-    capture: receiverPaymentCapture.id,
-    created_at: new Date(),
-  };
-  const receiverCaptureProcessing: PaymentCapture = {
-    ...receiverPaymentCapture,
-    status: "processing",
-  };
-
-  await savePaymentsWithTransactionsAndCaptures([
-    {
-      accountId,
-      payments: [],
-      transactions: [
-        senderPaymentTx,
-        ...(senderFeeTransaction ? [senderFeeTransaction] : []),
-      ],
-      paymentCaptures: [],
-    },
-    {
-      accountId: receiverAccount.id,
-      payments: [],
-      transactions: [receiverTransaction],
-      paymentCaptures: [receiverCaptureProcessing],
-    },
-  ]);
-
-  return ok(senderPayment);
+  return ok(sender.payment);
 };

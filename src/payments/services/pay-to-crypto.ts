@@ -1,23 +1,16 @@
 import { z } from "zod";
-import { v4 as uuidv4 } from "uuid";
 
 import { err, ok, Result } from "@/lib";
 
 import {
   Amount,
   getStablecoinTokenAddress,
-  mapAmount,
   StablecoinToken,
 } from "@/balances/values";
 import { hasBalanceInSingleLocation } from "@/balances/services";
 import { BlockchainWalletActionError } from "@/balances/errors";
 
-import {
-  Payment,
-  transactionId,
-  PaymentTransaction,
-  paymentId,
-} from "@/payments/entities";
+import { Payment } from "@/payments/entities";
 import {
   PaymentMethodCrypto,
   PaymentMethodTypeCrypto,
@@ -29,15 +22,9 @@ import {
   BlockchainPaymentActionError,
 } from "@/payments/errors";
 
-import {
-  SendBlockchainTransaction,
-  ValidateBlockchainAddress,
-} from "@/payments/interfaces";
-import {
-  sendBlockchainTransaction,
-  validateBlockchainAddress,
-} from "@/circle/adapters";
-import { savePaymentsWithTransactionsAndCaptures } from "@/payments/repositories";
+import { ValidateBlockchainAddress } from "@/payments/interfaces";
+import { validateBlockchainAddress } from "@/circle/adapters";
+import { transactViaCrypto } from "./transact-via-crypto";
 
 export const PayToCryptoDTO = z.object({
   amount: Amount,
@@ -51,13 +38,11 @@ export const payToCrypto = async ({
   live,
   dto,
   validateBlockchainAddressAdapter = validateBlockchainAddress,
-  sendBlockchainTransactionAdapter = sendBlockchainTransaction,
 }: {
   accountId: string;
   live: boolean;
   dto: z.infer<typeof PayToCryptoDTO>;
   validateBlockchainAddressAdapter?: ValidateBlockchainAddress;
-  sendBlockchainTransactionAdapter?: SendBlockchainTransaction;
 }): Promise<
   Result<
     Payment,
@@ -138,81 +123,31 @@ export const payToCrypto = async ({
   // TODO: Estimate fees
 
   // Start transaction
-  const payment: Payment = {
-    id: paymentId(),
-    amount: mapAmount(dto.amount, { negative: false }),
-    currency: dto.currency,
-    method: dto.method,
-    crypto: dto.method === "crypto" ? dto.crypto : undefined,
-    fees: [],
-    status: "pending",
-    trigger: { method: "user" },
-    authorization: { method: "user" },
+  const transactViaCryptoResult = await transactViaCrypto({
     live,
-    created_at: new Date(),
-  };
-
-  const newTransaction: PaymentTransaction = {
-    id: transactionId(),
-    status: "queued",
-    live,
-    amount: mapAmount(dto.amount, { negative: true }),
-    currency: dto.currency,
-    type: "payment",
-    network: "blockchain",
-    location: balanceCheckResult.value.location.id,
-    blockchain: {
-      hash: "n/a",
-      counterparty: dto.crypto.address,
-    },
-    payment: payment.id,
-    created_at: new Date(),
-    fingerprint: uuidv4(),
-  };
-
-  await savePaymentsWithTransactionsAndCaptures([
-    {
+    sender: {
       accountId,
-      payments: [payment],
-      transactions: [newTransaction],
-      paymentCaptures: [],
+      locationId: balanceCheckResult.value.location.id,
+      blockchain: balanceCheckResult.value.location.blockchain,
+      address: balanceCheckResult.value.location.address,
     },
-  ]);
-
-  const sentTransactionResult = await sendBlockchainTransactionAdapter({
-    transaction: newTransaction,
-    sourceAddress: balanceCheckResult.value.location.address,
-    destinationAddress: dto.crypto.address,
-    tokenAddress,
-    blockchain: dto.crypto.blockchain,
-    live,
+    receiver: {
+      hasArcPay: false,
+      blockchain: dto.crypto.blockchain,
+      address: dto.crypto.address,
+    },
+    payment: {
+      amount: dto.amount,
+      currency: dto.currency,
+      tokenAddress,
+      method: dto.method,
+      crypto: dto.crypto,
+    },
   });
 
-  if (!sentTransactionResult.ok) return sentTransactionResult;
+  if (!transactViaCryptoResult.ok) return transactViaCryptoResult;
 
-  const { payment: sentPaymentTx, fee: sentFeeTx } =
-    sentTransactionResult.value;
+  const { sender } = transactViaCryptoResult.value;
 
-  const feeTransaction = sentFeeTx
-    ? {
-        id: transactionId(),
-        live,
-        payment: payment.id,
-        ...sentFeeTx,
-      }
-    : undefined;
-
-  await savePaymentsWithTransactionsAndCaptures([
-    {
-      accountId,
-      payments: [],
-      transactions: [
-        sentPaymentTx,
-        ...(feeTransaction ? [feeTransaction] : []),
-      ],
-      paymentCaptures: [],
-    },
-  ]);
-
-  return ok(payment);
+  return ok(sender.payment);
 };
