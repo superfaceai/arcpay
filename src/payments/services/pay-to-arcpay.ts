@@ -72,10 +72,7 @@ export const payToArcPay = async ({
     | PaymentInsufficientBalanceError
   >
 > => {
-  const [receiverAccount, senderAccount] = await Promise.all([
-    loadAccountByHandle(dto.arc_pay.account),
-    loadAccountById(accountId),
-  ]);
+  const receiverAccount = await loadAccountByHandle(dto.arc_pay.account);
 
   if (!receiverAccount) {
     return err({
