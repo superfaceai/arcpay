@@ -24,11 +24,20 @@ import {
 
 import { payToCrypto, PayToCryptoDTO } from "./pay-to-crypto";
 import { payToArcPay, PayToArcPayDTO } from "./pay-to-arcpay";
+import { PaymentAuthorization, PaymentTrigger } from "@/payments/entities";
 
 export const PayDTO = z.discriminatedUnion("method", [
   PayToCryptoDTO,
   PayToArcPayDTO,
 ]);
+
+export type PayTrigger = {
+  senderAccountId: string;
+  trigger: PaymentTrigger["method"];
+  authorization:
+    | { method: "mandate"; mandate: PaymentMandate }
+    | { method: "user" };
+};
 
 export type PayOutcome = {
   sender: {
@@ -48,12 +57,12 @@ export type PayOutcome = {
 };
 
 export const pay = async ({
-  accountId,
   live,
+  trigger,
   dto,
 }: {
-  accountId: string;
   live: boolean;
+  trigger: PayTrigger;
   dto: z.infer<typeof PayDTO>;
 }): Promise<
   Result<
@@ -69,14 +78,14 @@ export const pay = async ({
 > => {
   if (dto.method === "crypto") {
     return payToCrypto({
-      accountId,
       live,
+      trigger,
       dto,
     });
   } else if (dto.method === "arc_pay") {
     return payToArcPay({
-      accountId,
       live,
+      trigger,
       dto,
     });
   }

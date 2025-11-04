@@ -27,10 +27,9 @@ import {
   PaymentInvalidAccountError,
   PaymentUnsupportedTokenError,
 } from "@/payments/errors";
-import { Payment } from "@/payments/entities";
 
 import { transactViaCrypto } from "./transact-via-crypto";
-import { PayOutcome } from "./pay";
+import { PayOutcome, PayTrigger } from "./pay";
 
 export const PayToArcPayDTO = z.object({
   amount: Amount,
@@ -40,12 +39,12 @@ export const PayToArcPayDTO = z.object({
 });
 
 export const payToArcPay = async ({
-  accountId,
   live,
+  trigger,
   dto,
 }: {
-  accountId: string;
   live: boolean;
+  trigger: PayTrigger;
   dto: z.infer<typeof PayToArcPayDTO>;
 }): Promise<
   Result<
@@ -68,7 +67,7 @@ export const payToArcPay = async ({
     });
   }
 
-  if (receiverAccount.id === accountId) {
+  if (receiverAccount.id === trigger.senderAccountId) {
     return err({
       type: "PaymentInvalidAccountError",
       invalidReason: "self",
@@ -78,7 +77,7 @@ export const payToArcPay = async ({
 
   // Check if the sender has enough balance for the currency in a single location
   const senderBalanceCheckResult = await hasBalanceInSingleLocation({
-    accountId,
+    accountId: trigger.senderAccountId,
     live,
     amount: dto.amount,
     currency: dto.currency,
@@ -128,7 +127,7 @@ export const payToArcPay = async ({
   const transactViaCryptoResult = await transactViaCrypto({
     live,
     sender: {
-      accountId,
+      accountId: trigger.senderAccountId,
       locationId: senderBalanceCheckResult.value.location.id,
       blockchain: senderBalanceCheckResult.value.location.blockchain,
       address: senderBalanceCheckResult.value.location.address,

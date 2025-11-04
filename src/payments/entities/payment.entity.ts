@@ -23,6 +23,7 @@ export const PaymentTrigger = z.discriminatedUnion("method", [
   PaymentTriggerUser,
   PaymentTriggerCapture,
 ]);
+export type PaymentTrigger = z.infer<typeof PaymentTrigger>;
 
 const PaymentAuthorizationUser = z.object({
   method: z.literal("user"),
@@ -36,6 +37,7 @@ export const PaymentAuthorization = z.discriminatedUnion("method", [
   PaymentAuthorizationUser,
   PaymentAuthorizationMandate,
 ]);
+export type PaymentAuthorization = z.infer<typeof PaymentAuthorization>;
 
 export const PaymentFee = z.object({
   type: z.enum(["network", "fx"]),

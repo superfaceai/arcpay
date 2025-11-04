@@ -40,7 +40,11 @@ export const paymentsApi = createApi()
     withValidation("json", PayDTO),
     async (c) => {
       const paymentResult = await pay({
-        accountId: c.get("accountId"),
+        trigger: {
+          senderAccountId: c.get("accountId"),
+          trigger: "user",
+          authorization: { method: "user" },
+        },
         live: c.get("isLive"),
         dto: c.req.valid("json"),
       });

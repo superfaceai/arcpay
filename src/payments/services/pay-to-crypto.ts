@@ -10,7 +10,6 @@ import {
 import { hasBalanceInSingleLocation } from "@/balances/services";
 import { BlockchainWalletActionError } from "@/balances/errors";
 
-import { Payment } from "@/payments/entities";
 import {
   PaymentMethodCrypto,
   PaymentMethodTypeCrypto,
@@ -25,7 +24,7 @@ import {
 import { ValidateBlockchainAddress } from "@/payments/interfaces";
 import { validateBlockchainAddress } from "@/circle/adapters";
 import { transactViaCrypto } from "./transact-via-crypto";
-import { PayOutcome } from "./pay";
+import { PayOutcome, PayTrigger } from "./pay";
 
 export const PayToCryptoDTO = z.object({
   amount: Amount,
@@ -35,13 +34,13 @@ export const PayToCryptoDTO = z.object({
 });
 
 export const payToCrypto = async ({
-  accountId,
   live,
+  trigger,
   dto,
   validateBlockchainAddressAdapter = validateBlockchainAddress,
 }: {
-  accountId: string;
   live: boolean;
+  trigger: PayTrigger;
   dto: z.infer<typeof PayToCryptoDTO>;
   validateBlockchainAddressAdapter?: ValidateBlockchainAddress;
 }): Promise<
@@ -85,7 +84,7 @@ export const payToCrypto = async ({
   }
 
   const balanceCheckResult = await hasBalanceInSingleLocation({
-    accountId,
+    accountId: trigger.senderAccountId,
     live,
     amount: dto.amount,
     currency: dto.currency,
@@ -127,7 +126,7 @@ export const payToCrypto = async ({
   const transactViaCryptoResult = await transactViaCrypto({
     live,
     sender: {
-      accountId,
+      accountId: trigger.senderAccountId,
       locationId: balanceCheckResult.value.location.id,
       blockchain: balanceCheckResult.value.location.blockchain,
       address: balanceCheckResult.value.location.address,
