@@ -3,7 +3,9 @@ import { db } from "@/database";
 import {
   Payment,
   PaymentCapture,
+  PaymentMandate,
   savePaymentCaptureViaPipeline,
+  savePaymentMandateViaPipeline,
   savePaymentViaPipeline,
   saveTransactionViaPipeline,
   Transaction,
@@ -11,6 +13,7 @@ import {
 
 type DataByAccount = {
   accountId: string;
+  mandates: PaymentMandate[];
   payments: Payment[];
   transactions: Transaction[];
   paymentCaptures: PaymentCapture[];
@@ -44,6 +47,12 @@ export const savePaymentsWithTransactionsAndCaptures = async (
       savePaymentCaptureViaPipeline({
         paymentCapture,
         accountId: account.accountId,
+        pipeline,
+      });
+    }
+    for (const mandate of account.mandates) {
+      savePaymentMandateViaPipeline({
+        paymentMandate: mandate,
         pipeline,
       });
     }

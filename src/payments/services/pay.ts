@@ -24,7 +24,7 @@ import {
 
 import { payToCrypto, PayToCryptoDTO } from "./pay-to-crypto";
 import { payToArcPay, PayToArcPayDTO } from "./pay-to-arcpay";
-import { PaymentAuthorization, PaymentTrigger } from "@/payments/entities";
+import { PaymentTrigger } from "@/payments/entities";
 
 export const PayDTO = z.discriminatedUnion("method", [
   PayToCryptoDTO,

@@ -27,7 +27,7 @@ const storageKeyBySecret = ({
 
 type DataStoredBySecret = Pick<PaymentMandate, "id" | "live" | "on_behalf_of">;
 
-const savePaymentMandateViaPipeline = ({
+export const savePaymentMandateViaPipeline = ({
   paymentMandate,
   pipeline,
 }: {

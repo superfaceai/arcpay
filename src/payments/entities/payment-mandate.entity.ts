@@ -41,6 +41,7 @@ const PaymentMandateSingleUse = PaymentMandateBase.extend({
   single_use: z.object({
     amount_limit: Amount,
     currency: Currency,
+    used_amount: Amount.optional(),
   }),
 });
 const PaymentMandateMultiUse = PaymentMandateBase.extend({
@@ -50,6 +51,8 @@ const PaymentMandateMultiUse = PaymentMandateBase.extend({
     total_amount_limit: Amount.optional(),
     usage_count_limit: z.number().optional(),
     currency: Currency,
+    total_used_amount: Amount.optional(),
+    total_used_count: z.number().optional(),
   }),
 });
 export const PaymentMandate = z.discriminatedUnion("type", [

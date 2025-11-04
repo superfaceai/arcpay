@@ -9,6 +9,7 @@ import {
   PaymentCapture,
   paymentCaptureId,
   paymentId,
+  PaymentMandate,
   PaymentTransaction,
   Transaction,
   transactionId,
@@ -24,6 +25,7 @@ import {
   PaymentMethodTypeCrypto,
 } from "../values";
 import { PayOutcome, PayTrigger } from "./pay";
+import { useValidPaymentMandate } from "./use-payment-mandate";
 
 type PaymentDetailsMethodCrypto = {
   method: PaymentMethodTypeCrypto;
@@ -92,6 +94,7 @@ export const transactViaCrypto = async ({
 
   const senderPaymentsBeforeTx: Payment[] = [];
   const senderTransactionsBeforeTx: Transaction[] = [];
+  let senderMandateBeforeTx: PaymentMandate | undefined = undefined;
   let receiverPaymentCaptureBeforeTx: PaymentCapture | undefined = undefined;
 
   const senderPayment: Payment = {
@@ -155,12 +158,21 @@ export const transactViaCrypto = async ({
     receiverPaymentCaptureBeforeTx = receiverPaymentCapture;
   }
 
+  if (trigger.authorization.method === "mandate") {
+    const usedMandate: PaymentMandate = useValidPaymentMandate({
+      amount: payment.amount,
+      paymentMandate: trigger.authorization.mandate,
+    });
+    senderMandateBeforeTx = usedMandate;
+  }
+
   await savePaymentsWithTransactionsAndCaptures([
     {
       accountId: sender.accountId,
       payments: senderPaymentsBeforeTx,
       transactions: senderTransactionsBeforeTx,
       paymentCaptures: [],
+      mandates: senderMandateBeforeTx ? [senderMandateBeforeTx] : [],
     },
     ...(receiver.hasArcPay
       ? [
@@ -171,6 +183,7 @@ export const transactViaCrypto = async ({
             paymentCaptures: receiverPaymentCaptureBeforeTx
               ? [receiverPaymentCaptureBeforeTx]
               : [],
+            mandates: [],
           },
         ]
       : []),
@@ -241,6 +254,7 @@ export const transactViaCrypto = async ({
       payments: [],
       transactions: senderTransactionsAfterTx,
       paymentCaptures: [],
+      mandates: [],
     },
     ...(receiver.hasArcPay
       ? [
@@ -251,6 +265,7 @@ export const transactViaCrypto = async ({
             paymentCaptures: receiverPaymentCaptureAfterTx
               ? [receiverPaymentCaptureAfterTx]
               : [],
+            mandates: [],
           },
         ]
       : []),
