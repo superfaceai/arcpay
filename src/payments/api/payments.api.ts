@@ -112,6 +112,8 @@ export const paymentsApi = createApi()
         return ProblemJson(c, 500, "Trouble processing the payment");
       }
 
-      return c.json(ApiObject("payment", paymentResult.value), { status: 201 });
+      return c.json(ApiObject("payment", paymentResult.value.sender.payment), {
+        status: 201,
+      });
     }
   );

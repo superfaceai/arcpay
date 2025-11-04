@@ -7,7 +7,12 @@ import {
   UnsupportedBlockchainError,
 } from "@/balances/errors";
 
-import { Payment } from "@/payments/entities";
+import {
+  Payment,
+  PaymentCapture,
+  PaymentMandate,
+  Transaction,
+} from "@/payments/entities";
 
 import {
   PaymentInsufficientBalanceError,
@@ -17,16 +22,30 @@ import {
   PaymentInvalidAccountError,
 } from "@/payments/errors";
 
-import { payToCrypto, PayToCryptoDTO } from "@/payments/services/pay-to-crypto";
-import {
-  payToArcPay,
-  PayToArcPayDTO,
-} from "@/payments/services/pay-to-arcpay";
+import { payToCrypto, PayToCryptoDTO } from "./pay-to-crypto";
+import { payToArcPay, PayToArcPayDTO } from "./pay-to-arcpay";
 
 export const PayDTO = z.discriminatedUnion("method", [
   PayToCryptoDTO,
   PayToArcPayDTO,
 ]);
+
+export type PayOutcome = {
+  sender: {
+    mandate: PaymentMandate | undefined;
+    payment: Payment;
+    transactions: Transaction[];
+  };
+  receiver:
+    | {
+        hasArcPay: true;
+        paymentCapture: PaymentCapture;
+        transactions: Transaction[];
+      }
+    | {
+        hasArcPay: false;
+      };
+};
 
 export const pay = async ({
   accountId,
@@ -38,7 +57,7 @@ export const pay = async ({
   dto: z.infer<typeof PayDTO>;
 }): Promise<
   Result<
-    Payment,
+    PayOutcome,
     | PaymentInvalidAccountError // from Arc Pay
     | UnsupportedBlockchainError // from Arc Pay
     | BlockchainPaymentActionError

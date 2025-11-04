@@ -25,6 +25,7 @@ import {
 import { ValidateBlockchainAddress } from "@/payments/interfaces";
 import { validateBlockchainAddress } from "@/circle/adapters";
 import { transactViaCrypto } from "./transact-via-crypto";
+import { PayOutcome } from "./pay";
 
 export const PayToCryptoDTO = z.object({
   amount: Amount,
@@ -45,7 +46,7 @@ export const payToCrypto = async ({
   validateBlockchainAddressAdapter?: ValidateBlockchainAddress;
 }): Promise<
   Result<
-    Payment,
+    PayOutcome,
     | BlockchainPaymentActionError
     | BlockchainWalletActionError
     | PaymentInvalidCryptoAddressError
@@ -147,7 +148,5 @@ export const payToCrypto = async ({
 
   if (!transactViaCryptoResult.ok) return transactViaCryptoResult;
 
-  const { sender } = transactViaCryptoResult.value;
-
-  return ok(sender.payment);
+  return ok(transactViaCryptoResult.value);
 };

@@ -9,7 +9,6 @@ import {
   PaymentCapture,
   paymentCaptureId,
   paymentId,
-  PaymentMandate,
   PaymentTransaction,
   Transaction,
   transactionId,
@@ -24,6 +23,7 @@ import {
   PaymentMethodTypeArcPay,
   PaymentMethodTypeCrypto,
 } from "../values";
+import { PayOutcome } from "./pay";
 
 type PaymentDetailsMethodCrypto = {
   method: PaymentMethodTypeCrypto;
@@ -62,25 +62,7 @@ type InternalReceiver = {
   blockchain: Blockchain;
   address: string;
 };
-
 type Receiver = ExternalReceiver | InternalReceiver;
-
-export type TransactViaCryptoOutcome = {
-  sender: {
-    mandate: PaymentMandate | undefined;
-    payment: Payment;
-    transactions: Transaction[];
-  };
-  receiver:
-    | {
-        hasArcPay: boolean;
-        paymentCapture: PaymentCapture;
-        transactions: Transaction[];
-      }
-    | {
-        hasArcPay: false;
-      };
-};
 
 /**
  * Low-level service to invoke to execute a crypto payment.
@@ -98,7 +80,7 @@ export const transactViaCrypto = async ({
   receiver: Receiver;
   payment: PaymentDetails;
   sendBlockchainTransactionAdapter?: SendBlockchainTransaction;
-}): Promise<Result<TransactViaCryptoOutcome, BlockchainPaymentActionError>> => {
+}): Promise<Result<PayOutcome, BlockchainPaymentActionError>> => {
   console.debug("TODO: Execute the crypto payment", {
     live,
     sender,

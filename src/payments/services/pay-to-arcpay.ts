@@ -30,6 +30,7 @@ import {
 import { Payment } from "@/payments/entities";
 
 import { transactViaCrypto } from "./transact-via-crypto";
+import { PayOutcome } from "./pay";
 
 export const PayToArcPayDTO = z.object({
   amount: Amount,
@@ -48,7 +49,7 @@ export const payToArcPay = async ({
   dto: z.infer<typeof PayToArcPayDTO>;
 }): Promise<
   Result<
-    Payment,
+    PayOutcome,
     | BlockchainWalletActionError
     | BlockchainPaymentActionError
     | UnsupportedBlockchainError
@@ -150,7 +151,5 @@ export const payToArcPay = async ({
 
   if (!transactViaCryptoResult.ok) return transactViaCryptoResult;
 
-  const { sender } = transactViaCryptoResult.value;
-
-  return ok(sender.payment);
+  return ok(transactViaCryptoResult.value);
 };
