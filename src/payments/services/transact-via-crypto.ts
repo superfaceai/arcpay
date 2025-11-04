@@ -85,13 +85,6 @@ export const transactViaCrypto = async ({
   trigger: PayTrigger;
   sendBlockchainTransactionAdapter?: SendBlockchainTransaction;
 }): Promise<Result<PayOutcome, BlockchainPaymentActionError>> => {
-  console.debug("TODO: Execute the crypto payment", {
-    live,
-    sender,
-    receiver,
-    payment,
-  });
-
   const senderPaymentsBeforeTx: Payment[] = [];
   const senderTransactionsBeforeTx: Transaction[] = [];
   let senderMandateBeforeTx: PaymentMandate | undefined = undefined;
