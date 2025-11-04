@@ -52,10 +52,33 @@ export const paymentCapturesApi = createApi()
           );
         }
 
+        if (
+          capturePaymentResult.error.type ===
+          "PaymentUnsupportedPaymentMethodError"
+        ) {
+          return ProblemJson(
+            c,
+            400,
+            "Payment method not supported",
+            `The payment method '${capturePaymentResult.error.method}' is not yet supported for captures`
+          );
+        }
+
+        if (capturePaymentResult.error.type === "PaymentCaptureError") {
+          return ProblemJson(
+            c,
+            500,
+            "Trouble capturing payment",
+            "An error occurred while capturing the payment. The payment may have been captured successfully, but the capture request failed. Please check the payment captures to or try again"
+          );
+        }
+
         throw new Error(capturePaymentResult.error);
       }
 
-      return c.json(ApiObject("payment_capture", capturePaymentResult.value));
+      return c.json(ApiObject("payment_capture", capturePaymentResult.value), {
+        status: 201,
+      });
     }
   )
   .get(

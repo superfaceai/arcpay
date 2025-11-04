@@ -30,6 +30,7 @@ export const PayDTO = z.discriminatedUnion("method", [
   PayToCryptoDTO,
   PayToArcPayDTO,
 ]);
+export type PayDTO = z.infer<typeof PayDTO>;
 
 export type PayTrigger = {
   senderAccountId: string;

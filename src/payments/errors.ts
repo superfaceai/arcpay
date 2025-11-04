@@ -88,3 +88,7 @@ export interface PaymentMandateMismatchError {
     amount: Amount;
   };
 }
+
+export interface PaymentCaptureError {
+  readonly type: "PaymentCaptureError";
+}

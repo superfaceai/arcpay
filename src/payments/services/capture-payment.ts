@@ -3,22 +3,21 @@ import Big from "big.js";
 
 import { err, ok, Result } from "@/lib";
 
-import { Amount, Currency } from "@/balances/values";
+import { loadAccountById } from "@/identity/entities";
+import { Amount, Currency, StablecoinToken } from "@/balances/values";
 
 import { PaymentMetadata } from "@/payments/values";
-import {
-  PaymentCapture,
-  paymentCaptureId,
-  PaymentMandateSecret,
-  savePaymentCapture,
-} from "@/payments/entities";
-
+import { PaymentCapture, PaymentMandateSecret } from "@/payments/entities";
 import {
   PaymentMandateInactiveError,
   PaymentMandateNotFoundError,
   PaymentMandateMismatchError,
+  PaymentUnsupportedPaymentMethodError,
+  PaymentCaptureError,
 } from "@/payments/errors";
+
 import { getPaymentMandate } from "./get-payment-mandate";
+import { pay, PayDTO } from "./pay";
 
 export const CapturePaymentDTO = z.object({
   amount: Amount,
@@ -41,6 +40,8 @@ export const capturePayment = async ({
     | PaymentMandateNotFoundError
     | PaymentMandateInactiveError
     | PaymentMandateMismatchError
+    | PaymentUnsupportedPaymentMethodError
+    | PaymentCaptureError
   >
 > => {
   const grantedMandate = await getPaymentMandate({
@@ -87,23 +88,56 @@ export const capturePayment = async ({
     });
   }
 
-  const paymentCapture: PaymentCapture = PaymentCapture.parse({
-    id: paymentCaptureId(),
-    live: live,
-    amount: dto.amount,
-    currency: dto.currency,
-    granted_mandate_secret: dto.granted_mandate_secret,
-    method: grantedMandate.method,
-    status: "processing",
-    created_at: new Date(),
-    ...(dto.metadata ? { metadata: dto.metadata } : {}),
+  const senderAccountId = grantedMandate.on_behalf_of;
+  let paymentDto: PayDTO;
+
+  if (grantedMandate.method === "arc_pay") {
+    const receiverAccount = await loadAccountById(accountId);
+
+    paymentDto = {
+      amount: dto.amount,
+      currency: dto.currency as StablecoinToken,
+      method: "arc_pay",
+      arc_pay: {
+        account: receiverAccount!.handle,
+      },
+    };
+  } else {
+    // TODO: Implement other payment methods
+    return err({
+      type: "PaymentUnsupportedPaymentMethodError",
+      method: grantedMandate.method,
+    });
+  }
+
+  const payResult = await pay({
+    live,
+    trigger: {
+      senderAccountId,
+      trigger: "capture",
+      authorization: {
+        method: "mandate",
+        mandate: grantedMandate,
+      },
+    },
+    dto: paymentDto,
   });
-  await savePaymentCapture({ paymentCapture, accountId });
 
-  // TODO: Execute payment capture
-  // Payment (linked to mandate) -> Transaction[] for payer
-  // PaymentCapture -> Transaction[] for receiver
-  // PaymentCapture -> used
+  if (!payResult.ok) {
+    // Mapping payment error here not to leak the sender payment errors to the receiver
+    return err({
+      type: "PaymentCaptureError",
+    });
+  }
 
-  return ok(paymentCapture);
+  const { receiver } = payResult.value;
+
+  if (!receiver.hasArcPay || !receiver.paymentCapture) {
+    // This should never happen, but we'll handle it just in case
+    return err({
+      type: "PaymentCaptureError",
+    });
+  }
+
+  return ok(receiver.paymentCapture);
 };
