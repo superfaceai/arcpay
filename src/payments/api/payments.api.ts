@@ -109,17 +109,6 @@ export const paymentsApi = createApi()
             )}' is not supported for ${paymentResult.error.currency}`
           );
         }
-        if (
-          paymentResult.error.type === "PaymentUnsupportedPaymentMethodError"
-        ) {
-          return ProblemJson(
-            c,
-            400,
-            "Bad Request",
-            `The payment method '${paymentResult.error.method}' is not supported`
-          );
-        }
-
         return ProblemJson(c, 500, "Trouble processing the payment");
       }
 
