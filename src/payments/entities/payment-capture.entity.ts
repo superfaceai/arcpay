@@ -1,10 +1,7 @@
 import { z } from "zod";
 import { generateId, DateCodec } from "@/lib";
 import { Amount, Currency } from "@/balances/values";
-import {
-  PaymentMetadata,
-  PaymentMethodType,
-} from "@/payments/values";
+import { PaymentMetadata, PaymentMethodType } from "@/payments/values";
 
 import { PaymentMandateSecret } from "./payment-mandate.entity";
 
@@ -19,6 +16,22 @@ export const PaymentCaptureStatus = z.enum([
 ]);
 export type PaymentCaptureStatus = z.infer<typeof PaymentCaptureStatus>;
 
+const PaymentCaptureAuthorizationSender = z.object({
+  method: z.literal("sender"),
+});
+const PaymentCaptureAuthorizationMandate = z.object({
+  method: z.literal("mandate"),
+  granted_mandate_secret: PaymentMandateSecret,
+});
+
+export const PaymentCaptureAuthorization = z.discriminatedUnion("method", [
+  PaymentCaptureAuthorizationSender,
+  PaymentCaptureAuthorizationMandate,
+]);
+export type PaymentCaptureAuthorization = z.infer<
+  typeof PaymentCaptureAuthorization
+>;
+
 export const PaymentCapture = z.object({
   id: z.string(),
   live: z.boolean(),
@@ -26,7 +39,7 @@ export const PaymentCapture = z.object({
   currency: Currency,
   method: PaymentMethodType,
   status: PaymentCaptureStatus,
-  granted_mandate_secret: PaymentMandateSecret.optional(),
+  authorization: PaymentCaptureAuthorization,
   cancellation_reason: z.string().optional(),
   cancelled_at: DateCodec.optional(),
   failure_reason: z.string().optional(),

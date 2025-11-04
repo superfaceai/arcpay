@@ -146,6 +146,8 @@ export const payToCrypto = async ({
     crypto: dto.method === "crypto" ? dto.crypto : undefined,
     fees: [],
     status: "pending",
+    trigger: { method: "user" },
+    authorization: { method: "user" },
     live,
     created_at: new Date(),
   };

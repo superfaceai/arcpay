@@ -12,6 +12,31 @@ export const paymentId = () => generateId("pay");
 export const PaymentStatus = z.enum(["pending", "succeeded", "failed"]);
 export type PaymentStatus = z.infer<typeof PaymentStatus>;
 
+const PaymentTriggerUser = z.object({
+  method: z.literal("user"),
+  // user_id: z.string(), when we have Users below Account
+});
+const PaymentTriggerCapture = z.object({
+  method: z.literal("capture"),
+});
+export const PaymentTrigger = z.discriminatedUnion("method", [
+  PaymentTriggerUser,
+  PaymentTriggerCapture,
+]);
+
+const PaymentAuthorizationUser = z.object({
+  method: z.literal("user"),
+  // user_id: z.string(), when we have Users below Account
+});
+const PaymentAuthorizationMandate = z.object({
+  method: z.literal("mandate"),
+  mandate: z.string(),
+});
+export const PaymentAuthorization = z.discriminatedUnion("method", [
+  PaymentAuthorizationUser,
+  PaymentAuthorizationMandate,
+]);
+
 export const PaymentFee = z.object({
   type: z.enum(["network", "fx"]),
   amount: Amount,
@@ -21,6 +46,7 @@ export type PaymentFee = z.infer<typeof PaymentFee>;
 
 export const Payment = z.object({
   id: z.string(),
+  live: z.boolean(),
   amount: Amount,
   currency: Currency,
   method: PaymentMethodType,
@@ -28,7 +54,8 @@ export const Payment = z.object({
   arc_pay: PaymentMethodArcPay.optional(), // only when method=arc_pay
   fees: z.array(PaymentFee),
   status: PaymentStatus,
-  live: z.boolean(),
+  trigger: PaymentTrigger,
+  authorization: PaymentAuthorization,
   failure_reason: z.string().optional(),
   created_at: DateCodec,
   finished_at: DateCodec.optional(),

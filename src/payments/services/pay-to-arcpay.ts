@@ -165,6 +165,8 @@ export const payToArcPay = async ({
     arc_pay: dto.method === "arc_pay" ? dto.arc_pay : undefined,
     fees: [],
     status: "pending",
+    trigger: { method: "user" },
+    authorization: { method: "user" },
     live,
     created_at: new Date(),
   };
@@ -174,6 +176,7 @@ export const payToArcPay = async ({
     currency: dto.currency,
     method: dto.method,
     status: "requires_capture",
+    authorization: { method: "sender" },
     live,
     created_at: new Date(),
   };
