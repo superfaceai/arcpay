@@ -143,6 +143,7 @@ export const payToCrypto = async ({
       method: dto.method,
       crypto: dto.crypto,
     },
+    trigger,
   });
 
   if (!transactViaCryptoResult.ok) return transactViaCryptoResult;

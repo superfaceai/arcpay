@@ -146,6 +146,7 @@ export const payToArcPay = async ({
       method: dto.method,
       arc_pay: dto.arc_pay,
     },
+    trigger,
   });
 
   if (!transactViaCryptoResult.ok) return transactViaCryptoResult;

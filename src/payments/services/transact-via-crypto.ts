@@ -23,7 +23,7 @@ import {
   PaymentMethodTypeArcPay,
   PaymentMethodTypeCrypto,
 } from "../values";
-import { PayOutcome } from "./pay";
+import { PayOutcome, PayTrigger } from "./pay";
 
 type PaymentDetailsMethodCrypto = {
   method: PaymentMethodTypeCrypto;
@@ -73,12 +73,14 @@ export const transactViaCrypto = async ({
   sender,
   receiver,
   payment,
+  trigger,
   sendBlockchainTransactionAdapter = sendBlockchainTransaction,
 }: {
   live: boolean;
   sender: Sender;
   receiver: Receiver;
   payment: PaymentDetails;
+  trigger: PayTrigger;
   sendBlockchainTransactionAdapter?: SendBlockchainTransaction;
 }): Promise<Result<PayOutcome, BlockchainPaymentActionError>> => {
   console.debug("TODO: Execute the crypto payment", {
@@ -101,8 +103,12 @@ export const transactViaCrypto = async ({
     ...(payment.method === "arc_pay" ? { arc_pay: payment.arc_pay } : {}),
     fees: [],
     status: "pending",
-    trigger: { method: "user" }, // TODO: Infer trigger
-    authorization: { method: "user" }, // TODO: Run actual authorization logic
+    trigger:
+      trigger.trigger === "user" ? { method: "user" } : { method: "capture" },
+    authorization:
+      trigger.authorization.method === "mandate"
+        ? { method: "mandate", mandate: trigger.authorization.mandate.id }
+        : { method: "user" },
     live,
     created_at: new Date(),
     // metadata
@@ -135,7 +141,13 @@ export const transactViaCrypto = async ({
       currency: payment.currency,
       method: payment.method,
       status: "requires_capture",
-      authorization: { method: "sender" }, // TODO: Run actual authorization logic
+      authorization:
+        trigger.authorization.method === "mandate"
+          ? {
+              method: "mandate",
+              granted_mandate_secret: trigger.authorization.mandate.secret,
+            }
+          : { method: "sender" },
       live,
       created_at: new Date(),
       // metadata
