@@ -1014,7 +1014,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"on\": \"transaction\",\n    \"threshold\": {\n        \"amount\": \"2\",\n        \"currency\": \"USDC\"\n    },\n    \"deliver_to\": \"{{PHONE_CONTACT_ID}}\"\n}",
+							"raw": "{\n    \"on\": \"payment\",\n    \"threshold\": {\n        \"amount\": \"2\",\n        \"currency\": \"USDC\"\n    },\n    \"deliver_to\": \"{{PHONE_CONTACT_ID}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1101,6 +1101,39 @@
 							"path": [
 								"notification_rules",
 								"{{NOTIFICATION_RULE_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List notifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/notifications?from=2025-11-01T19:30:00.000Z",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"notifications"
+							],
+							"query": [
+								{
+									"key": "from",
+									"value": "2025-11-01T19:30:00.000Z"
+								}
 							]
 						}
 					},
