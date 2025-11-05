@@ -9,6 +9,9 @@ const ConfigSchema = z.object({
   CIRCLE_WALLETSET_ID: z.string().min(1),
   REDIS_REST_URL: z.string().min(1),
   REDIS_REST_TOKEN: z.string().min(1),
+  TWILIO_ACCOUNT_SID: z.string().optional(),
+  TWILIO_AUTH_TOKEN: z.string().optional(),
+  TWILIO_PHONE_NUMBER: z.string().optional(),
 });
 
 const parsedConfig = ConfigSchema.safeParse(process.env);
