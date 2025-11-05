@@ -6,13 +6,13 @@ import {
   NotificationOnTransactionThreshold,
   NotificationRule,
   notificationRuleId,
-  NotificationTrigger,
+  NotificationTriggerType,
   saveNotificationRule,
 } from "@/notifications/entities";
 import { InvalidNotificationRuleError } from "@/notifications/errors";
 
 export const AddNotificationRuleDTO = z.object({
-  on: NotificationTrigger,
+  on: NotificationTriggerType,
   threshold: NotificationOnTransactionThreshold,
   deliver_to: z.union([z.string(), z.array(z.string())]),
 });

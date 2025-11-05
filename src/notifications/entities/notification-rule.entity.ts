@@ -5,10 +5,15 @@ import { Amount } from "@/balances/values";
 
 export const notificationRuleId = () => generateId("ntfr");
 
-export const NotificationTrigger = z.enum(["transaction"]);
-export type NotificationTrigger = z.infer<typeof NotificationTrigger>;
+export const NotificationTriggerType = z.enum(["payment"]);
+export type NotificationTriggerType = z.infer<typeof NotificationTriggerType>;
 
-export const NotificationChannel = z.enum(["sms", "email"]);
+export const NotificationChannelSMS = z.literal("sms");
+export const NotificationChannelEmail = z.literal("email");
+export const NotificationChannel = z.union([
+  NotificationChannelSMS,
+  NotificationChannelEmail,
+]);
 export type NotificationChannel = z.infer<typeof NotificationChannel>;
 
 export const NotificationOnTransactionThreshold = z.object({
@@ -22,7 +27,7 @@ export const NotificationRule = z.object({
   live: z.boolean(),
   enabled: z.boolean(),
 
-  on: NotificationTrigger,
+  on: NotificationTriggerType,
   threshold: NotificationOnTransactionThreshold,
 
   deliver_to: z.array(
