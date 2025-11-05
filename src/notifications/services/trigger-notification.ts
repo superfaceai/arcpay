@@ -123,7 +123,7 @@ const generateNotificationMessage = ({
   const beneficiary =
     (event.payment.method === "crypto"
       ? event.payment.crypto?.address
-      : event.payment.arc_pay?.account) ?? "unknown";
+      : event.payment.arcpay?.account) ?? "unknown";
 
   return `Paid ${event.payment.currency} ${event.payment.amount} to '${beneficiary}'`;
 };

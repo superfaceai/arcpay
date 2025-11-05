@@ -91,14 +91,14 @@ export const capturePayment = async ({
   const senderAccountId = grantedMandate.on_behalf_of;
   let paymentDto: PayDTO;
 
-  if (grantedMandate.method === "arc_pay") {
+  if (grantedMandate.method === "arcpay") {
     const receiverAccount = await loadAccountById(accountId);
 
     paymentDto = {
       amount: dto.amount,
       currency: dto.currency as StablecoinToken,
-      method: "arc_pay",
-      arc_pay: {
+      method: "arcpay",
+      arcpay: {
         account: receiverAccount!.handle,
       },
       metadata: grantedMandate.metadata,

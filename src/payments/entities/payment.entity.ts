@@ -54,7 +54,7 @@ export const Payment = z.object({
   currency: Currency,
   method: PaymentMethodType,
   crypto: PaymentMethodCrypto.optional(), // only when method=crypto
-  arc_pay: PaymentMethodArcPay.optional(), // only when method=arc_pay
+  arcpay: PaymentMethodArcPay.optional(), // only when method=arcpay
   fees: z.array(PaymentFee),
   status: PaymentStatus,
   trigger: PaymentTrigger,

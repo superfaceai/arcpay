@@ -36,7 +36,7 @@ export const PayToArcPayDTO = z.object({
   amount: Amount,
   currency: StablecoinToken,
   method: PaymentMethodTypeArcPay,
-  arc_pay: PaymentMethodArcPay,
+  arcpay: PaymentMethodArcPay,
   metadata: PaymentMetadata.optional(),
 });
 
@@ -59,13 +59,13 @@ export const payToArcPay = async ({
     | PaymentInsufficientBalanceError
   >
 > => {
-  const receiverAccount = await loadAccountByHandle(dto.arc_pay.account);
+  const receiverAccount = await loadAccountByHandle(dto.arcpay.account);
 
   if (!receiverAccount) {
     return err({
       type: "PaymentInvalidAccountError",
       invalidReason: "not_found",
-      handle: dto.arc_pay.account,
+      handle: dto.arcpay.account,
     });
   }
 
@@ -73,7 +73,7 @@ export const payToArcPay = async ({
     return err({
       type: "PaymentInvalidAccountError",
       invalidReason: "self",
-      handle: dto.arc_pay.account,
+      handle: dto.arcpay.account,
     });
   }
 
@@ -146,7 +146,7 @@ export const payToArcPay = async ({
       currency: dto.currency,
       tokenAddress,
       method: dto.method,
-      arc_pay: dto.arc_pay,
+      arcpay: dto.arcpay,
       metadata: dto.metadata,
     },
     trigger,

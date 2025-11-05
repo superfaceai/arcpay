@@ -35,7 +35,7 @@ type PaymentDetailsMethodCrypto = {
 };
 type PaymentDetailsMethodArcPay = {
   method: PaymentMethodTypeArcPay;
-  arc_pay: PaymentMethodArcPay;
+  arcpay: PaymentMethodArcPay;
 };
 type PaymentDetailsMethod =
   | PaymentDetailsMethodCrypto
@@ -99,7 +99,7 @@ export const transactViaCrypto = async ({
     currency: payment.currency,
     method: payment.method,
     ...(payment.method === "crypto" ? { crypto: payment.crypto } : {}),
-    ...(payment.method === "arc_pay" ? { arc_pay: payment.arc_pay } : {}),
+    ...(payment.method === "arcpay" ? { arcpay: payment.arcpay } : {}),
     fees: [],
     status: "pending",
     trigger:

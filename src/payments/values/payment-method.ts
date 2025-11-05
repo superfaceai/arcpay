@@ -5,7 +5,7 @@ import { AccountHandle } from "@/identity/entities";
 export const PaymentMethodTypeCrypto = z.literal("crypto");
 export type PaymentMethodTypeCrypto = z.infer<typeof PaymentMethodTypeCrypto>;
 
-export const PaymentMethodTypeArcPay = z.literal("arc_pay");
+export const PaymentMethodTypeArcPay = z.literal("arcpay");
 export type PaymentMethodTypeArcPay = z.infer<
   typeof PaymentMethodTypeArcPay
 >;

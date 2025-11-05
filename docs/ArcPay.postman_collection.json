@@ -582,7 +582,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"currency\": \"USDC\",\n    \"amount\": \"0.5\",\n    \"method\": \"arc_pay\",\n    \"arc_pay\": {\n        \"account\": \"paygrounds\"\n    }\n}",
+							"raw": "{\n    \"currency\": \"USDC\",\n    \"amount\": \"0.5\",\n    \"method\": \"arcpay\",\n    \"arcpay\": {\n        \"account\": \"paygrounds\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"

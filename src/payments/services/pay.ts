@@ -85,7 +85,7 @@ export const pay = async ({
       trigger,
       dto,
     });
-  } else if (dto.method === "arc_pay") {
+  } else if (dto.method === "arcpay") {
     return payToArcPay({
       live,
       trigger,

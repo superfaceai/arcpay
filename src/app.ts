@@ -212,7 +212,7 @@ curl ${host}/deposits \\
   <p>Arc Pay extends ACP with the following features:</p>
   
   <ul>
-  <li>Payment provider: <code>arc_pay</code></li>
+  <li>Payment provider: <code>arcpay</code></li>
   <li>Supported payment methods: <code>wallet</code></li>
   </ul>
   
@@ -225,7 +225,7 @@ curl ${host}/deposits \\
   "id": "checkout_session_123",
   ...,
   "payment_provider": {
-    "provider": "arc_pay",
+    "provider": "arcpay",
     "supported_payment_methods": [
       "wallet"
     ]
