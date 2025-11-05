@@ -29,6 +29,18 @@ export const saveNotificationRule = async ({
   );
 };
 
+export const deleteNotificationRule = async ({
+  accountId,
+  live,
+  id,
+}: {
+  accountId: string;
+  live: boolean;
+  id: string;
+}): Promise<number> => {
+  return await db.del(storageKeyById({ accountId, live, id }));
+};
+
 export const loadNotificationRulesByAccount = async ({
   accountId,
   live,

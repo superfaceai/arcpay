@@ -120,6 +120,7 @@
 									"pm.collectionVariables.set(\"PAYMENT_MANDATE_ID\", \"\");",
 									"pm.collectionVariables.set(\"PAYMENT_MANDATE_SECRET\", \"\");",
 									"pm.collectionVariables.set(\"PAYMENT_CAPTURE_ID\", \"\");",
+									"pm.collectionVariables.set(\"NOTIFICATION_RULE_ID\", \"\");",
 									""
 								],
 								"type": "text/javascript",
@@ -971,58 +972,27 @@
 			]
 		},
 		{
-			"name": "MCP",
-			"item": [
-				{
-					"name": "List MCP tools",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{SECRET_KEY}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json,text/event-stream",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/list\",\n  \"params\": { }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{HOST}}/mcp/wallets",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"mcp",
-								"wallets"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
 			"name": "Notifications",
 			"item": [
 				{
 					"name": "Create notification rule",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()",
+									"",
+									"if ('id' in response) {",
+									"    pm.collectionVariables.set('NOTIFICATION_RULE_ID', response.id)",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1065,6 +1035,24 @@
 				},
 				{
 					"name": "List notification rules",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"if (jsonData.data && jsonData.data.length > 0) {",
+									"    pm.collectionVariables.set(\"NOTIFICATION_RULE_ID\", jsonData.data[0].id);",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1085,6 +1073,82 @@
 							],
 							"path": [
 								"notification_rules"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete notification rule",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/notification_rules/{{NOTIFICATION_RULE_ID}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"notification_rules",
+								"{{NOTIFICATION_RULE_ID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MCP",
+			"item": [
+				{
+					"name": "List MCP tools",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/event-stream",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/list\",\n  \"params\": { }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/mcp/wallets",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"mcp",
+								"wallets"
 							]
 						}
 					},
@@ -1192,6 +1256,14 @@
 			"value": "",
 			"description": {
 				"content": "Populates automatically after capturing a payment",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "NOTIFICATION_RULE_ID",
+			"value": "",
+			"description": {
+				"content": "Populates automatically after creating/listing notification rule",
 				"type": "text/plain"
 			}
 		}

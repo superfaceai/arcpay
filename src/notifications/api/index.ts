@@ -6,7 +6,10 @@ import {
   addNotificationRule,
   AddNotificationRuleDTO,
 } from "@/notifications/services";
-import { loadNotificationRulesByAccount } from "@/notifications/entities";
+import {
+  deleteNotificationRule,
+  loadNotificationRulesByAccount,
+} from "@/notifications/entities";
 
 export const notificationsApi = createApi()
   .get("/notification_rules", withAuth(), async (c) => {
@@ -37,4 +40,13 @@ export const notificationsApi = createApi()
         status: 201,
       });
     }
-  );
+  )
+  .delete("/notification_rules/:notificationRuleId", withAuth(), async (c) => {
+    await deleteNotificationRule({
+      live: c.get("isLive"),
+      accountId: c.get("accountId"),
+      id: c.req.param("notificationRuleId"),
+    });
+
+    return c.newResponse(null, 204);
+  });
