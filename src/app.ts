@@ -6,7 +6,7 @@ export const _honoReference = Hono;
 import { createApplicationApi, listResources, Resource } from "@/api/services";
 
 import { erasureApi } from "@/erasure/api";
-import { identityApi } from "@/identity/api";
+import { accountsApi, contactsApi } from "@/identity/api";
 import { balancesApi, locationsApi } from "@/balances/api";
 import {
   depositsApi,
@@ -20,7 +20,8 @@ import { walletsMcp } from "@/wallets/mcp";
 
 const app = createApplicationApi((app) => {
   app.route("/", erasureApi);
-  app.route("/", identityApi);
+  app.route("/", accountsApi);
+  app.route("/", contactsApi);
 
   app.route("/", balancesApi);
   app.route("/", locationsApi);

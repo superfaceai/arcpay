@@ -20,6 +20,7 @@
 									"",
 									"if (jsonData.key) {",
 									"    pm.collectionVariables.set(\"SECRET_KEY\", jsonData.key);",
+									"    pm.collectionVariables.set(\"ACCOUNT_ID\", jsonData.account);",
 									"}",
 									""
 								],
@@ -55,6 +56,31 @@
 				},
 				{
 					"name": "My account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"if (jsonData.id) {",
+									"    pm.collectionVariables.set(\"ACCOUNT_ID\", jsonData.id);",
+									"",
+									"    if (jsonData.contacts && Array.isArray(jsonData.contacts) && jsonData.contacts.length > 0) {",
+									"        const phoneContact = jsonData.contacts.find(c => c.method === \"phone\");",
+									"        if (phoneContact) {",
+									"            pm.collectionVariables.set(\"PHONE_CONTACT_ID\", phoneContact.id);",
+									"        }",
+									"    }",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -88,6 +114,8 @@
 							"script": {
 								"exec": [
 									"pm.collectionVariables.set(\"SECRET_KEY\", \"\");",
+									"pm.collectionVariables.set(\"ACCOUNT_ID\", \"\");",
+									"pm.collectionVariables.set(\"PHONE_CONTACT_ID\", \"\");",
 									"pm.collectionVariables.set(\"PRIMARY_LOCATION_ID\", \"\");",
 									"pm.collectionVariables.set(\"PAYMENT_MANDATE_ID\", \"\");",
 									"pm.collectionVariables.set(\"PAYMENT_MANDATE_SECRET\", \"\");",
@@ -120,6 +148,156 @@
 							],
 							"path": [
 								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add new contact",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"if (jsonData.id && jsonData.method && jsonData.method === \"phone\") {",
+									"    pm.collectionVariables.set(\"PHONE_CONTACT_ID\", jsonData.id);",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Idempotency-Key",
+								"value": "add-contact-1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"method\": \"phone\",\n    \"label\": \"Personal\",\n    \"phone_number\": \"212-456-7890\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/account/{{ACCOUNT_ID}}/contacts",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"account",
+								"{{ACCOUNT_ID}}",
+								"contacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update existing contact",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Idempotency-Key",
+								"value": "update-contact-1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"method\": \"phone\",\n    \"label\": \"Accounting\",\n    \"phone_number\": \"212-456-7890\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/account/{{ACCOUNT_ID}}/contacts/{{PHONE_CONTACT_ID}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"account",
+								"{{ACCOUNT_ID}}",
+								"contacts",
+								"{{PHONE_CONTACT_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete existing contact",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"PHONE_CONTACT_ID\", \"\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/account/{{ACCOUNT_ID}}/contacts/{{PHONE_CONTACT_ID}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"account",
+								"{{ACCOUNT_ID}}",
+								"contacts",
+								"{{PHONE_CONTACT_ID}}"
 							]
 						}
 					},
@@ -892,6 +1070,22 @@
 			"value": "",
 			"description": {
 				"content": "Populates automatically after a sign up",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "ACCOUNT_ID",
+			"value": "",
+			"description": {
+				"content": "Populates automatically after sign up/fetching my account",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "PHONE_CONTACT_ID",
+			"value": "",
+			"description": {
+				"content": "Populates automatically after fetching an account detail",
 				"type": "text/plain"
 			}
 		},

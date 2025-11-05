@@ -1,6 +1,8 @@
 import { generateId } from "@/lib";
 import { z } from "zod";
 
+import { Contact } from "./contact.entity";
+
 export const accountId = () => generateId("acct");
 
 export const AccountHandle = z
@@ -14,5 +16,6 @@ export const Account = z.object({
   type: z.enum(["individual"]),
   name: z.string().min(3),
   handle: AccountHandle,
+  contacts: z.array(Contact).default([]),
 });
 export type Account = z.infer<typeof Account>;
