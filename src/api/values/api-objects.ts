@@ -4,6 +4,7 @@ import { Balance } from "@/balances/entities";
 import { Deposit, PaymentMandate, PaymentCapture } from "@/payments/entities";
 import { Payment } from "@/payments/entities";
 import { Transaction } from "@/payments/entities";
+import { NotificationRule } from "@/notifications/entities";
 
 // When adding new API object,
 // 1) Add the object name to the ObjectName type
@@ -19,7 +20,8 @@ export type ObjectName =
   | "payment"
   | "payment_mandate"
   | "payment_capture"
-  | "transaction";
+  | "transaction"
+  | "notification_rule";
 
 export type ExpectedObject<Name extends ObjectName> = Name extends "apikey"
   ? ApiKey
@@ -41,4 +43,6 @@ export type ExpectedObject<Name extends ObjectName> = Name extends "apikey"
   ? PaymentCapture
   : Name extends "transaction"
   ? Transaction
+  : Name extends "notification_rule"
+  ? NotificationRule
   : never;

@@ -1019,6 +1019,80 @@
 			]
 		},
 		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Create notification rule",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Idempotency-Key",
+								"value": "notification-rule-1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"on\": \"transaction\",\n    \"threshold\": {\n        \"amount\": \"2\",\n        \"currency\": \"USDC\"\n    },\n    \"deliver_to\": \"{{PHONE_CONTACT_ID}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/notification_rules",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"notification_rules"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List notification rules",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/notification_rules",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"notification_rules"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Index",
 			"request": {
 				"method": "GET",
