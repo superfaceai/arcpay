@@ -55,8 +55,22 @@ export const saveNotification = async ({
   const pipeline = db.multi();
   saveNotificationViaPipeline({ notification, accountId, pipeline });
   await pipeline.exec();
+};
 
-  return notification;
+export const saveManyNotifications = async ({
+  notifications,
+  accountId,
+}: {
+  notifications: Notification[];
+  accountId: string;
+}) => {
+  if (notifications.length === 0) return;
+
+  const pipeline = db.multi();
+  for (const notification of notifications) {
+    saveNotificationViaPipeline({ notification, accountId, pipeline });
+  }
+  await pipeline.exec();
 };
 
 export const loadNotificationById = async ({

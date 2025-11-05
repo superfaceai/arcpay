@@ -34,7 +34,7 @@ export const Notification = z.object({
   id: z.string(),
   rule: NotificationRule.shape.id,
   live: z.boolean(),
-  trigger: NotificationTrigger,
+  event: NotificationTrigger,
   destination: NotificationDestination,
   message: z.string(),
   status: NotificationStatus,

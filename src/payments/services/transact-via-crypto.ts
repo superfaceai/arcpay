@@ -27,6 +27,7 @@ import {
 } from "@/payments/values";
 import { PayOutcome, PayTrigger } from "./pay";
 import { useValidPaymentMandate } from "./use-payment-mandate";
+import { triggerNotification } from "@/notifications/services";
 
 type PaymentDetailsMethodCrypto = {
   method: PaymentMethodTypeCrypto;
@@ -183,6 +184,15 @@ export const transactViaCrypto = async ({
         ]
       : []),
   ]);
+
+  await triggerNotification({
+    live,
+    accountId: sender.accountId,
+    event: {
+      type: "payment",
+      payment: senderPayment,
+    },
+  });
 
   // Send to blockchain --------------------------------------------------------
   const sentTransactionResult = await sendBlockchainTransactionAdapter({
