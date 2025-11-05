@@ -12,12 +12,14 @@ import {
   erasePaymentMandatesForAccount,
   erasePaymentCapturesForAccount,
 } from "@/payments/entities";
+import { eraseNotificationRulesForAccount } from "@/notifications/entities";
 
 export const erase = async ({
   accountId,
 }: {
   accountId: string;
 }): Promise<Result<void, void>> => {
+  await eraseNotificationRulesForAccount({ accountId });
   await erasePaymentMandatesForAccount({ accountId });
   await erasePaymentsForAccount({ accountId });
   await erasePaymentCapturesForAccount({ accountId });

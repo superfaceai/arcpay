@@ -67,3 +67,34 @@ export const loadNotificationRulesByAccount = async ({
     .map((notificationRule) => NotificationRule.parse(notificationRule))
     .sort((a, b) => b.created_at.getTime() - a.created_at.getTime());
 };
+
+export const eraseNotificationRulesForAccount = async ({
+  accountId,
+}: {
+  accountId: string;
+}) => {
+  const eraseNotificationRules = async ({ live }: { live: boolean }) => {
+    let cursor = "0";
+    let deletedCount = 0;
+
+    do {
+      const [nextCursor, keys] = await db.scan(cursor, {
+        match: storageKeyById({ accountId, live, id: "*" }),
+        count: 100_000,
+      });
+      cursor = nextCursor;
+
+      if (keys.length) {
+        const delCount = await db.del(...keys);
+        deletedCount += delCount;
+      }
+    } while (cursor !== "0");
+
+    console.debug(
+      `Removed ${deletedCount} Notification Rules for Account '${accountId}' (Live: ${live})`
+    );
+  };
+
+  await eraseNotificationRules({ live: true });
+  await eraseNotificationRules({ live: false });
+};
