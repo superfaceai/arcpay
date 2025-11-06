@@ -20,7 +20,6 @@ import { acpDelegatedPaymentsApi } from "@/acp/api/delegated-payments";
 
 import { walletMcp } from "@/wallet/mcp";
 import { acpCheckoutsMcp } from "@/acp-checkouts/mcp";
-import { acpClientMcp } from "@/acp-client/mcp";
 import { web } from "@/web";
 
 const app = createApplicationApi((app) => {
@@ -42,7 +41,8 @@ const app = createApplicationApi((app) => {
   app.route("/", acpCheckoutsMcp);
   app.route("/", walletMcp);
 
-  app.route("/", web);
+  const resources = listResources(app, ["/mcp/wallets", "/acp_checkouts"]);
+  app.route("/", web(resources));
 });
 
 export default app;
