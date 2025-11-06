@@ -20,7 +20,11 @@ export const createApplicationApi = <A extends ReturnType<typeof createApi>>(
   registerApis(app as A);
 
   // Catch-all route for all unmatched paths
-  app.all("*", (c) => {
+  app.all("*", async (c, next) => {
+    if (!c.req.header("accept")?.includes("application/json")) {
+      return await next();
+    }
+
     return ProblemJson(
       c,
       404,

@@ -1,8 +1,6 @@
 import { Home } from "@/web/pages/Home";
 import { Hono } from "hono";
-import { serveStatic } from "@hono/node-server/serve-static";
 import { listResources } from "@/api/services";
-import { csrf } from "hono/csrf";
 import { validator } from "hono/validator";
 import { useSession, useSessionStorage } from "@hono/session";
 import type { SessionEnv } from "@hono/session";
@@ -24,8 +22,6 @@ type SessionData = {
 export const web = (resources: ReturnType<typeof listResources>) => {
   const app = new Hono<SessionEnv<SessionData>>();
 
-  app.use(csrf());
-
   app.use(
     useSessionStorage({
       async delete(sid) {
@@ -46,7 +42,6 @@ export const web = (resources: ReturnType<typeof listResources>) => {
     })
   );
 
-  app.use("/public/*", serveStatic({ root: "./src/web" }));
   app.get("/", (c) => {
     const host = new URL(c.req.url);
     return c.html(<Home host={host.toString()} resources={resources} />);

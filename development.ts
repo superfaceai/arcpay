@@ -1,5 +1,6 @@
 import { serve } from "@hono/node-server";
 import app from "./src/app.js";
+import { serveStatic } from "@hono/node-server/serve-static";
 
 const DEFAULT_PORT = 3000;
 
@@ -24,6 +25,9 @@ if (isNaN(port)) {
   console.error("   npm run dev -p 3000");
   process.exit(1);
 }
+
+// Serve static files, not ideal with catch app route in createApplicationApi.
+app.use("/*", serveStatic({ root: "./public" }));
 
 console.info(`--- DEVELOPMENT SERVER -----`);
 console.info(`    http://localhost:${port}`);

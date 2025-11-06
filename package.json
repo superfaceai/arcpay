@@ -2,6 +2,7 @@
   "name": "arc-pay",
   "type": "module",
   "private": true,
+  "main": "src/app.ts",
   "scripts": {
     "dev": "tsx watch development.ts",
     "build": "tsc && tsc-alias -f",
