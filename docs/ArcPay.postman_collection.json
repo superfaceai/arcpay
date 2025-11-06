@@ -1190,6 +1190,248 @@
 			]
 		},
 		{
+			"name": "ACP Checkout Client (MCP)",
+			"item": [
+				{
+					"name": "[MCP] List tools",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/event-stream",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/list\",\n  \"params\": { }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/acp_checkouts",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"acp_checkouts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List product feed from URL",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/event-stream",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 2,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"list-products\",\n    \"arguments\": {\n      \"url\": \"https://merchant-demo.arcpay.ai/api/products\"\n    }\n  } \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/acp_checkouts",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"acp_checkouts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add products to new cart",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/event-stream",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"add-to-new-cart\",\n        \"arguments\": {\n            \"acpBaseUrl\": \"http://localhost:3001/api/acp\",\n            \"products\": [\n                {\n                    \"id\": \"coffee-beans-1\",\n                    \"quantity\": 100\n                }\n            ]\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/acp_checkouts",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"acp_checkouts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a checkout",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/event-stream",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"update-checkout\",\n        \"arguments\": {\n            \"acpBaseUrl\": \"http://localhost:3001/api/acp\",\n            \"checkoutId\": \"cart_g7hU0CPdXcyxw8EEkZcRJ\",\n            \"fulfillmentOptionId\": \"ful_ElsqLNhSVEwlCWcC5SI43\",\n            \"products\": [\n                {\n                    \"id\": \"coffee-beans-500g\",\n                    \"quantity\": 15\n                }\n            ]\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/acp_checkouts",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"acp_checkouts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm & Pay for Order",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/event-stream",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"confirm-order-and-pay\",\n        \"arguments\": {\n            \"acpBaseUrl\": \"http://localhost:3001/api/acp\",\n            \"checkoutId\": \"cart_g7hU0CPdXcyxw8EEkZcRJ\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/acp_checkouts",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"acp_checkouts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel a checkout",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/event-stream",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"cancel-checkout\",\n        \"arguments\": {\n            \"acpBaseUrl\": \"http://localhost:3001/api/acp\",\n            \"checkoutId\": \"cart_p78brKetQutWDSB069kui\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/acp_checkouts",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"acp_checkouts"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
 			"name": "Index",
 			"request": {
 				"method": "GET",
