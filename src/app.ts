@@ -17,7 +17,9 @@ import {
 } from "@/payments/api";
 import { notificationsApi } from "@/notifications/api";
 import { acpDelegatedPaymentsApi } from "@/acp/api/delegated-payments";
+
 import { walletsMcp } from "@/wallets/mcp";
+import { acpClientMcp } from "@/acp-client/mcp";
 
 const app = createApplicationApi((app) => {
   app.route("/", erasureApi);
@@ -36,6 +38,7 @@ const app = createApplicationApi((app) => {
 
   app.route("/", acpDelegatedPaymentsApi);
   app.route("/", walletsMcp);
+  app.route("/", acpClientMcp);
 
   app.get("/", (c) => {
     const host = new URL(c.req.url);
