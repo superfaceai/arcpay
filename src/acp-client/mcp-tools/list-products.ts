@@ -14,6 +14,8 @@ export const listProductsTool = createMcpTool(
   },
   async ({ url }) => {
     try {
+      console.info(`Listing products from ${url}`);
+
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -24,17 +26,17 @@ export const listProductsTool = createMcpTool(
 
       const products = await response.text();
 
-      if (response.headers.get("content-type")?.includes("application/json")) {
-        const productsJson = (function () {
-          try {
-            return JSON.parse(products);
-          } catch (e) {
-            return products;
-          }
-        })();
-        return toolResponse({
-          structuredContent: { products: productsJson },
-        });
+      if (response.headers.get("content-type")?.includes("json")) {
+        try {
+          const productsJson = JSON.parse(products);
+          return toolResponse({
+            structuredContent: { products: productsJson },
+          });
+        } catch (e) {
+          return toolResponse({
+            content: products,
+          });
+        }
       }
 
       return toolResponse({
