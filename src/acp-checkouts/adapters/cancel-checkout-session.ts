@@ -1,7 +1,7 @@
 import { err, ok } from "@/lib";
 
-import { CancelCheckoutSession } from "@/acp-client/interfaces";
-import { CancelCheckoutSessionResponse } from "@/acp-client/interfaces/schema";
+import { CancelCheckoutSession } from "@/acp-checkouts/interfaces";
+import { CancelCheckoutSessionResponse } from "@/acp-checkouts/interfaces/schema";
 
 import { parseErrorResponse } from "./parse-error-response";
 

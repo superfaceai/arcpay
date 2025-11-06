@@ -4,7 +4,7 @@ import { createMcpTool, toolResponse } from "@/mcp/services";
 import {
   completeCheckoutSession,
   getCheckoutSession,
-} from "@/acp-client/adapters";
+} from "@/acp-checkouts/adapters";
 
 const inputSchema = {
   acpBaseUrl: z.string().url().describe("The base URL of the Merchant ACP"),

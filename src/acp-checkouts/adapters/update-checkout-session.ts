@@ -1,26 +1,31 @@
 import { err, ok } from "@/lib";
 
-import { GetCheckoutSession } from "@/acp-client/interfaces";
-import { GetCheckoutSessionResponse } from "@/acp-client/interfaces/schema";
+import { UpdateCheckoutSession } from "@/acp-checkouts/interfaces";
+import { UpdateCheckoutSessionResponse } from "@/acp-checkouts/interfaces/schema";
 
 import { parseErrorResponse } from "./parse-error-response";
 
-export const getCheckoutSession: GetCheckoutSession = async ({
+export const updateCheckoutSession: UpdateCheckoutSession = async ({
   acpUrl,
   checkoutSessionId,
+  request,
 }) => {
   const response = await fetch(
     `${acpUrl}/checkout_sessions/${checkoutSessionId}`,
-    { method: "GET" }
+    {
+      method: "POST",
+      body: JSON.stringify(request),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
   );
 
-  if (!response.ok) {
-    return err(await parseErrorResponse(response));
-  }
+  if (!response.ok) return err(await parseErrorResponse(response));
 
   const responseBody = await response.json();
 
-  const parsedResponse = GetCheckoutSessionResponse.safeParse(responseBody);
+  const parsedResponse = UpdateCheckoutSessionResponse.safeParse(responseBody);
 
   if (!parsedResponse.success) {
     console.error(responseBody);

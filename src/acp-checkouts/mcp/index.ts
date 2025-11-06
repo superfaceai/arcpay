@@ -7,11 +7,11 @@ import {
   updateCheckoutTool,
   cancelCheckoutTool,
   confirmOrderAndPayTool,
-} from "@/acp-client/mcp-tools";
+} from "@/acp-checkouts/mcp-tools";
 
-export const acpClientMcp = createApi().all("/acp-client", async (c) => {
+export const acpCheckoutsMcp = createApi().all("/acp_checkouts", async (c) => {
   const mcpServer = createMcpServer({
-    name: "acp-checkout",
+    name: "acp-checkout-client",
     title: "ACP Checkout Client",
   });
 

@@ -2,7 +2,7 @@ import { z } from "zod-v3";
 
 import { createMcpTool, toolResponse } from "@/mcp/services";
 
-import { createCheckoutSession } from "@/acp-client/adapters";
+import { createCheckoutSession } from "@/acp-checkouts/adapters";
 
 const inputSchema = {
   acpBaseUrl: z.string().url().describe("The base URL of the Merchant ACP"),

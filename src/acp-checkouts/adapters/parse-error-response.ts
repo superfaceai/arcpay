@@ -1,7 +1,7 @@
 import {
   ACPErrorResponse,
   GeneralACPRequestError,
-} from "@/acp-client/interfaces";
+} from "@/acp-checkouts/interfaces";
 
 export async function parseErrorResponse(
   response: Response

@@ -19,7 +19,7 @@ import { notificationsApi } from "@/notifications/api";
 import { acpDelegatedPaymentsApi } from "@/acp/api/delegated-payments";
 
 import { walletsMcp } from "@/wallets/mcp";
-import { acpClientMcp } from "@/acp-client/mcp";
+import { acpCheckoutsMcp } from "@/acp-checkouts/mcp";
 
 const app = createApplicationApi((app) => {
   app.route("/", erasureApi);
@@ -38,11 +38,11 @@ const app = createApplicationApi((app) => {
 
   app.route("/", acpDelegatedPaymentsApi);
   app.route("/", walletsMcp);
-  app.route("/", acpClientMcp);
+  app.route("/", acpCheckoutsMcp);
 
   app.get("/", (c) => {
     const host = new URL(c.req.url);
-    const resources = listResources(app, ["/mcp/wallets"]);
+    const resources = listResources(app, ["/mcp/wallets", "/acp_checkouts"]);
 
     return c.html(HOME_DOCS_HTML({ host: host.origin, resources }));
   });
