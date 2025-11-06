@@ -1,4 +1,4 @@
-import { z, ZodRawShape } from "zod/v3";
+import { z, ZodRawShape } from "zod-v3";
 import { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 
 export const createMcpTool = <

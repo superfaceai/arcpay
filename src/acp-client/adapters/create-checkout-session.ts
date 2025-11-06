@@ -23,11 +23,14 @@ export const createCheckoutSession: CreateCheckoutSession = async ({
 
   const parsedResponse = CreateCheckoutSessionResponse.safeParse(responseBody);
 
-  if (!parsedResponse.success)
+  if (!parsedResponse.success) {
+    console.error(responseBody);
+    console.error(parsedResponse.error);
     return err({
       type: "GeneralACPRequestError",
       message: "The ACP server returned an invalid response",
     });
+  }
 
   return ok(parsedResponse.data);
 };

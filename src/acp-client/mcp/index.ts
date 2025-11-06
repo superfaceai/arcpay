@@ -3,9 +3,10 @@ import { createMcpServer, handleMcpRequest } from "@/mcp/services";
 
 import {
   listProductsTool,
-  addToCartTool,
-  cancelCartTool,
-  checkoutTool,
+  addToNewCartTool,
+  updateCheckoutTool,
+  cancelCheckoutTool,
+  confirmOrderAndPayTool,
 } from "@/acp-client/mcp-tools";
 
 export const acpClientMcp = createApi().all("/acp-client", async (c) => {
@@ -14,10 +15,15 @@ export const acpClientMcp = createApi().all("/acp-client", async (c) => {
     title: "ACP Checkout Client",
   });
 
-  [listProductsTool, addToCartTool, checkoutTool, cancelCartTool].forEach(
-    (tool) =>
-      // @ts-ignore
-      mcpServer.registerTool(tool.name, tool.config, tool.cb)
+  [
+    listProductsTool,
+    addToNewCartTool,
+    updateCheckoutTool,
+    confirmOrderAndPayTool,
+    cancelCheckoutTool,
+  ].forEach((tool) =>
+    // @ts-ignore
+    mcpServer.registerTool(tool.name, tool.config, tool.cb)
   );
 
   return handleMcpRequest(mcpServer, c);

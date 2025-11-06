@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod-v3";
 
 import { createMcpTool, toolResponse } from "@/mcp/services";
 

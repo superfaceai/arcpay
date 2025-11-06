@@ -12,6 +12,7 @@ const DateRFC3339 = z.codec(z.union([z.string(), z.date()]), z.date(), {
 export const PaymentProviderName = z.enum([
   "stripe",
   "arcpay", // Not in ACP specification
+  "arc_pay", // Not in ACP specification
 ]);
 
 export const CheckoutStatus = z.enum([
@@ -22,7 +23,11 @@ export const CheckoutStatus = z.enum([
 ]);
 
 const currencyCodes = codes().map((c) => c.toLowerCase()) as string[];
-const Currency = z.enum(currencyCodes).describe("ISO-4217 currency code");
+const IsoCurrency = z.enum(currencyCodes).describe("ISO-4217 currency code");
+const Currency = z
+  .string()
+  .transform((val) => val.toLowerCase())
+  .pipe(IsoCurrency);
 
 // Objects
 const Item = z.object({
