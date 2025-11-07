@@ -11,8 +11,8 @@ import {
 
 export const acpCheckoutsMcp = createApi().all("/acp_checkouts", async (c) => {
   const mcpServer = createMcpServer({
-    name: "acp-checkout-client",
-    title: "ACP Checkout Client",
+    name: "acp-checkouts",
+    title: "ACP Checkouts",
   });
 
   [
