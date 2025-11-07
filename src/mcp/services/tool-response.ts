@@ -10,13 +10,13 @@ type ToolResponseInput =
 export const toolResponse = (input: ToolResponseInput): CallToolResult => {
   if ("error" in input) {
     return {
+      isError: true,
       content: [
         {
           type: "text",
           text: JSON.stringify({ error: input.error }),
         },
       ],
-      structuredContent: { error: input.error },
     };
   }
 
