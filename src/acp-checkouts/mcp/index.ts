@@ -1,4 +1,5 @@
 import { createApi } from "@/api/services";
+import { withAuth } from "@/api/middlewares";
 import { createMcpServer, handleMcpRequest } from "@/mcp/services";
 
 import {
@@ -9,26 +10,33 @@ import {
   confirmOrderAndPayTool,
 } from "@/acp-checkouts/mcp-tools";
 
-export const acpCheckoutsMcp = createApi().all("/acp_checkouts", async (c) => {
-  const mcpServer = createMcpServer({
-    name: "acp-checkouts",
-    title: "ACP Checkouts",
-  });
+export const acpCheckoutsMcp = createApi().all(
+  "/acp_checkouts",
+  withAuth(),
+  async (c) => {
+    const accountId = c.get("accountId");
+    const live = c.get("isLive");
 
-  [
-    listProductsTool,
-    addToNewCartTool,
-    updateCheckoutTool,
-    confirmOrderAndPayTool,
-    cancelCheckoutTool,
-  ].forEach((tool) =>
-    mcpServer.registerTool(
-      tool.name,
-      // @ts-ignore
-      tool.config,
-      tool.createCb({ accountId: "", live: false })
-    )
-  );
+    const mcpServer = createMcpServer({
+      name: "acp-checkouts",
+      title: "ACP Checkouts",
+    });
 
-  return handleMcpRequest(mcpServer, c);
-});
+    [
+      listProductsTool,
+      addToNewCartTool,
+      updateCheckoutTool,
+      confirmOrderAndPayTool,
+      cancelCheckoutTool,
+    ].forEach((tool) =>
+      mcpServer.registerTool(
+        tool.name,
+        // @ts-ignore
+        tool.config,
+        tool.createCb({ accountId, live })
+      )
+    );
+
+    return handleMcpRequest(mcpServer, c);
+  }
+);

@@ -1142,10 +1142,10 @@
 			]
 		},
 		{
-			"name": "MCP",
+			"name": "Agentic Wallet (MCP)",
 			"item": [
 				{
-					"name": "List MCP tools",
+					"name": "[MCP] List tools",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1175,13 +1175,96 @@
 							}
 						},
 						"url": {
-							"raw": "{{HOST}}/mcp/wallets",
+							"raw": "{{HOST}}/wallet",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"mcp",
-								"wallets"
+								"wallet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get balance",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/event-stream",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"get-balance\",\n        \"arguments\": {\n            \"currency\": \"usdc\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/wallet",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"wallet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List addresses",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/event-stream",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"list-addresses\",\n        \"arguments\": {}\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/wallet",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"wallet"
 							]
 						}
 					},
@@ -1196,7 +1279,14 @@
 					"name": "[MCP] List tools",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [
@@ -1231,7 +1321,14 @@
 					"name": "List product feed from URL",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [
@@ -1266,7 +1363,14 @@
 					"name": "Add products to new cart",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [
@@ -1301,7 +1405,14 @@
 					"name": "Update a checkout",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [
@@ -1336,7 +1447,14 @@
 					"name": "Confirm & Pay for Order",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [
@@ -1371,7 +1489,14 @@
 					"name": "Cancel a checkout",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [
