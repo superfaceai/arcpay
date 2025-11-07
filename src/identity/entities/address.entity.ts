@@ -22,7 +22,7 @@ export type Address = z.infer<typeof Address>;
 
 export const DEFAULT_MOCK_ADDRESSES: Address[] = [
   Address.parse({
-    id: addressId(),
+    id: "addr_temp_mYAAYSbEE45Rsy8HXwyxE",
     label: "Main Office (2nd floor)",
     purposes: ["billing", "shipping"],
     name: "Superface Inc",
@@ -34,7 +34,7 @@ export const DEFAULT_MOCK_ADDRESSES: Address[] = [
     zip: "94131",
   }),
   Address.parse({
-    id: addressId(),
+    id: "addr_temp_uaoCX96NvEJAPUngehYOc",
     label: "Marketing Office (7th floor)",
     purposes: ["shipping"],
     name: "Superface Marketing Inc",
