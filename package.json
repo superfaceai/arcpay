@@ -2,6 +2,7 @@
   "name": "arc-pay",
   "type": "module",
   "private": true,
+  "main": "src/app.ts",
   "scripts": {
     "dev": "tsx watch development.ts",
     "build": "tsc && tsc-alias -f",
@@ -10,6 +11,7 @@
   "dependencies": {
     "@circle-fin/developer-controlled-wallets": "^9.2.0",
     "@hono/mcp": "^0.1.4",
+    "@hono/session": "^0.2.0",
     "@hono/zod-validator": "^0.7.4",
     "@modelcontextprotocol/sdk": "^1.20.2",
     "@upstash/redis": "^1.35.6",

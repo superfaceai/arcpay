@@ -1,5 +1,6 @@
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
+import { serveStatic } from "@hono/node-server/serve-static";
 
 import Config from "@/config";
 import { ProblemJson } from "@/api/values";
@@ -18,6 +19,11 @@ export const createApplicationApi = <A extends ReturnType<typeof createApi>>(
   app.use("*", withRequestId());
 
   registerApis(app as A);
+
+  // Serve static files from the public directory
+  if (process.env.NODE !== undefined) {
+    app.use("*", serveStatic({ root: "./public" }));
+  }
 
   // Catch-all route for all unmatched paths
   app.all("*", (c) => {
