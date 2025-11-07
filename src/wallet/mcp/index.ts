@@ -6,16 +6,16 @@ import { Currency } from "@/balances/values";
 import { withAuth } from "@/api/middlewares";
 import { getBalance } from "@/balances/services";
 
-export const walletsMcp = createApi().all(
-  "/mcp/wallets",
+export const walletMcp = createApi().all(
+  "/wallet",
   withAuth(),
   async (c) => {
     const accountId = c.get("accountId");
     const live = c.get("isLive");
 
     const mcpServer = createMcpServer({
-      name: "wallets",
-      title: "Wallets MCP",
+      name: "wallet",
+      title: "Agentic Wallet",
     });
 
     mcpServer.registerTool(

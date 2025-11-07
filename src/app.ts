@@ -18,7 +18,7 @@ import {
 import { notificationsApi } from "@/notifications/api";
 import { acpDelegatedPaymentsApi } from "@/acp/api/delegated-payments";
 
-import { walletsMcp } from "@/wallets/mcp";
+import { walletMcp } from "@/wallet/mcp";
 import { acpCheckoutsMcp } from "@/acp-checkouts/mcp";
 
 const app = createApplicationApi((app) => {
@@ -37,12 +37,12 @@ const app = createApplicationApi((app) => {
   app.route("/", notificationsApi);
 
   app.route("/", acpDelegatedPaymentsApi);
-  app.route("/", walletsMcp);
   app.route("/", acpCheckoutsMcp);
+  app.route("/", walletMcp);
 
   app.get("/", (c) => {
     const host = new URL(c.req.url);
-    const resources = listResources(app, ["/mcp/wallets", "/acp_checkouts"]);
+    const resources = listResources(app, ["/acp_checkouts", "/wallet"]);
 
     return c.html(HOME_DOCS_HTML({ host: host.origin, resources }));
   });
@@ -200,7 +200,7 @@ curl ${host}/deposits \\
 
   <p>The Agentic Wallet MCP lets your AI agents pay for physical or digital goods and services.</p>
   
-  <pre>${host}/mcp/wallets</pre>
+  <pre>${host}/wallet</pre>
   
   <p>Use the same <a href="#authentication">authentication</a> method as the API.</p>
   
