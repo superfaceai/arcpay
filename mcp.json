@@ -2,7 +2,7 @@
   "mcpServers": {
     "default-server": {
       "type": "streamable-http",
-      "url": "http://localhost:3000/mcp/wallets",
+      "url": "http://localhost:3000/wallet",
       "note": "For Streamable HTTP connections only. Add `Bearer {YOUR_TOKEN}` to the Authorization header."
     }
   }
