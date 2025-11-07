@@ -1,5 +1,10 @@
 import { Contact } from "./entities";
 
+export interface CodeConfirmationError {
+  readonly type: "CodeConfirmationError";
+  readonly message: string;
+}
+
 export interface AccountHandleNotAvailableError {
   readonly type: "AccountHandleNotAvailableError";
   readonly handle: string;

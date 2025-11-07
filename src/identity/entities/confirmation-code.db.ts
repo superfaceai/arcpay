@@ -19,7 +19,7 @@ export const saveConfirmationCode = async (
   return confirmationCode;
 };
 
-export const loadConfirmationCodeByCode = async (
+export const loadConfirmationCode = async (
   code: number
 ): Promise<ConfirmationCode | null> => {
   const confirmationCode = await db.get<ConfirmationCode>(storageKey({ code }));
@@ -29,4 +29,8 @@ export const loadConfirmationCodeByCode = async (
   }
 
   return ConfirmationCode.parse(confirmationCode);
+};
+
+export const deleteConfirmationCode = async (code: number): Promise<void> => {
+  await db.del(storageKey({ code }));
 };

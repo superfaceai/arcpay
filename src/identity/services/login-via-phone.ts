@@ -4,6 +4,7 @@ import { ok, PhoneNumber, Result } from "@/lib";
 import {
   ConfirmationCode,
   generateConfirmationCode,
+  loadConfirmationCode,
   saveConfirmationCode,
 } from "@/identity/entities";
 
@@ -18,12 +19,13 @@ export const loginViaPhone = async (
   dto: z.infer<typeof LoginViaPhoneDTO>,
   sendTransactionalSMSAdapter: SendTransactionalSMS = sendTransactionalSMS
 ): Promise<Result<ConfirmationCode, void>> => {
+  const code = await generateAvailableConfirmationCode();
+
   const confirmationCode = ConfirmationCode.parse({
-    code: generateConfirmationCode(),
+    code,
     phone: dto.phone,
     created_at: new Date(),
   });
-
   await saveConfirmationCode(confirmationCode);
   await sendTransactionalSMSAdapter({
     to: dto.phone,
@@ -31,4 +33,15 @@ export const loginViaPhone = async (
   });
 
   return ok(confirmationCode);
+};
+
+export const generateAvailableConfirmationCode = async (): Promise<number> => {
+  while (true) {
+    const code = generateConfirmationCode();
+    const confirmationCode = await loadConfirmationCode(code);
+
+    if (!confirmationCode) {
+      return code;
+    }
+  }
 };
