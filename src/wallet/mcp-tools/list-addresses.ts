@@ -6,6 +6,7 @@ import { loadAccountById } from "@/identity/entities";
 const outputSchema = {
   addresses: z.array(
     z.object({
+      id: z.string().describe("The ID of the address"),
       label: z.string().describe("The label of the address"),
       purposes: z
         .array(z.enum(["billing", "shipping"]))
@@ -29,6 +30,7 @@ export const listAddressesTool = createMcpTool(
         return toolResponse({
           structuredContent: {
             addresses: account.addresses.map((address) => ({
+              id: address.id,
               label: address.label,
               purposes: address.purposes,
             })),
