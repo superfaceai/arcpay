@@ -1,0 +1,20 @@
+services:
+  redis:
+    image: redis
+    volumes:
+      - redis-data:/data
+    ports:
+      - 6379:6379
+    restart: unless-stopped
+  redis_http_proxy:
+    image: hiett/serverless-redis-http:latest
+    environment:
+      SRH_MODE: env
+      SRH_TOKEN: srhtoken
+      SRH_CONNECTION_STRING: "redis://redis:6379"
+      SRH_MAX_CONNECTIONS: 100
+    ports:
+      - 6380:80
+    restart: unless-stopped
+volumes:
+  redis-data:
