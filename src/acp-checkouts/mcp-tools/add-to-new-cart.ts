@@ -2,7 +2,13 @@ import { z } from "zod-v3";
 
 import { createMcpTool, toolResponse } from "@/mcp/services";
 
+import { loadAccountById } from "@/identity/entities";
 import { createCheckoutSession } from "@/acp-checkouts/adapters";
+import {
+  mapCheckoutResponse,
+  mapAddressToACP,
+  chooseShippingAddress,
+} from "@/acp-checkouts/services";
 
 const inputSchema = {
   acpBaseUrl: z.string().url().describe("The base URL of the Merchant ACP"),
@@ -18,6 +24,10 @@ const inputSchema = {
       })
     )
     .describe("The products to add to the cart"),
+  fulfillmentAddressId: z
+    .string()
+    .optional()
+    .describe("The fulfillment address ID to use for the checkout"),
 };
 const outputSchema = { checkout: z.unknown().describe("Current cart state") };
 
@@ -29,28 +39,34 @@ export const addToNewCartTool = createMcpTool(
     inputSchema,
     outputSchema,
   },
-  () =>
-    async ({ acpBaseUrl, products }) => {
+  (context) =>
+    async ({ acpBaseUrl, products, fulfillmentAddressId }) => {
       try {
         console.info("Adding products to cart", {
           acpBaseUrl,
           products,
         });
 
+        const account = (await loadAccountById(context.accountId))!;
+
+        const shippingAddressChoice = chooseShippingAddress({
+          addresses: account.addresses,
+          fulfillmentAddressId,
+        });
+
+        if (shippingAddressChoice.type === "error") {
+          return toolResponse({ error: shippingAddressChoice.error });
+        }
+
+        const shippingAddress = shippingAddressChoice.address;
+
+        console.info("Selected shipping address", { shippingAddress });
+
         const cartResult = await createCheckoutSession({
           acpUrl: acpBaseUrl,
           request: {
             items: products,
-
-            // TODO: Map address from account
-            fulfillment_address: {
-              name: "John Doe",
-              line_one: "123 Main St",
-              city: "Anytown",
-              state: "CA",
-              country: "US",
-              postal_code: "12345",
-            },
+            fulfillment_address: mapAddressToACP(shippingAddress),
           },
         });
 
@@ -66,10 +82,17 @@ export const addToNewCartTool = createMcpTool(
           });
         }
 
+        const publicCheckoutResult = mapCheckoutResponse(cartResult.value, {
+          id: shippingAddress.id,
+          label: shippingAddress.label,
+        });
+        if (publicCheckoutResult.type === "error") {
+          return toolResponse({ error: publicCheckoutResult.error });
+        }
+
         return toolResponse({
           structuredContent: {
-            // TODO: remove fulfillment_address from the response
-            checkout: cartResult.value,
+            checkout: publicCheckoutResult.checkout,
           },
         });
       } catch (e) {

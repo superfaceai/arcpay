@@ -1,10 +1,12 @@
 import { z } from "zod-v3";
 
 import { createMcpTool, toolResponse } from "@/mcp/services";
+import { loadAccountById } from "@/identity/entities";
 import {
   completeCheckoutSession,
   getCheckoutSession,
 } from "@/acp-checkouts/adapters";
+import { mapCheckoutResponse } from "../services";
 
 const inputSchema = {
   acpBaseUrl: z.string().url().describe("The base URL of the Merchant ACP"),
@@ -20,10 +22,12 @@ export const confirmOrderAndPayTool = createMcpTool(
     inputSchema,
     outputSchema,
   },
-  () =>
+  (context) =>
     async ({ acpBaseUrl, checkoutId }) => {
       try {
         console.info("Confirming order and paying", { acpBaseUrl, checkoutId });
+
+        const account = (await loadAccountById(context.accountId))!;
 
         const checkoutSessionResult = await getCheckoutSession({
           acpUrl: acpBaseUrl,
@@ -70,9 +74,19 @@ export const confirmOrderAndPayTool = createMcpTool(
           });
         }
 
+        const publicCheckoutResult = mapCheckoutResponse(
+          completeCheckoutResult.value,
+          checkoutSessionResult.value.fulfillment_address
+            ? { addresses: account.addresses }
+            : undefined
+        );
+        if (publicCheckoutResult.type === "error") {
+          return toolResponse({ error: publicCheckoutResult.error });
+        }
+
         return toolResponse({
           structuredContent: {
-            checkout: completeCheckoutResult.value,
+            checkout: publicCheckoutResult.checkout,
           },
         });
       } catch (e) {

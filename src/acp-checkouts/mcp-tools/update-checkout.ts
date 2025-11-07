@@ -3,6 +3,12 @@ import { z } from "zod-v3";
 import { createMcpTool, toolResponse } from "@/mcp/services";
 
 import { updateCheckoutSession } from "@/acp-checkouts/adapters";
+import { Address, loadAccountById } from "@/identity/entities";
+import {
+  chooseShippingAddress,
+  mapAddressToACP,
+  mapCheckoutResponse,
+} from "../services";
 
 const inputSchema = {
   acpBaseUrl: z.string().url().describe("The base URL of the Merchant ACP"),
@@ -13,6 +19,10 @@ const inputSchema = {
     .describe(
       "The fulfillment option ID to select for the checkout to override the default fulfillment option"
     ),
+  fulfillmentAddressId: z
+    .string()
+    .optional()
+    .describe("The fulfillment address ID to use for the checkout"),
   products: z
     .array(
       z.object({
@@ -39,8 +49,14 @@ export const updateCheckoutTool = createMcpTool(
     inputSchema,
     outputSchema,
   },
-  () =>
-    async ({ acpBaseUrl, checkoutId, fulfillmentOptionId, products }) => {
+  (context) =>
+    async ({
+      acpBaseUrl,
+      checkoutId,
+      fulfillmentOptionId,
+      products,
+      fulfillmentAddressId,
+    }) => {
       try {
         console.info("Updating existing checkout", {
           acpBaseUrl,
@@ -48,25 +64,33 @@ export const updateCheckoutTool = createMcpTool(
           fulfillmentOptionId,
           products,
         });
+        const account = (await loadAccountById(context.accountId))!;
+
+        let newFulfillmentAddress: Address | undefined;
+        if (fulfillmentAddressId) {
+          const shippingAddressChoice = chooseShippingAddress({
+            addresses: account.addresses,
+            fulfillmentAddressId,
+          });
+          if (shippingAddressChoice.type === "error") {
+            return toolResponse({ error: shippingAddressChoice.error });
+          }
+          newFulfillmentAddress = shippingAddressChoice.address;
+        }
 
         const checkoutResult = await updateCheckoutSession({
           acpUrl: acpBaseUrl,
           checkoutSessionId: checkoutId,
           request: {
             items: products,
+
             ...(fulfillmentOptionId
               ? { fulfillment_option_id: fulfillmentOptionId }
               : {}),
 
-            // TODO: Map address from account
-            fulfillment_address: {
-              name: "John Doe",
-              line_one: "123 Main St",
-              city: "Anytown",
-              state: "CA",
-              country: "US",
-              postal_code: "12345",
-            },
+            ...(newFulfillmentAddress
+              ? { fulfillment_address: mapAddressToACP(newFulfillmentAddress) }
+              : {}),
           },
         });
 
@@ -82,10 +106,24 @@ export const updateCheckoutTool = createMcpTool(
           });
         }
 
+        const publicCheckoutResult = mapCheckoutResponse(
+          checkoutResult.value,
+          newFulfillmentAddress
+            ? {
+                id: newFulfillmentAddress.id,
+                label: newFulfillmentAddress.label,
+              }
+            : {
+                addresses: account.addresses,
+              }
+        );
+        if (publicCheckoutResult.type === "error") {
+          return toolResponse({ error: publicCheckoutResult.error });
+        }
+
         return toolResponse({
           structuredContent: {
-            // TODO: remove fulfillment_address from the response
-            checkout: checkoutResult.value,
+            checkout: publicCheckoutResult.checkout,
           },
         });
       } catch (e) {

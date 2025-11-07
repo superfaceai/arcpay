@@ -1,8 +1,10 @@
 import { z } from "zod-v3";
 
 import { createMcpTool, toolResponse } from "@/mcp/services";
+import { loadAccountById } from "@/identity/entities";
 
 import { cancelCheckoutSession } from "@/acp-checkouts/adapters";
+import { mapCheckoutResponse } from "../services";
 
 const inputSchema = {
   acpBaseUrl: z.string().url().describe("The base URL of the Merchant ACP"),
@@ -20,10 +22,11 @@ export const cancelCheckoutTool = createMcpTool(
     inputSchema,
     outputSchema,
   },
-  () =>
+  (context) =>
     async ({ acpBaseUrl, checkoutId }) => {
       try {
         console.info("Cancelling checkout", { acpBaseUrl, checkoutId });
+        const account = (await loadAccountById(context.accountId))!;
 
         const checkoutResult = await cancelCheckoutSession({
           acpUrl: acpBaseUrl,
@@ -42,10 +45,19 @@ export const cancelCheckoutTool = createMcpTool(
           });
         }
 
+        const publicCheckoutResult = mapCheckoutResponse(
+          checkoutResult.value,
+          checkoutResult.value.fulfillment_address
+            ? { addresses: account.addresses }
+            : undefined
+        );
+        if (publicCheckoutResult.type === "error") {
+          return toolResponse({ error: publicCheckoutResult.error });
+        }
+
         return toolResponse({
           structuredContent: {
-            // TODO: remove fulfillment_address from the response
-            checkout: checkoutResult.value,
+            checkout: publicCheckoutResult.checkout,
           },
         });
       } catch (e) {

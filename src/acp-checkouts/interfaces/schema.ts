@@ -55,6 +55,7 @@ const Address = z.object({
   postal_code: z.string().max(20).describe("Address postal code or zip code"),
   phone_number: z.string().optional().describe("Optional phone number"), // E.164
 });
+export type Address = z.infer<typeof Address>;
 
 const PaymentProvider = z.object({
   provider: PaymentProviderName,
@@ -239,6 +240,7 @@ const CheckoutSession = z.object({
   messages: z.array(Message),
   links: z.array(Link),
 });
+export type CheckoutSession = z.infer<typeof CheckoutSession>;
 
 // Errors
 export const ResponseError = z.object({
