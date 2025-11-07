@@ -3,6 +3,15 @@ import { z } from "zod-v3";
 import { createMcpTool, toolResponse } from "@/mcp/services";
 import { loadAccountById } from "@/identity/entities";
 
+import { getPermissionReadingByToken } from "@/wallet/entities";
+
+const inputSchema = {
+  permissionToken: z
+    .string()
+    .describe(
+      "The permission token that signifies you have read and follow the permissions. If uknown, call 'read-permissions' to get first."
+    ),
+};
 const outputSchema = {
   addresses: z.array(
     z.object({
@@ -20,11 +29,19 @@ export const listAddressesTool = createMcpTool(
   {
     title: "List Addresses",
     description: "List the addresses for the current account",
+    inputSchema,
     outputSchema,
   },
   (context) =>
-    async ({}) => {
+    async ({ permissionToken }) => {
       try {
+        if (!(await getPermissionReadingByToken(permissionToken))) {
+          return toolResponse({
+            error:
+              "The permission token is invalid or expired. Call 'read-permissions' to get first.",
+          });
+        }
+
         const account = (await loadAccountById(context.accountId))!;
 
         return toolResponse({

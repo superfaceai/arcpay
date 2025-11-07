@@ -2,7 +2,11 @@ import { createApi } from "@/api/services";
 import { createMcpServer, handleMcpRequest } from "@/mcp/services";
 import { withAuth } from "@/api/middlewares";
 
-import { listAddressesTool, getBalanceTool } from "@/wallet/mcp-tools";
+import {
+  listAddressesTool,
+  preauthorizePaymentTool,
+  readPermissionsTool,
+} from "@/wallet/mcp-tools";
 
 export const walletMcp = createApi().all("/wallet", withAuth(), async (c) => {
   const accountId = c.get("accountId");
@@ -13,13 +17,14 @@ export const walletMcp = createApi().all("/wallet", withAuth(), async (c) => {
     title: "Agentic Wallet",
   });
 
-  [listAddressesTool, getBalanceTool].forEach((tool) =>
-    mcpServer.registerTool(
-      tool.name,
-      // @ts-ignore
-      tool.config,
-      tool.createCb({ accountId, live })
-    )
+  [readPermissionsTool, listAddressesTool, preauthorizePaymentTool].forEach(
+    (tool) =>
+      mcpServer.registerTool(
+        tool.name,
+        // @ts-ignore
+        tool.config,
+        tool.createCb({ accountId, live })
+      )
   );
 
   return handleMcpRequest(mcpServer, c);
