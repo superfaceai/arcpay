@@ -8,6 +8,7 @@ import { OpenAccount } from "./pages/OpenAccount";
 import { ConfirmPhoneNumber } from "./pages/ConfirmPhoneNumber";
 import { MyAccount } from "./pages/MyAccount";
 import { db } from "@/database";
+import Config from "@/config";
 
 const EXPIRE_TIME_SECONDS = 30 * 24 * 60 * 60; // 30 days
 
@@ -38,7 +39,7 @@ export const web = (resources: ReturnType<typeof listResources>) => {
       },
     }),
     useSession({
-      secret: process.env.SESSION_SECRET,
+      secret: Config.SESSION_SECRET,
     })
   );
 

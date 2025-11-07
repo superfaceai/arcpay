@@ -4,6 +4,7 @@ import { z } from "zod";
 const ConfigSchema = z.object({
   NODE_ENV: z.enum(["development", "production"]),
   IS_PRODUCTION: z.preprocess((env) => env === "production", z.boolean()),
+  SESSION_SECRET: z.string().min(1),
   CIRCLE_API_KEY: z.string().min(1),
   CIRCLE_ENTITY_SECRET: z.string().min(1),
   CIRCLE_WALLETSET_ID: z.string().min(1),
