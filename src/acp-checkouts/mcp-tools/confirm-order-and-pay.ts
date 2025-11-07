@@ -11,6 +11,10 @@ import { mapCheckoutResponse } from "../services";
 const inputSchema = {
   acpBaseUrl: z.string().url().describe("The base URL of the Merchant ACP"),
   checkoutId: z.string().describe("The checkout ID"),
+  preauthorizedPayment: z.object({
+    token: z.string().describe("The token of the payment mandate"),
+    provider: z.enum(["arcpay"]).describe("The payment provider"),
+  }),
 };
 const outputSchema = { checkout: z.unknown().describe("The checkout state") };
 
@@ -23,7 +27,7 @@ export const confirmOrderAndPayTool = createMcpTool(
     outputSchema,
   },
   (context) =>
-    async ({ acpBaseUrl, checkoutId }) => {
+    async ({ acpBaseUrl, checkoutId, preauthorizedPayment }) => {
       try {
         console.info("Confirming order and paying", { acpBaseUrl, checkoutId });
 
@@ -46,18 +50,19 @@ export const confirmOrderAndPayTool = createMcpTool(
           });
         }
 
-        // TODO: Validate the order
-
-        // TODO: Create a payment mandate
-        const grantedMandateSecret = "paym_secret_1234567890";
+        if (checkoutSessionResult.value.status === "not_ready_for_payment") {
+          return toolResponse({
+            error: `The checkout session is not yet ready for payment. Make sure to provide valid fulfillment option, and address potential errors in 'messages' field`,
+          });
+        }
 
         const completeCheckoutResult = await completeCheckoutSession({
           acpUrl: acpBaseUrl,
           checkoutSessionId: checkoutId,
           request: {
             payment_data: {
-              token: grantedMandateSecret,
-              provider: checkoutSessionResult.value.payment_provider.provider,
+              token: preauthorizedPayment.token,
+              provider: preauthorizedPayment.provider,
             },
           },
         });
