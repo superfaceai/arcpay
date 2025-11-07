@@ -7,7 +7,11 @@ import {
   Account,
   saveAccount,
 } from "@/identity/entities";
-import { AccountContactMethodChangeError } from "../errors";
+import {
+  AccountContactMethodChangeError,
+  AccountContactNotAllowedError,
+} from "@/identity/errors";
+
 import { AddAccountContactDTO } from "./add-contact";
 
 export const UpdateAccountContactDTO = AddAccountContactDTO;
@@ -16,7 +20,12 @@ export const updateAccountContact = async (
   accountId: string,
   contactId: string,
   dto: z.infer<typeof UpdateAccountContactDTO>
-): Promise<Result<Contact | null, AccountContactMethodChangeError>> => {
+): Promise<
+  Result<
+    Contact | null,
+    AccountContactMethodChangeError | AccountContactNotAllowedError
+  >
+> => {
   const account = (await loadAccountById(accountId))!;
 
   const existingContact = account.contacts.find(
@@ -30,6 +39,13 @@ export const updateAccountContact = async (
   if (existingContact.method !== dto.method) {
     return err({
       type: "AccountContactMethodChangeError",
+    });
+  }
+
+  if (dto.method === "phone" && existingContact.method === "phone") {
+    return err({
+      type: "AccountContactNotAllowedError",
+      message: "Cannot change primary phone contact",
     });
   }
 

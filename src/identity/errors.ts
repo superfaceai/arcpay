@@ -13,3 +13,8 @@ export interface AccountPrimaryContactAlreadyExistsError {
 export interface AccountContactMethodChangeError {
   readonly type: "AccountContactMethodChangeError";
 }
+
+export interface AccountContactNotAllowedError {
+  readonly type: "AccountContactNotAllowedError";
+  readonly message: string;
+}

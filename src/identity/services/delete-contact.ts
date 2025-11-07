@@ -1,4 +1,4 @@
-import { ok, Result } from "@/lib";
+import { err, ok, Result } from "@/lib";
 
 import {
   Contact,
@@ -6,11 +6,12 @@ import {
   Account,
   saveAccount,
 } from "@/identity/entities";
+import { AccountContactNotAllowedError } from "@/identity/errors";
 
 export const deleteAccountContact = async (
   accountId: string,
   contactId: string
-): Promise<Result<Contact | null, void>> => {
+): Promise<Result<Contact | null, AccountContactNotAllowedError>> => {
   const account = (await loadAccountById(accountId))!;
 
   const existingContact = account.contacts.find(
@@ -20,6 +21,12 @@ export const deleteAccountContact = async (
   if (!existingContact) {
     return ok(null);
   }
+
+  if (existingContact.method === "phone")
+    return err({
+      type: "AccountContactNotAllowedError",
+      message: "Cannot delete primary phone contact",
+    });
 
   const updatedAccount: Account = {
     ...account,

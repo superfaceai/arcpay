@@ -77,6 +77,16 @@ export const contactsApi = createApi()
             `The contact method cannot be changed.`
           );
         }
+        if (
+          updatedContactResult.error.type === "AccountContactNotAllowedError"
+        ) {
+          return ProblemJson(
+            c,
+            403,
+            "Forbidden",
+            updatedContactResult.error.message
+          );
+        }
 
         throw new Error("Unknown error");
       }
@@ -102,6 +112,14 @@ export const contactsApi = createApi()
     );
 
     if (!deletedContactResult.ok) {
+      if (deletedContactResult.error.type === "AccountContactNotAllowedError") {
+        return ProblemJson(
+          c,
+          403,
+          "Forbidden",
+          deletedContactResult.error.message
+        );
+      }
       return ProblemJson(c, 500, "Internal server error");
     }
 
