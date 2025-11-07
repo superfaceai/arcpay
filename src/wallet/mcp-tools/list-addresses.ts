@@ -1,6 +1,7 @@
 import { z } from "zod-v3";
 
 import { createMcpTool, toolResponse } from "@/mcp/services";
+import { loadAccountById } from "@/identity/entities";
 
 const outputSchema = {
   addresses: z.array(
@@ -23,11 +24,14 @@ export const listAddressesTool = createMcpTool(
   (context) =>
     async ({}) => {
       try {
-        console.info("Listing addresses", { accountId: context.accountId });
+        const account = (await loadAccountById(context.accountId))!;
 
         return toolResponse({
           structuredContent: {
-            addresses: [],
+            addresses: account.addresses.map((address) => ({
+              label: address.label,
+              purposes: address.purposes,
+            })),
           },
         });
       } catch (e) {
