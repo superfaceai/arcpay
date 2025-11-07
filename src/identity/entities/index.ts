@@ -4,3 +4,5 @@ export * from "./api-key.entity.js";
 export * from "./api-key.db.js";
 export * from "./contact.entity.js";
 export * from "./address.entity.js";
+export * from "./confirmation-code.entity.js";
+export * from "./confirmation-code.db.js";
