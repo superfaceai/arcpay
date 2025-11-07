@@ -22,8 +22,12 @@ export const acpCheckoutsMcp = createApi().all("/acp_checkouts", async (c) => {
     confirmOrderAndPayTool,
     cancelCheckoutTool,
   ].forEach((tool) =>
-    // @ts-ignore
-    mcpServer.registerTool(tool.name, tool.config, tool.cb)
+    mcpServer.registerTool(
+      tool.name,
+      // @ts-ignore
+      tool.config,
+      tool.createCb({ accountId: "", live: false })
+    )
   );
 
   return handleMcpRequest(mcpServer, c);

@@ -39,57 +39,58 @@ export const updateCheckoutTool = createMcpTool(
     inputSchema,
     outputSchema,
   },
-  async ({ acpBaseUrl, checkoutId, fulfillmentOptionId, products }) => {
-    try {
-      console.info("Updating existing checkout", {
-        acpBaseUrl,
-        checkoutId,
-        fulfillmentOptionId,
-        products,
-      });
+  () =>
+    async ({ acpBaseUrl, checkoutId, fulfillmentOptionId, products }) => {
+      try {
+        console.info("Updating existing checkout", {
+          acpBaseUrl,
+          checkoutId,
+          fulfillmentOptionId,
+          products,
+        });
 
-      const checkoutResult = await updateCheckoutSession({
-        acpUrl: acpBaseUrl,
-        checkoutSessionId: checkoutId,
-        request: {
-          items: products,
-          ...(fulfillmentOptionId
-            ? { fulfillment_option_id: fulfillmentOptionId }
-            : {}),
+        const checkoutResult = await updateCheckoutSession({
+          acpUrl: acpBaseUrl,
+          checkoutSessionId: checkoutId,
+          request: {
+            items: products,
+            ...(fulfillmentOptionId
+              ? { fulfillment_option_id: fulfillmentOptionId }
+              : {}),
 
-          // TODO: Map address from account
-          fulfillment_address: {
-            name: "John Doe",
-            line_one: "123 Main St",
-            city: "Anytown",
-            state: "CA",
-            country: "US",
-            postal_code: "12345",
+            // TODO: Map address from account
+            fulfillment_address: {
+              name: "John Doe",
+              line_one: "123 Main St",
+              city: "Anytown",
+              state: "CA",
+              country: "US",
+              postal_code: "12345",
+            },
           },
-        },
-      });
+        });
 
-      if (!checkoutResult.ok) {
-        if (checkoutResult.error.type === "ACPErrorResponse") {
+        if (!checkoutResult.ok) {
+          if (checkoutResult.error.type === "ACPErrorResponse") {
+            return toolResponse({
+              error: JSON.stringify(checkoutResult.error.error),
+            });
+          }
+
           return toolResponse({
-            error: JSON.stringify(checkoutResult.error.error),
+            error: checkoutResult.error.message ?? "Unknown error",
           });
         }
 
         return toolResponse({
-          error: checkoutResult.error.message ?? "Unknown error",
+          structuredContent: {
+            // TODO: remove fulfillment_address from the response
+            checkout: checkoutResult.value,
+          },
         });
+      } catch (e) {
+        console.error(e);
+        return toolResponse({ error: "Internal error" });
       }
-
-      return toolResponse({
-        structuredContent: {
-          // TODO: remove fulfillment_address from the response
-          checkout: checkoutResult.value,
-        },
-      });
-    } catch (e) {
-      console.error(e);
-      return toolResponse({ error: "Internal error" });
     }
-  }
 );

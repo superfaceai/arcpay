@@ -20,63 +20,64 @@ export const confirmOrderAndPayTool = createMcpTool(
     inputSchema,
     outputSchema,
   },
-  async ({ acpBaseUrl, checkoutId }) => {
-    try {
-      console.info("Confirming order and paying", { acpBaseUrl, checkoutId });
+  () =>
+    async ({ acpBaseUrl, checkoutId }) => {
+      try {
+        console.info("Confirming order and paying", { acpBaseUrl, checkoutId });
 
-      const checkoutSessionResult = await getCheckoutSession({
-        acpUrl: acpBaseUrl,
-        checkoutSessionId: checkoutId,
-      });
+        const checkoutSessionResult = await getCheckoutSession({
+          acpUrl: acpBaseUrl,
+          checkoutSessionId: checkoutId,
+        });
 
-      if (!checkoutSessionResult.ok) {
-        if (checkoutSessionResult.error.type === "ACPErrorResponse") {
+        if (!checkoutSessionResult.ok) {
+          if (checkoutSessionResult.error.type === "ACPErrorResponse") {
+            return toolResponse({
+              error: JSON.stringify(checkoutSessionResult.error.error),
+            });
+          }
+
           return toolResponse({
-            error: JSON.stringify(checkoutSessionResult.error.error),
+            error: checkoutSessionResult.error.message ?? "Unknown error",
           });
         }
 
-        return toolResponse({
-          error: checkoutSessionResult.error.message ?? "Unknown error",
-        });
-      }
+        // TODO: Validate the order
 
-      // TODO: Validate the order
+        // TODO: Create a payment mandate
+        const grantedMandateSecret = "paym_secret_1234567890";
 
-      // TODO: Create a payment mandate
-      const grantedMandateSecret = "paym_secret_1234567890";
-
-      const completeCheckoutResult = await completeCheckoutSession({
-        acpUrl: acpBaseUrl,
-        checkoutSessionId: checkoutId,
-        request: {
-          payment_data: {
-            token: grantedMandateSecret,
-            provider: checkoutSessionResult.value.payment_provider.provider,
+        const completeCheckoutResult = await completeCheckoutSession({
+          acpUrl: acpBaseUrl,
+          checkoutSessionId: checkoutId,
+          request: {
+            payment_data: {
+              token: grantedMandateSecret,
+              provider: checkoutSessionResult.value.payment_provider.provider,
+            },
           },
-        },
-      });
+        });
 
-      if (!completeCheckoutResult.ok) {
-        if (completeCheckoutResult.error.type === "ACPErrorResponse") {
+        if (!completeCheckoutResult.ok) {
+          if (completeCheckoutResult.error.type === "ACPErrorResponse") {
+            return toolResponse({
+              error: JSON.stringify(completeCheckoutResult.error.error),
+            });
+          }
+
           return toolResponse({
-            error: JSON.stringify(completeCheckoutResult.error.error),
+            error: completeCheckoutResult.error.message ?? "Unknown error",
           });
         }
 
         return toolResponse({
-          error: completeCheckoutResult.error.message ?? "Unknown error",
+          structuredContent: {
+            checkout: completeCheckoutResult.value,
+          },
         });
+      } catch (e) {
+        console.error(e);
+        return toolResponse({ error: "Internal error" });
       }
-
-      return toolResponse({
-        structuredContent: {
-          checkout: completeCheckoutResult.value,
-        },
-      });
-    } catch (e) {
-      console.error(e);
-      return toolResponse({ error: "Internal error" });
     }
-  }
 );

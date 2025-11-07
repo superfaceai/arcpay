@@ -12,39 +12,40 @@ export const listProductsTool = createMcpTool(
     },
     outputSchema: { products: z.unknown().describe("The products feed") },
   },
-  async ({ url }) => {
-    try {
-      console.info(`Listing products from ${url}`);
+  () =>
+    async ({ url }) => {
+      try {
+        console.info(`Listing products from ${url}`);
 
-      const response = await fetch(url);
+        const response = await fetch(url);
 
-      if (!response.ok) {
-        return toolResponse({
-          error: `Product feed request failed with status ${response.status}`,
-        });
-      }
-
-      const products = await response.text();
-
-      if (response.headers.get("content-type")?.includes("json")) {
-        try {
-          const productsJson = JSON.parse(products);
+        if (!response.ok) {
           return toolResponse({
-            structuredContent: { products: productsJson },
-          });
-        } catch (e) {
-          return toolResponse({
-            content: products,
+            error: `Product feed request failed with status ${response.status}`,
           });
         }
-      }
 
-      return toolResponse({
-        content: products,
-      });
-    } catch (e) {
-      console.error(e);
-      return toolResponse({ error: "Internal error" });
+        const products = await response.text();
+
+        if (response.headers.get("content-type")?.includes("json")) {
+          try {
+            const productsJson = JSON.parse(products);
+            return toolResponse({
+              structuredContent: { products: productsJson },
+            });
+          } catch (e) {
+            return toolResponse({
+              content: products,
+            });
+          }
+        }
+
+        return toolResponse({
+          content: products,
+        });
+      } catch (e) {
+        console.error(e);
+        return toolResponse({ error: "Internal error" });
+      }
     }
-  }
 );

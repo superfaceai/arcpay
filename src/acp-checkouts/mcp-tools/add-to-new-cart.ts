@@ -29,51 +29,52 @@ export const addToNewCartTool = createMcpTool(
     inputSchema,
     outputSchema,
   },
-  async ({ acpBaseUrl, products }) => {
-    try {
-      console.info("Adding products to cart", {
-        acpBaseUrl,
-        products,
-      });
+  () =>
+    async ({ acpBaseUrl, products }) => {
+      try {
+        console.info("Adding products to cart", {
+          acpBaseUrl,
+          products,
+        });
 
-      const cartResult = await createCheckoutSession({
-        acpUrl: acpBaseUrl,
-        request: {
-          items: products,
+        const cartResult = await createCheckoutSession({
+          acpUrl: acpBaseUrl,
+          request: {
+            items: products,
 
-          // TODO: Map address from account
-          fulfillment_address: {
-            name: "John Doe",
-            line_one: "123 Main St",
-            city: "Anytown",
-            state: "CA",
-            country: "US",
-            postal_code: "12345",
+            // TODO: Map address from account
+            fulfillment_address: {
+              name: "John Doe",
+              line_one: "123 Main St",
+              city: "Anytown",
+              state: "CA",
+              country: "US",
+              postal_code: "12345",
+            },
           },
-        },
-      });
+        });
 
-      if (!cartResult.ok) {
-        if (cartResult.error.type === "ACPErrorResponse") {
+        if (!cartResult.ok) {
+          if (cartResult.error.type === "ACPErrorResponse") {
+            return toolResponse({
+              error: JSON.stringify(cartResult.error.error),
+            });
+          }
+
           return toolResponse({
-            error: JSON.stringify(cartResult.error.error),
+            error: cartResult.error.message ?? "Unknown error",
           });
         }
 
         return toolResponse({
-          error: cartResult.error.message ?? "Unknown error",
+          structuredContent: {
+            // TODO: remove fulfillment_address from the response
+            checkout: cartResult.value,
+          },
         });
+      } catch (e) {
+        console.error(e);
+        return toolResponse({ error: "Internal error" });
       }
-
-      return toolResponse({
-        structuredContent: {
-          // TODO: remove fulfillment_address from the response
-          checkout: cartResult.value,
-        },
-      });
-    } catch (e) {
-      console.error(e);
-      return toolResponse({ error: "Internal error" });
     }
-  }
 );

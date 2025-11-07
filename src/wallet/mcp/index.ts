@@ -1,74 +1,26 @@
-import { z } from "zod-v3";
-
 import { createApi } from "@/api/services";
 import { createMcpServer, handleMcpRequest } from "@/mcp/services";
-import { Currency } from "@/balances/values";
 import { withAuth } from "@/api/middlewares";
-import { getBalance } from "@/balances/services";
 
-export const walletMcp = createApi().all(
-  "/wallet",
-  withAuth(),
-  async (c) => {
-    const accountId = c.get("accountId");
-    const live = c.get("isLive");
+import { listAddressesTool, getBalanceTool } from "@/wallet/mcp-tools";
 
-    const mcpServer = createMcpServer({
-      name: "wallet",
-      title: "Agentic Wallet",
-    });
+export const walletMcp = createApi().all("/wallet", withAuth(), async (c) => {
+  const accountId = c.get("accountId");
+  const live = c.get("isLive");
 
+  const mcpServer = createMcpServer({
+    name: "wallet",
+    title: "Agentic Wallet",
+  });
+
+  [listAddressesTool, getBalanceTool].forEach((tool) =>
     mcpServer.registerTool(
-      "get-balance",
-      {
-        title: "Get Balance",
-        description: "Get the current balance",
-        inputSchema: {
-          currency: z
-            .string()
-            .transform((val) => val.toUpperCase().trim())
-            .pipe(z.enum(Currency.options as [string, ...string[]]))
-            .describe("The currency to get the balance for"),
-        },
-        outputSchema: { amount: z.string(), currency: z.string() },
-      },
-      async ({ currency }) => {
-        const balance = await getBalance({
-          accountId,
-          live,
-          currency: currency as Currency,
-        });
+      tool.name,
+      // @ts-ignore
+      tool.config,
+      tool.createCb({ accountId, live })
+    )
+  );
 
-        if (!balance.ok) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify({ error: balance.error.message }),
-              },
-            ],
-            structuredContent: { error: balance.error.message },
-          };
-        }
-
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify({
-                amount: balance.value?.amount ?? "0",
-                currency,
-              }),
-            },
-          ],
-          structuredContent: {
-            amount: balance.value?.amount ?? "0",
-            currency,
-          },
-        };
-      }
-    );
-
-    return handleMcpRequest(mcpServer, c);
-  }
-);
+  return handleMcpRequest(mcpServer, c);
+});

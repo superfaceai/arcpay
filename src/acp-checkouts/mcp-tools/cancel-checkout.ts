@@ -20,36 +20,37 @@ export const cancelCheckoutTool = createMcpTool(
     inputSchema,
     outputSchema,
   },
-  async ({ acpBaseUrl, checkoutId }) => {
-    try {
-      console.info("Cancelling checkout", { acpBaseUrl, checkoutId });
+  () =>
+    async ({ acpBaseUrl, checkoutId }) => {
+      try {
+        console.info("Cancelling checkout", { acpBaseUrl, checkoutId });
 
-      const checkoutResult = await cancelCheckoutSession({
-        acpUrl: acpBaseUrl,
-        checkoutSessionId: checkoutId,
-      });
+        const checkoutResult = await cancelCheckoutSession({
+          acpUrl: acpBaseUrl,
+          checkoutSessionId: checkoutId,
+        });
 
-      if (!checkoutResult.ok) {
-        if (checkoutResult.error.type === "ACPErrorResponse") {
+        if (!checkoutResult.ok) {
+          if (checkoutResult.error.type === "ACPErrorResponse") {
+            return toolResponse({
+              error: JSON.stringify(checkoutResult.error.error),
+            });
+          }
+
           return toolResponse({
-            error: JSON.stringify(checkoutResult.error.error),
+            error: checkoutResult.error.message ?? "Unknown error",
           });
         }
 
         return toolResponse({
-          error: checkoutResult.error.message ?? "Unknown error",
+          structuredContent: {
+            // TODO: remove fulfillment_address from the response
+            checkout: checkoutResult.value,
+          },
         });
+      } catch (e) {
+        console.error(e);
+        return toolResponse({ error: "Internal error" });
       }
-
-      return toolResponse({
-        structuredContent: {
-          // TODO: remove fulfillment_address from the response
-          checkout: checkoutResult.value,
-        },
-      });
-    } catch (e) {
-      console.error(e);
-      return toolResponse({ error: "Internal error" });
     }
-  }
 );

@@ -12,11 +12,14 @@ export const createMcpTool = <
     inputSchema?: InputArgs;
     outputSchema?: OutputArgs;
   },
-  cb: (input: z.infer<z.ZodObject<InputArgs>>) => Promise<CallToolResult>
+  createCb: (context: {
+    accountId: string;
+    live: boolean;
+  }) => (input: z.infer<z.ZodObject<InputArgs>>) => Promise<CallToolResult>
 ) => {
   return {
     name,
     config,
-    cb,
+    createCb,
   };
 };
