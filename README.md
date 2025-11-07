@@ -26,6 +26,12 @@ Set the necessary environment variables.
 cp .env.example .env
 ```
 
+Start the local Redis instance using Docker Compose.
+
+```sh
+docker compose up -d
+```
+
 Then run the development server
 
 ```sh
