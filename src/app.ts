@@ -41,7 +41,7 @@ const app = createApplicationApi((app) => {
   app.route("/", acpCheckoutsMcp);
   app.route("/", walletMcp);
 
-  const resources = listResources(app, ["/mcp/wallets", "/acp_checkouts"]);
+  const resources = listResources(app, ["/wallet", "/acp_checkouts"]);
   app.route("/", web(resources));
 });
 
