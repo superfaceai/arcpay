@@ -1,6 +1,6 @@
 import { z } from "zod";
 import Config from "@/config";
-import { err, ok, Result } from "@/lib";
+import { err, ok, PhoneNumber, Result } from "@/lib";
 
 import {
   accountId,
@@ -12,18 +12,45 @@ import {
   saveAccount,
   AccountHandle,
   loadAccountByHandle,
+  loadPhoneVerification,
+  ContactPhone,
+  contactId,
 } from "@/identity/entities";
-import { AccountHandleNotAvailableError } from "@/identity/errors";
+import {
+  AccountHandleNotAvailableError,
+  PhoneVerificationError,
+} from "@/identity/errors";
 
 export const SignUpDTO = z.object({
   name: z.string().min(3),
   handle: AccountHandle.optional(),
+  phone: z
+    .object({
+      number: PhoneNumber,
+      verification_secret: z.string().min(64),
+    })
+    .optional(),
 });
 
 export const signUp = async (
   dto: z.infer<typeof SignUpDTO>
-): Promise<Result<ApiKey, AccountHandleNotAvailableError>> => {
+): Promise<
+  Result<ApiKey, AccountHandleNotAvailableError | PhoneVerificationError>
+> => {
   const live = Config.IS_PRODUCTION;
+
+  if (dto.phone) {
+    const phoneVerification = await loadPhoneVerification(dto.phone.number);
+
+    if (
+      !phoneVerification ||
+      phoneVerification.secret !== dto.phone.verification_secret
+    )
+      return err({
+        type: "PhoneVerificationError",
+        message: "Phone verification is invalid or has expired",
+      });
+  }
 
   const handleResult = await getAccountHandle({
     name: dto.name,
@@ -36,6 +63,17 @@ export const signUp = async (
     type: "individual",
     name: dto.name,
     handle: handleResult.value,
+    contacts: dto.phone
+      ? [
+          ContactPhone.parse({
+            id: contactId(),
+            method: "phone",
+            label: "Primary",
+            phone_number: dto.phone.number,
+            verified: true,
+          }),
+        ]
+      : [],
   });
 
   const apiKey = ApiKey.parse({

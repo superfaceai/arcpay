@@ -5,6 +5,11 @@ export interface CodeConfirmationError {
   readonly message: string;
 }
 
+export interface PhoneVerificationError {
+  readonly type: "PhoneVerificationError";
+  readonly message: string;
+}
+
 export interface AccountHandleNotAvailableError {
   readonly type: "AccountHandleNotAvailableError";
   readonly handle: string;

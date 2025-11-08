@@ -6,7 +6,7 @@ export const contactId = () => generateId("ct");
 const ContactBase = z.object({
   id: z.string(),
   label: z.string().optional(),
-  // verified: z.boolean(),
+  verified: z.boolean().default(false),
 });
 
 export const ContactPhone = ContactBase.extend({
