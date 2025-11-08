@@ -42,10 +42,10 @@ export const updateAccountContact = async (
     });
   }
 
-  if (dto.method === "phone" && existingContact.method === "phone") {
+  if (existingContact.verified) {
     return err({
       type: "AccountContactNotAllowedError",
-      message: "Cannot change primary phone contact",
+      message: "Cannot update verified contact",
     });
   }
 

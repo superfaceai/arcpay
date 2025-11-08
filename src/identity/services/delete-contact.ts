@@ -22,10 +22,10 @@ export const deleteAccountContact = async (
     return ok(null);
   }
 
-  if (existingContact.method === "phone")
+  if (existingContact.verified)
     return err({
       type: "AccountContactNotAllowedError",
-      message: "Cannot delete primary phone contact",
+      message: "Cannot delete verified contact",
     });
 
   const updatedAccount: Account = {
