@@ -482,7 +482,21 @@ li.transaction .transaction-money > .fee-short {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 var(--padding-content);
+}
 
+.app-navigation .account {
+  margin-left: auto;
+}
+
+.app-navigation .account  .name {
+  padding: 0 0.75rem 0 0;
+}
+
+@media (max-width: 600px) {
+  .app-navigation .account .name {
+    display: none;
+  }
 }
 
 .avatar {
