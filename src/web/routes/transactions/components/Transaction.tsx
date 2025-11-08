@@ -134,6 +134,15 @@ export const Transaction: FC<TransactionProps> = ({
             </div>
           )}
 
+          {paymentTransaction.blockchain.counterparty && (
+            <div className="item">
+              <div className="label">Counterparty</div>
+              <div className="value" title={paymentTransaction.blockchain.counterparty}>
+                {formatBlockchainAddress(paymentTransaction.blockchain.counterparty)}
+              </div>
+            </div>
+          )}
+
           <div className="item">
             <div className="label">Status</div>
             <div className="value">
