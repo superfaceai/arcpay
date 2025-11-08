@@ -2,14 +2,19 @@ import { DAY } from "@/lib";
 import { createWebRoute, getSession } from "@/web/services";
 import { withWebAuth } from "@/web/middleware";
 
-import { AllTransactions } from "./AllTransactions";
 import { loadAccountById } from "@/identity/entities";
-import { listPayments, listTransactions } from "@/payments/services";
+import {
+  getTransaction,
+  listPayments,
+  listTransactions,
+} from "@/payments/services";
 
-export const transactionsRoute = createWebRoute().get(
-  "/all-transactions",
-  withWebAuth(),
-  async (c) => {
+import { AllTransactions } from "./AllTransactions";
+import { TransactionDetail } from "./TransactionDetail";
+import { listLocations } from "@/balances/services";
+
+export const transactionsRoute = createWebRoute()
+  .get("/all-transactions", withWebAuth(), async (c) => {
     const session = await getSession(c);
     if (!session.account) {
       return c.redirect("/login");
@@ -46,5 +51,44 @@ export const transactionsRoute = createWebRoute().get(
         transactions={transactions.value}
       />
     );
-  }
-);
+  })
+  .get("/txn/:transactionId", withWebAuth(), async (c) => {
+    const session = await getSession(c);
+    if (!session.account) {
+      return c.redirect("/login");
+    }
+
+    const { transactionId } = c.req.param();
+    if (!transactionId) {
+      return c.redirect("/all-transactions");
+    }
+
+    const { accountId, isLive } = session.account;
+    const account = (await loadAccountById(accountId))!;
+
+    const transactionDetail = await getTransaction({
+      accountId,
+      transactionId,
+      live: isLive,
+    });
+    if (!transactionDetail.ok) {
+      return c.text(transactionDetail.error.message, 500);
+    }
+
+    const locations = await listLocations({ accountId, live: isLive });
+    if (!locations.ok) {
+      return c.text(locations.error.message, 500);
+    }
+
+    console.log(transactionDetail.value);
+
+    return c.html(
+      <TransactionDetail
+        account={account}
+        transactions={transactionDetail.value?.transactions ?? []}
+        locations={locations.value}
+        payment={transactionDetail.value?.payment}
+        capture={transactionDetail.value?.capture}
+      />
+    );
+  });

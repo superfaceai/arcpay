@@ -2,8 +2,10 @@ import Big from "big.js";
 import { FC } from "hono/jsx";
 
 import { Payment, Transaction } from "@/payments/entities";
-import { IconBanknoteUp, IconCoins } from "@/web/components/icons";
 import { DAY } from "@/lib";
+
+import { TransactionIcon } from "./TransactionIcon";
+import { formatAmount, formatName } from "./formatting";
 
 type TransactionsListProps = {
   payments: Payment[];
@@ -49,10 +51,7 @@ function TransactionLine({
   payment?: Payment;
 }) {
   const amount = formatAmount(transaction.amount);
-
-  const name = payment
-    ? formatPaymentName(payment)
-    : formatTransactionName(transaction);
+  const name = formatName({ transaction, payment });
 
   const status =
     transaction.status === "canceled"
@@ -70,9 +69,7 @@ function TransactionLine({
       <a href={`/txn/${transaction.id}`}>&nbsp;</a>
 
       <div className="transaction-left">
-        <div className="transaction-icon">
-          {payment ? <IconBanknoteUp /> : <IconCoins />}
-        </div>
+        <TransactionIcon type={payment ? "payment" : "raw"} />
 
         <div className="transaction-details">
           <span className="transaction-type">{name}</span>
@@ -103,45 +100,6 @@ function TransactionLine({
     </li>
   );
 }
-
-const formatAmount = (
-  amount: string
-): { type: "incoming" | "outgoing"; value: string } => {
-  const amountValue = Big(amount);
-
-  if (amountValue.gt(0)) {
-    return { type: "incoming", value: `+ ${amountValue.toString()}` };
-  }
-  return { type: "outgoing", value: `${amountValue.abs().toString()}` };
-};
-
-const formatPaymentName = (payment: Payment): string => {
-  if (payment.method === "crypto") {
-    return `To ${formatBlockchainAddress(payment.crypto?.address ?? "")}`;
-  }
-
-  return `To '${payment.arcpay?.account}'`;
-};
-
-const formatTransactionName = (transaction: Transaction): string => {
-  const direction = transaction.amount.startsWith("-") ? "To" : "From";
-
-  const counterparty =
-    transaction.type === "payment"
-      ? formatBlockchainAddress(transaction.blockchain.counterparty)
-      : transaction.fee_type === "network"
-      ? "Network Fee"
-      : "Unknown";
-
-  return [direction, counterparty].join(" ");
-};
-
-const formatBlockchainAddress = (address: string): string => {
-  // convert full address to  0xE3...4a5E
-  return (
-    address.substring(0, 4) + "..." + address.substring(address.length - 4)
-  );
-};
 
 const formatTxDate = (date: Date, now = new Date()): string => {
   const diff = now.getTime() - date.getTime();

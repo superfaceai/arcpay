@@ -271,7 +271,7 @@ h3 {
 }
 
 a {
-  font-size: 1rem;
+  /* font-size: 1rem; */
   color: var(--color-primary-foreground);
   text-decoration: underline;
   text-underline-offset: 5px;
@@ -376,11 +376,82 @@ li.balance:hover {
   gap: 0.5rem;
 }
 
-.transactions-section  h2 {
+.transactions-section h1,h2 {
   display: flex;
   justify-content: space-between;
   padding: 0 var(--padding-content);
   align-items: center;
+}
+
+.transaction-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--padding-content);
+  box-sizing: border-box;
+}
+
+.transaction-box {
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 250px;
+  width: 100%;
+  gap: 0.5rem;
+  padding: var(--padding-content);
+  border-radius: 0.75rem;
+  background-color: var(--color-card);
+  transition: background-color 0.2s;
+}
+
+.transaction-box-narrow {
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.5rem;
+  max-width: 45ch;
+  margin: 0 auto;
+}
+
+.transaction-box-list {
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.5rem;
+  padding: var(--padding-content);
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-card-dark);
+  transition: background-color 0.2s;
+}
+
+.transaction-box-list > .item {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.transaction-box-list > .item > .label {
+  font-size: var(--font-size-small);
+  color: var(--color-muted-foreground);
+}
+.transaction-box-list > .item > .value {
+  font-weight: 500;
+  font-size: var(--font-size-small) !important;
+  text-align: right;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  
+}
+
+.transaction-box h1,h2 {
+  margin: 0;
 }
 
 ul.transactions {
@@ -432,7 +503,7 @@ li.transaction .transaction-left {
   justify-content: start;
 }
 
-li.transaction .transaction-icon {
+.transaction-icon {
   width: 3rem;
   height: 3rem;
   background-color: var(--color-card-dark);
@@ -443,58 +514,49 @@ li.transaction .transaction-icon {
   flex: none
 }
 
-li.transaction .transaction-details {
+.transaction-details {
   display: flex;
   flex-direction: column;
   align-items: start;
   gap: 0.3rem;
 }
-li.transaction .transaction-details > .transaction-type {
+.transaction-details > .transaction-type {
   font-weight: 600;
 }
-li.transaction .transaction-details > .transaction-status {
+.transaction-details > .transaction-status {
   font-size: 0.85rem;
   color: var(--color-muted-foreground);
 }
 
-li.transaction .transaction-money {
+.transaction-money {
   display: flex;
   flex-direction: column;
   align-items: end;
   gap: 0.3rem;
 }
-li.transaction .transaction-money > .value {
+.transaction-money > .value {
   font-weight: 600;
   text-align: right;
 }
-li.transaction .transaction-money > .value.incoming {
+.transaction-money > .value.incoming {
   color: var(--color-payment-incoming);
 }
 
-li.transaction .transaction-money > .fee {
+.transaction-money > .fee {
   font-size: 0.85rem;
   color: var(--color-muted-foreground);
 }
-li.transaction .transaction-money > .fee-short {
+.transaction-money > .fee-short {
   display: none;
   font-size: 0.85rem;
   color: var(--color-muted-foreground);
 }
 
 @media (max-width: 600px) {
-  /* li.transaction {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  li.transaction .transaction-money {
-    align-items: start;
-    justify-content: start;
-  } */
-
-  li.transaction .transaction-money > .fee-short {
+  .transaction-money > .fee-short {
     display: block;
   }
-  li.transaction .transaction-money > .fee {
+  .transaction-money > .fee {
     display: none
   }
 }
