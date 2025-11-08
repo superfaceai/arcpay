@@ -13,6 +13,14 @@ const outputSchema = {
     .number()
     .describe("The number of minutes until the permission token expires."),
   rules: z.array(z.string()),
+  balances: z.array(
+    z.object({
+      currency: z.string(),
+      budgetLimit: z.string(),
+      remainingBudget: z.string(),
+      budgetResetsInDays: z.number(),
+    })
+  ),
 };
 
 export const readPermissionsTool = createMcpTool(
