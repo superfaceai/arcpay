@@ -195,7 +195,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"method\": \"phone\",\n    \"label\": \"Personal\",\n    \"phone_number\": \"212-456-7890\"\n}",
+							"raw": "{\n    \"method\": \"phone\",\n    \"label\": \"Personal\",\n    \"phone_number\": \"212-456-7890\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1187,7 +1187,7 @@
 					"response": []
 				},
 				{
-					"name": "Get balance",
+					"name": "Read permissions",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1209,7 +1209,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"get-balance\",\n        \"arguments\": {\n            \"currency\": \"usdc\"\n        }\n    }\n}",
+							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"read-permissions\",\n        \"arguments\": {}\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1251,7 +1251,49 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"list-addresses\",\n        \"arguments\": {}\n    }\n}",
+							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"list-addresses\",\n        \"arguments\": {\n            \"permissionToken\": \"i_have_read_permissions_RpMFWVAmFPOSvrByDEYgs\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/wallet",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"wallet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pre-authorize payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json,text/event-stream",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"preauthorize-payment\",\n        \"arguments\": {\n            \"permissionToken\": \"i_have_read_permissions_RpMFWVAmFPOSvrByDEYgs\",\n            \"paymentPurpose\": [\"beverages\"],\n            \"paymentMethod\": \"wallet\",\n            \"paymentProvider\": \"arcpay\",\n            \"amount\": \"20\",\n            \"currency\": \"usd\"\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1382,7 +1424,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"add-to-new-cart\",\n        \"arguments\": {\n            \"acpBaseUrl\": \"http://localhost:3001/api/acp\",\n            \"products\": [\n                {\n                    \"id\": \"coffee-beans-1\",\n                    \"quantity\": 100\n                }\n            ]\n        }\n    }\n}",
+							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"add-to-new-cart\",\n        \"arguments\": {\n            \"acpBaseUrl\": \"https://merchant-demo.arcpay.ai/api/acp\",\n            \"products\": [\n                {\n                    \"id\": \"coffee-beans-1\",\n                    \"quantity\": 100\n                }\n            ]\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1424,7 +1466,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"update-checkout\",\n        \"arguments\": {\n            \"acpBaseUrl\": \"http://localhost:3001/api/acp\",\n            \"checkoutId\": \"cart_g7hU0CPdXcyxw8EEkZcRJ\",\n            \"fulfillmentOptionId\": \"ful_ElsqLNhSVEwlCWcC5SI43\",\n            \"products\": [\n                {\n                    \"id\": \"coffee-beans-500g\",\n                    \"quantity\": 15\n                }\n            ]\n        }\n    }\n}",
+							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"update-checkout\",\n        \"arguments\": {\n            \"acpBaseUrl\": \"https://merchant-demo.arcpay.ai/api/acp\",\n            \"checkoutId\": \"cart_Mn4VbJrORpiuy7VRWUKCe\",\n            \"fulfillmentOptionId\": \"ful_ElsqLNhSVEwlCWcC5SI43\",\n            \"fulfillmentAddressId\": \"addr_temp_uaoCX96NvEJAPUngehYOc\",\n            \"products\": [\n                {\n                    \"id\": \"coffee-beans-500g\",\n                    \"quantity\": 15\n                }\n            ]\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1466,7 +1508,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"confirm-order-and-pay\",\n        \"arguments\": {\n            \"acpBaseUrl\": \"http://localhost:3001/api/acp\",\n            \"checkoutId\": \"cart_g7hU0CPdXcyxw8EEkZcRJ\"\n        }\n    }\n}",
+							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"confirm-order-and-pay\",\n        \"arguments\": {\n            \"acpBaseUrl\": \"https://merchant-demo.arcpay.ai/api/acp\",\n            \"checkoutId\": \"cart_Mn4VbJrORpiuy7VRWUKCe\",\n            \"preauthorizedPayment\": {\n                \"token\": \"paym_secret_1234567890123456789012345678901234567890\",\n                \"provider\": \"arcpay\"\n            }\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1508,7 +1550,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"cancel-checkout\",\n        \"arguments\": {\n            \"acpBaseUrl\": \"http://localhost:3001/api/acp\",\n            \"checkoutId\": \"cart_p78brKetQutWDSB069kui\"\n        }\n    }\n}",
+							"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 2,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"cancel-checkout\",\n        \"arguments\": {\n            \"acpBaseUrl\": \"https://merchant-demo.arcpay.ai/api/acp\",\n            \"checkoutId\": \"cart_RpMFWVAmFPOSvrByDEYgs\"\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1606,66 +1648,42 @@
 		{
 			"key": "SECRET_KEY",
 			"value": "",
-			"description": {
-				"content": "Populates automatically after a sign up",
-				"type": "text/plain"
-			}
+			"description": "Populates automatically after a sign up"
 		},
 		{
 			"key": "ACCOUNT_ID",
 			"value": "",
-			"description": {
-				"content": "Populates automatically after sign up/fetching my account",
-				"type": "text/plain"
-			}
+			"description": "Populates automatically after sign up/fetching my account"
 		},
 		{
 			"key": "PHONE_CONTACT_ID",
 			"value": "",
-			"description": {
-				"content": "Populates automatically after fetching an account detail",
-				"type": "text/plain"
-			}
+			"description": "Populates automatically after fetching an account detail"
 		},
 		{
 			"key": "PRIMARY_LOCATION_ID",
 			"value": "",
-			"description": {
-				"content": "Populates automatically after listing all locations",
-				"type": "text/plain"
-			}
+			"description": "Populates automatically after listing all locations"
 		},
 		{
 			"key": "PAYMENT_MANDATE_ID",
 			"value": "",
-			"description": {
-				"content": "Populates automatically after payment delegation/listing payment mandates",
-				"type": "text/plain"
-			}
+			"description": "Populates automatically after payment delegation/listing payment mandates"
 		},
 		{
 			"key": "PAYMENT_MANDATE_SECRET",
 			"value": "",
-			"description": {
-				"content": "Populates automatically after payment delegation",
-				"type": "text/plain"
-			}
+			"description": "Populates automatically after payment delegation"
 		},
 		{
 			"key": "PAYMENT_CAPTURE_ID",
 			"value": "",
-			"description": {
-				"content": "Populates automatically after capturing a payment",
-				"type": "text/plain"
-			}
+			"description": "Populates automatically after capturing a payment"
 		},
 		{
 			"key": "NOTIFICATION_RULE_ID",
 			"value": "",
-			"description": {
-				"content": "Populates automatically after creating/listing notification rule",
-				"type": "text/plain"
-			}
+			"description": "Populates automatically after creating/listing notification rule"
 		}
 	]
 }
