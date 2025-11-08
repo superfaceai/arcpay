@@ -6,3 +6,5 @@ export * from "./contact.entity.js";
 export * from "./address.entity.js";
 export * from "./confirmation-code.entity.js";
 export * from "./confirmation-code.db.js";
+export * from "./phone-verification.entity.js";
+export * from "./phone-verification.db.js";

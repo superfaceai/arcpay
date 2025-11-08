@@ -1,7 +1,12 @@
 import { ok, Result } from "@/lib";
 
 import { eraseCallsForAccount } from "@/api/entities";
-import { eraseAccount, eraseApiKeysForAccount } from "@/identity/entities";
+import {
+  eraseAccount,
+  eraseApiKeysForAccount,
+  erasePhoneVerification,
+  loadAccountById,
+} from "@/identity/entities";
 import {
   eraseLocationsForAccount,
   eraseBalancesForAccount,
@@ -22,6 +27,14 @@ export const erase = async ({
 }: {
   accountId: string;
 }): Promise<Result<void, void>> => {
+  const account = await loadAccountById(accountId);
+  if (account) {
+    const phoneNumbers = account.contacts
+      .filter((contact) => contact.method === "phone")
+      .map((contact) => contact.phone_number);
+    await erasePhoneVerification({ phoneNumbers });
+  }
+
   await eraseNotificationsForAccount({ accountId });
   await eraseNotificationRulesForAccount({ accountId });
   await erasePaymentMandatesForAccount({ accountId });

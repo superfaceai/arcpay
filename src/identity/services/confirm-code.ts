@@ -6,6 +6,9 @@ import {
   deleteConfirmationCode,
   loadAccountByPhone,
   loadConfirmationCode,
+  PhoneVerification,
+  phoneVerificationSecret,
+  savePhoneVerification,
 } from "@/identity/entities";
 
 import { CodeConfirmationError } from "@/identity/errors";
@@ -21,6 +24,7 @@ type ConfirmCodeOutcome =
     }
   | {
       next: "registration";
+      phoneVerification: PhoneVerification;
     };
 
 export const confirmCode = async (
@@ -36,6 +40,12 @@ export const confirmCode = async (
     });
   }
 
+  const phoneVerification: PhoneVerification = {
+    phone: confirmationCode.phone,
+    secret: phoneVerificationSecret(confirmationCode.phone),
+    last_verified_at: new Date(),
+  };
+  await savePhoneVerification(phoneVerification);
   const account = await loadAccountByPhone(confirmationCode.phone);
 
   if (account) {
@@ -47,5 +57,6 @@ export const confirmCode = async (
 
   return ok({
     next: "registration",
+    phoneVerification,
   });
 };
