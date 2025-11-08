@@ -18,7 +18,7 @@ export const loginRoute = createWebRoute()
 
     if (session.account) {
       const account = await loadAccountById(session.account.accountId);
-      if (account) return c.redirect("/dashboard");
+      if (account) return c.redirect("/home");
     }
 
     return c.html(<Login phone={session?.phone} error={error} />);

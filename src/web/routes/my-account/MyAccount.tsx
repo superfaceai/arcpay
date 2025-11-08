@@ -12,7 +12,7 @@ export const MyAccount: FC<MyAccountProps> = (props: MyAccountProps) => {
   return (
     <Layout>
       <AppLayout>
-        <AppNavigation account={props.account} backLink="/dashboard" />
+        <AppNavigation account={props.account} backLink="/home" />
 
         <div className="account-box">
           <h1>{props.account.name}</h1>

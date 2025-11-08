@@ -19,7 +19,7 @@ export const AllTransactions: FC<AllTransactionsProps> = (
   return (
     <Layout>
       <AppLayout>
-        <AppNavigation account={props.account} backLink="/dashboard" />
+        <AppNavigation account={props.account} backLink="/home" />
 
         <div className="transactions-section">
           <h2>

@@ -4,7 +4,7 @@ import { DAY } from "@/lib";
 import { createWebRoute, getSession } from "@/web/services";
 import { withWebAuth } from "@/web/middleware";
 
-import { Dashboard } from "./Dashboard";
+import { Home } from "./Home";
 import { loadAccountById } from "@/identity/entities";
 import { listBalances, listLocations } from "@/balances/services";
 import { listPayments, listTransactions } from "@/payments/services";
@@ -13,8 +13,8 @@ import { sortBalancesDesc } from "@/balances/entities";
 
 const dataFrom = new Date(Date.now() - 7 * DAY);
 
-export const dashboardRoute = createWebRoute().get(
-  "/dashboard",
+export const homeRoute = createWebRoute().get(
+  "/home",
   withWebAuth(),
   async (c) => {
     const session = await getSession(c);
@@ -70,7 +70,7 @@ export const dashboardRoute = createWebRoute().get(
     const sortedBalances = balances.value.sort(sortBalancesDesc);
 
     return c.html(
-      <Dashboard
+      <Home
         account={account}
         balances={sortedBalances}
         totalUsdcBalance={totalUsdcBalance}

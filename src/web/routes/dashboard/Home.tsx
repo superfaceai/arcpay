@@ -8,7 +8,7 @@ import { Payment, Transaction } from "@/payments/entities";
 import { AppLayout, AppNavigation } from "@/web/components/AppLayout";
 import { TransactionsList } from "../transactions/components/TransactionsList";
 
-type DashboardProps = {
+type HomeProps = {
   account: Account;
   balances: Balance[];
   totalUsdcBalance: string;
@@ -17,7 +17,7 @@ type DashboardProps = {
   transactions: Transaction[];
 };
 
-export const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
+export const Home: FC<HomeProps> = (props: HomeProps) => {
   return (
     <Layout>
       <AppLayout>

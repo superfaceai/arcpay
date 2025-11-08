@@ -96,6 +96,6 @@ export const createAccountRoute = createWebRoute()
       });
 
       await new Promise((resolve) => setTimeout(resolve, 500));
-      return c.redirect("/dashboard");
+      return c.redirect("/home");
     }
   );
