@@ -42,6 +42,7 @@ export const deliverNotification = async ({
     case "email": {
       const sentResult = await sendTransactionalEmailAdapter({
         to: notification.destination.email,
+        subject: notification.subject,
         plainTextMessage: notification.message,
       });
       if (!sentResult.ok) {

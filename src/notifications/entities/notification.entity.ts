@@ -36,6 +36,7 @@ export const Notification = z.object({
   live: z.boolean(),
   event: NotificationTrigger,
   destination: NotificationDestination,
+  subject: z.string(),
   message: z.string(),
   status: NotificationStatus,
   created_at: DateCodec,

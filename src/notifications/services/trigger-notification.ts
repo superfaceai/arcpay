@@ -87,6 +87,11 @@ const createNotifications = (
               email: contact.email,
             };
 
+      const { subject, message } = generateNotificationMessage({
+        channel: destination.channel,
+        event,
+      });
+
       const notification: Notification = {
         id: notificationId(),
         rule: rule.id,
@@ -96,10 +101,8 @@ const createNotifications = (
           payment: event.payment.id,
         },
         destination,
-        message: generateNotificationMessage({
-          channel: destination.channel,
-          event,
-        }),
+        subject,
+        message,
         status: "queued",
         created_at: new Date(),
       };
@@ -117,7 +120,7 @@ const generateNotificationMessage = ({
 }: {
   channel: NotificationChannel;
   event: z.infer<typeof TriggerNotificationEvent>;
-}): string => {
+}): { subject: string; message: string } => {
   // TODO: Generate message based on channel
 
   const beneficiary =
@@ -125,7 +128,12 @@ const generateNotificationMessage = ({
       ? event.payment.crypto?.address
       : event.payment.arcpay?.account) ?? "unknown";
 
-  return `Paid ${event.payment.currency} ${event.payment.amount} to '${beneficiary}'`;
+  const method = event.payment.method === "crypto" ? "crypto" : "Arc Pay";
+
+  return {
+    subject: `New ${method} payment sent`,
+    message: `You paid ${event.payment.amount} ${event.payment.currency} to '${beneficiary}'`,
+  };
 };
 
 const matchNotificationRule = (
