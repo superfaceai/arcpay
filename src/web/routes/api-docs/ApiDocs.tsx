@@ -14,7 +14,10 @@ interface ApiDocsProps {
 export const ApiDocs: FC<ApiDocsProps> = (props: ApiDocsProps) => {
   return (
     <Layout>
-      <div style={{ maxWidth: "70ch", margin: "1rem auto" }} className="padding-content">
+      <div
+        style={{ maxWidth: "70ch", margin: "1rem auto" }}
+        className="padding-content"
+      >
         <h1 className="space-between">
           Arc Pay API
           <div>
@@ -26,22 +29,12 @@ export const ApiDocs: FC<ApiDocsProps> = (props: ApiDocsProps) => {
 
         <h2>Obtain an API key</h2>
 
-        <p>To obtain an API key, you must register with the API:</p>
-
-        <pre>{`POST /accounts
-
-{
-  "name": "Son of Anton",
-  "handle": "son_of_anton" // Optional
-}`}</pre>
-
-        <p>You'll receive a response including your API key:</p>
-        <pre>{`{
-  "object": "apikey",
-  "key": "sk_test_YOUR_API_KEY"
-}`}</pre>
-
-        <p>Keep your API key secret and do not share it with anyone.</p>
+        <p>
+          To obtain an API key,{" "}
+          <a href="/login">log into your Arc Pay account</a> and head to the{" "}
+          <a href="/my-account/api-keys">My API keys</a> page. Keep your API key
+          secret and do not share it with anyone.
+        </p>
 
         <h2 id="authentication">Authentication</h2>
         <p>
