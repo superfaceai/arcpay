@@ -80,8 +80,6 @@ export const transactionsRoute = createWebRoute()
       return c.text(locations.error.message, 500);
     }
 
-    console.log(transactionDetail.value);
-
     return c.html(
       <TransactionDetail
         account={account}
