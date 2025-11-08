@@ -26,7 +26,7 @@ export const MyAccount: FC<MyAccountProps> = (props: MyAccountProps) => {
         <div className="account-actions">
           <div>
             <a href="/my-account/api-keys" className="button small secondary">
-              API keys
+              Show my API key
             </a>
           </div>
 

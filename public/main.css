@@ -593,7 +593,7 @@ li.transaction .transaction-left {
 }
 
 .apikey {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--color-muted-foreground);
   background-color: var(--color-card);
   padding: 0.5rem;
