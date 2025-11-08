@@ -43,6 +43,15 @@ body {
   margin: 0 !important;
 }
 
+.logo {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-primary-foreground);
+  letter-spacing: -0.01em;
+  margin: 0;
+  padding: 0;
+}
+
 code,
 pre {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Liberation Mono", "Courier New", monospace;
@@ -59,7 +68,7 @@ pre {
 
 main {
   margin: 0 auto;
-  padding: 2rem 0.25rem;
+  padding: 0 0.25rem;
   box-sizing: border-box;
   width: 100%;
   min-height: 100vh;
@@ -96,6 +105,8 @@ ul.resources>li:nth-child(even) {
 
 /* Form Styles */
 form {
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -210,6 +221,12 @@ a.button.small {
   font-size: 0.9rem;
 }
 
+button.large,
+a.button.large {
+  padding: 1rem 1.5rem;
+  font-size: 1.125rem;
+}
+
 button:disabled,
 a.button:disabled {
   opacity: 0.5;
@@ -292,7 +309,9 @@ a:hover {
   margin: 0 auto;
   box-sizing: border-box;
   width: 100%;
-  min-height: 100vh;
+  min-height: 80svh;
+  padding-top: var(--padding-content);
+  padding-bottom: var(--padding-content);
 }
 
 .muted {
@@ -596,6 +615,56 @@ li.transaction .transaction-left {
   justify-content: center;
   font-weight: 600;
   font-size: 1rem;
+}
+
+
+/* Outside App Styles */
+.outside-app-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  max-width: 90ch;
+  margin: 0 auto;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 80svh;
+  /* background-color: var(--color-card); */
+  padding: var(--padding-content);
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+}
+
+.outside-app-layout h1,h2,h3 {
+  text-align: center;
+}
+
+.outside-app-layout .actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.outside-navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--color-card-dark);
+}
+
+.outside-navigation > .narrow {
+  width: 100%;
+  max-width: 90ch;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 15svh;
+  max-height: 120px;
+  padding: 0 var(--padding-content);
 }
 
 /* Account Page */

@@ -11,9 +11,9 @@ import { erase } from "@/erasure/services";
 
 export const logoutRoute = createWebRoute()
   .get("/logout", withWebAuth({ redirectTo: "/login" }), async (c) => {
-    const { error } = await getSessionAndRemoveError(c);
+    const remove = c.req.query("remove");
 
-    return c.html(<Logout error={error} />);
+    return c.html(<Logout removeOnly={remove === "true"} />);
   })
   .post("/logout", async (c) => {
     const session = await getSession(c);

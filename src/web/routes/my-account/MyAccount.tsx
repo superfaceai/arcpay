@@ -31,7 +31,7 @@ export const MyAccount: FC<MyAccountProps> = (props: MyAccountProps) => {
           </form>
 
           <div>
-            <a href="/logout" className="button small ghost">
+            <a href="/logout?remove=true" className="button small ghost">
               Remove account
             </a>
           </div>

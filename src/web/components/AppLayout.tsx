@@ -5,11 +5,13 @@ export const AppLayout: FC = (props) => {
   return <div className="app-layout">{props.children}</div>;
 };
 
-type NavigationProps = {
+type AppNavigationProps = {
   backLink?: string;
   account: Account;
 };
-export const AppNavigation: FC<NavigationProps> = (props: NavigationProps) => {
+export const AppNavigation: FC<AppNavigationProps> = (
+  props: AppNavigationProps
+) => {
   const acronym = props.account.name
     .split(" ")
     .map((name) => name[0].toUpperCase())
