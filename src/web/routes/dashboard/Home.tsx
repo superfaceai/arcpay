@@ -59,34 +59,35 @@ export const Home: FC<HomeProps> = (props: HomeProps) => {
           </ul>
         </div>
 
-        <div className="agents-section">
-          <h2>Agents</h2>
+        {props.agents.length > 0 && (
+          <div className="agents-section">
+            <h2>Agents</h2>
 
-          <ul className="agents">
-            {props.agents.map((agent) => (
-              <li className="agent" key={agent.id}>
-                <a href={`/agents/${agent.id}`}>&nbsp;</a>
+            <ul className="agents">
+              {props.agents.map((agent) => (
+                <li className="agent" key={agent.id}>
+                  <a href={`/agents/${agent.id}`}>&nbsp;</a>
 
-                <div className="agent-title">
-                  <div>
-                    <IconZap />
+                  <div className="agent-title">
+                    <div>
+                      <IconZap />
+                    </div>
+
+                    {agent.name}
                   </div>
 
-                  {agent.name}
-                </div>
-
-                <span className="agent-amount">
-                  {agent.remainingAllowance.amount} {agent.allowance.currency}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
+                  <span className="agent-amount">
+                    {agent.remainingAllowance.amount} {agent.allowance.currency}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div className="transactions-section">
           <h2 class="space-between padding-content">
             Transactions
-
             <a href="/all-transactions" className="text-small">
               View all
             </a>

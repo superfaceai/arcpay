@@ -1,5 +1,6 @@
 import { db } from "@/database";
 import { Agent, agentId } from "./agent.entity";
+import { loadAccountById } from "./account.db";
 
 const storageKey = ({
   accountId,
@@ -28,6 +29,18 @@ export const listAgents = async ({
 }: {
   accountId: string;
 }): Promise<Agent[]> => {
+  const account = await loadAccountById(accountId);
+  if (!account) return [];
+
+  const isSuperface = account.contacts.some(
+    (contact) =>
+      contact.method === "email" && contact.email.includes("@superface.ai")
+  );
+
+  if (isSuperface) {
+    return [];
+  }
+
   return [
     {
       id: "agt_c8UsxMvPnlGMVN3Hd19cm",
