@@ -218,6 +218,13 @@ a.button:disabled {
 }
 
 /* App Layout Styles */
+.space-between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 h1 {
   font-size: 2rem;
   font-weight: 600;

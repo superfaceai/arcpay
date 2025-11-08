@@ -15,7 +15,14 @@ export const Home: FC<HomeProps> = (props: HomeProps) => {
   return (
     <Layout>
       <div style={{ maxWidth: "70ch", margin: "0 auto" }}>
-        <h1>Arc Pay API</h1>
+        <h1 className="space-between">
+          Arc Pay API
+          <div>
+            <a href="/login" className="button small primary">
+              Log in
+            </a>
+          </div>
+        </h1>
 
         <h2>Obtain an API key</h2>
 
