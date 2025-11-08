@@ -22,7 +22,7 @@ import { acpDelegatedPaymentsApi } from "@/acp/api/delegated-payments";
 import { walletMcp } from "@/wallet/mcp";
 import { acpCheckoutsMcp } from "@/acp-checkouts/mcp";
 
-import { indexRoute } from "@/web/routes/index";
+import { apiDocsRoute } from "@/web/routes/api-docs/index";
 import { loginRoute } from "@/web/routes/login";
 import { confirmCodeRoute } from "@/web/routes/confirm-code";
 import { homeRoute } from "@/web/routes/home";
@@ -55,7 +55,7 @@ const app = createApplicationApi((app) => {
   const resources = listResources(app, ["/wallet", "/acp_checkouts"]);
 
   const webApp = createWebApplication((web) => {
-    web.route("/", indexRoute(resources));
+    web.route("/", apiDocsRoute(resources));
     web.route("/", loginRoute);
     web.route("/", logoutRoute);
     web.route("/", confirmCodeRoute);

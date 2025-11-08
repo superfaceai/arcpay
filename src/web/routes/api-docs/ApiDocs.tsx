@@ -6,12 +6,12 @@ interface Resource {
   methods: string[];
 }
 
-interface HomeProps {
+interface ApiDocsProps {
   host: string;
   resources: Resource[];
 }
 
-export const Home: FC<HomeProps> = (props: HomeProps) => {
+export const ApiDocs: FC<ApiDocsProps> = (props: ApiDocsProps) => {
   return (
     <Layout>
       <div style={{ maxWidth: "70ch", margin: "0 auto" }}>
