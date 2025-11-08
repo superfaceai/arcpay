@@ -22,6 +22,14 @@ export const IndexPage: FC<IndexPageProps> = (props: IndexPageProps) => {
 
           <div className="buttons">
             <a
+              href="https://github.com/superfaceai/arcpay"
+              className="button ghost small"
+              target="_blank"
+            >
+              GitHub
+            </a>
+
+            <a
               href="https://merchant-demo.arcpay.ai"
               className="button ghost small"
               target="_blank"
