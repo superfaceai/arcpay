@@ -1,11 +1,13 @@
 import {
   createWebRoute,
+  getSession,
   getSessionAndRemoveError,
   updateSession,
 } from "@/web/services";
 
 import { Logout } from "./Logout";
 import { withWebAuth } from "@/web/middleware";
+import { erase } from "@/erasure/services";
 
 export const logoutRoute = createWebRoute()
   .get("/logout", withWebAuth({ redirectTo: "/login" }), async (c) => {
@@ -14,6 +16,14 @@ export const logoutRoute = createWebRoute()
     return c.html(<Logout error={error} />);
   })
   .post("/logout", async (c) => {
+    const session = await getSession(c);
+
+    const remove = c.req.query("remove");
+
+    if (remove === "true" && session.account) {
+      await erase({ accountId: session.account.accountId });
+    }
+
     await updateSession(c, {
       account: null,
     });

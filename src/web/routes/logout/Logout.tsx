@@ -15,6 +15,12 @@ export const Logout: FC<LogoutProps> = (props: LogoutProps) => {
       <form id="logout-form" method="post" action="/logout">
         <button type="submit">Log out</button>
       </form>
+
+      <form id="remove-account-form" method="post" action="/logout?remove=true">
+        <button type="submit" class="danger">
+          Remove account
+        </button>
+      </form>
     </Layout>
   );
 };
