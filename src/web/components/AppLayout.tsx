@@ -25,7 +25,7 @@ export const AppNavigation: FC<NavigationProps> = (props: NavigationProps) => {
         )}
       </div>
 
-      <a href="/dashboard" className="button ghost">
+      <a href="/my-account" className="button ghost">
         <div className="avatar">{acronym}</div>
         <span style={{ padding: "0 0.75rem 0 0" }}>{props.account.name}</span>
       </a>

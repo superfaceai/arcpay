@@ -28,6 +28,7 @@ import { confirmCodeRoute } from "@/web/routes/confirm-code";
 import { dashboardRoute } from "@/web/routes/dashboard";
 import { createAccountRoute } from "@/web/routes/create-account";
 import { logoutRoute } from "@/web/routes/logout";
+import { myAccountRoute } from "@/web/routes/my-account";
 
 const app = createApplicationApi((app) => {
   app.route("/", erasureApi);
@@ -57,6 +58,7 @@ const app = createApplicationApi((app) => {
     web.route("/", confirmCodeRoute);
     web.route("/", createAccountRoute);
     web.route("/", dashboardRoute);
+    web.route("/", myAccountRoute);
   });
 
   app.route("/", webApp);

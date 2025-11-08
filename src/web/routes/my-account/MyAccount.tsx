@@ -1,0 +1,41 @@
+import { Layout } from "@/web/components/Layout";
+import { FC } from "hono/jsx";
+
+import { Account } from "@/identity/entities";
+import { AppLayout, AppNavigation } from "@/web/components/AppLayout";
+
+type MyAccountProps = {
+  account: Account;
+};
+
+export const MyAccount: FC<MyAccountProps> = (props: MyAccountProps) => {
+  return (
+    <Layout>
+      <AppLayout>
+        <AppNavigation account={props.account} backLink="/dashboard" />
+
+        <div className="account-box">
+          <h1>{props.account.name}</h1>
+          <span className="muted">
+            {props.account.type === "individual" ? "Individual" : "Business"}
+          </span>
+
+          <a href="/my-account/edit" className="button primary small">
+            @{props.account.handle}
+          </a>
+        </div>
+
+        <form id="logout-form" method="post" action="/logout">
+          <button type="submit" className="small secondary">
+            Log out
+          </button>
+        </form>
+        <form id="logout-form" method="post" action="/logout?remove=true">
+          <button type="submit" className="small danger">
+            Remove account
+          </button>
+        </form>
+      </AppLayout>
+    </Layout>
+  );
+};

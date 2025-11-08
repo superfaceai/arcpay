@@ -27,8 +27,12 @@ export const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
           <h1>{props.totalUsdcBalance} USDC</h1>
 
           <div className="primary-actions">
-            <a href="/send" className="button primary small">Send</a>
-            <a href="/deposit" className="button primary small">Deposit</a>
+            <a href="/send" className="button primary small">
+              Send
+            </a>
+            <a href="/deposit" className="button primary small">
+              Deposit
+            </a>
           </div>
         </div>
 
@@ -39,7 +43,10 @@ export const Dashboard: FC<DashboardProps> = (props: DashboardProps) => {
               key={balance.id}
               onClick={() => alert(balance.id)}
             >
-              <span className="balance-currency">{balance.currency}</span>
+              <div className="balance-currency">
+                <div>&nbsp;</div>
+                {balance.currency}
+              </div>
               <span className="balance-amount">
                 {Big(balance.amount).toFixed(2).toString()}
               </span>
