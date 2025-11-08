@@ -30,11 +30,11 @@ export const MyAccount: FC<MyAccountProps> = (props: MyAccountProps) => {
             </button>
           </form>
 
-          <form id="logout-form" method="post" action="/logout?remove=true">
-            <button type="submit" className="small danger">
+          <div>
+            <a href="/logout" className="button small ghost">
               Remove account
-            </button>
-          </form>
+            </a>
+          </div>
         </div>
       </AppLayout>
     </Layout>
