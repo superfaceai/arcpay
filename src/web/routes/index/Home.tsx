@@ -1,5 +1,5 @@
 import { FC } from "hono/jsx";
-import { Layout } from "../../components/Layout";
+import { Layout } from "@/web/components/Layout";
 
 interface Resource {
   url: string;

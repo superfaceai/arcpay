@@ -3,7 +3,8 @@ import { Hono } from "hono";
 // Reference Hono to prevent the import from being removed during compilation
 export const _honoReference = Hono;
 
-import { createApplicationApi, listResources, Resource } from "@/api/services";
+import { createApplicationApi, listResources } from "@/api/services";
+import { createWebApplication } from "@/web/services";
 
 import { erasureApi } from "@/erasure/api";
 import { accountsApi, contactsApi } from "@/identity/api";
@@ -20,7 +21,13 @@ import { acpDelegatedPaymentsApi } from "@/acp/api/delegated-payments";
 
 import { walletMcp } from "@/wallet/mcp";
 import { acpCheckoutsMcp } from "@/acp-checkouts/mcp";
-import { web } from "@/web";
+
+import { indexRoute } from "@/web/routes/index";
+import { loginRoute } from "@/web/routes/login";
+import { confirmCodeRoute } from "@/web/routes/confirm-code";
+import { dashboardRoute } from "@/web/routes/dashboard";
+import { createAccountRoute } from "@/web/routes/create-account";
+import { logoutRoute } from "@/web/routes/logout";
 
 const app = createApplicationApi((app) => {
   app.route("/", erasureApi);
@@ -42,7 +49,17 @@ const app = createApplicationApi((app) => {
   app.route("/", walletMcp);
 
   const resources = listResources(app, ["/wallet", "/acp_checkouts"]);
-  app.route("/", web(resources));
+
+  const webApp = createWebApplication((web) => {
+    web.route("/", indexRoute(resources));
+    web.route("/", loginRoute);
+    web.route("/", logoutRoute);
+    web.route("/", confirmCodeRoute);
+    web.route("/", createAccountRoute);
+    web.route("/", dashboardRoute);
+  });
+
+  app.route("/", webApp);
 });
 
 export default app;
