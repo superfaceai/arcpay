@@ -1,3 +1,4 @@
+import Big from "big.js";
 import { z } from "zod";
 import { generateId } from "@/lib";
 
@@ -17,3 +18,6 @@ export const Balance = z.object({
 });
 
 export type Balance = z.infer<typeof Balance>;
+
+export const sortBalancesDesc = (a: Balance, b: Balance) =>
+  Big(b.amount).minus(Big(a.amount)).toNumber();
