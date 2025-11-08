@@ -24,6 +24,12 @@ export const MyAccount: FC<MyAccountProps> = (props: MyAccountProps) => {
         </div>
 
         <div className="account-actions">
+          <div>
+            <a href="/my-account/api-keys" className="button small secondary">
+              API keys
+            </a>
+          </div>
+
           <form id="logout-form" method="post" action="/logout">
             <button type="submit" className="small secondary">
               Log out

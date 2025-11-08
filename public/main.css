@@ -292,6 +292,13 @@ h3 {
   font-size: var(--font-size-small);
 }
 
+.container-narrow {
+  max-width: 50ch;
+  margin: 0 auto;
+  box-sizing: border-box;
+  width: 100%;
+}
+
 a {
   /* font-size: 1rem; */
   color: var(--color-primary-foreground);
@@ -583,6 +590,20 @@ li.transaction .transaction-left {
   .transaction-money > .fee {
     display: none
   }
+}
+
+.apikey {
+  font-size: 0.9rem;
+  color: var(--color-muted-foreground);
+  background-color: var(--color-card);
+  padding: 0.5rem;
+  border-radius: 0.3rem;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  user-select: all;
+  cursor: pointer;
+  transition: background 0.16s;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Liberation Mono", "Courier New", monospace;
 }
 
 

@@ -27,6 +27,40 @@ export const loadApiKeyBySecret = async (
   return ApiKey.parse(apiKey);
 };
 
+export const listApiKeysForAccount = async ({
+  accountId,
+}: {
+  accountId: string;
+}): Promise<ApiKey[]> => {
+  let cursor = "0";
+  const apiKeyStorageKeys: string[] = [];
+
+  do {
+    const [nextCursor, keys] = await db.scan(cursor, {
+      match: storageKey({ accountId, id: "*" }),
+      count: 100_000,
+    });
+    cursor = nextCursor;
+
+    if (keys.length) {
+      apiKeyStorageKeys.push(...keys);
+    }
+  } while (cursor !== "0");
+
+  if (!apiKeyStorageKeys.length) return [];
+
+  const apiKeys: ApiKey[] = [];
+
+  for (const apiKeyStorageKey of apiKeyStorageKeys) {
+    const apiKey = await db.hgetall<ApiKey>(apiKeyStorageKey);
+    if (!apiKey) continue;
+
+    apiKeys.push(ApiKey.parse(apiKey));
+  }
+
+  return apiKeys;
+};
+
 export const eraseApiKeysForAccount = async ({
   accountId,
 }: {
