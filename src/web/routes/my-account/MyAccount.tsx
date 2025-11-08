@@ -20,21 +20,22 @@ export const MyAccount: FC<MyAccountProps> = (props: MyAccountProps) => {
             {props.account.type === "individual" ? "Individual" : "Business"}
           </span>
 
-          <a href="/my-account/edit" className="button primary small">
-            @{props.account.handle}
-          </a>
+          <span className="handle">@{props.account.handle}</span>
         </div>
 
-        <form id="logout-form" method="post" action="/logout">
-          <button type="submit" className="small secondary">
-            Log out
-          </button>
-        </form>
-        <form id="logout-form" method="post" action="/logout?remove=true">
-          <button type="submit" className="small danger">
-            Remove account
-          </button>
-        </form>
+        <div className="account-actions">
+          <form id="logout-form" method="post" action="/logout">
+            <button type="submit" className="small secondary">
+              Log out
+            </button>
+          </form>
+
+          <form id="logout-form" method="post" action="/logout?remove=true">
+            <button type="submit" className="small danger">
+              Remove account
+            </button>
+          </form>
+        </div>
       </AppLayout>
     </Layout>
   );
