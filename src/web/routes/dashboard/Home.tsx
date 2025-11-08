@@ -39,7 +39,7 @@ export const Home: FC<HomeProps> = (props: HomeProps) => {
             <a href="#send" className="button primary small">
               Send
             </a>
-            <a href="#deposit" className="button primary small">
+            <a href="/request-deposit" className="button primary small">
               Deposit
             </a>
           </div>

@@ -31,6 +31,7 @@ import { logoutRoute } from "@/web/routes/logout";
 import { myAccountRoute } from "@/web/routes/my-account";
 import { transactionsRoute } from "@/web/routes/transactions";
 import { agentsRoute } from "@/web/routes/agents";
+import { requestDepositRoute } from "@/web/routes/deposit";
 
 const app = createApplicationApi((app) => {
   app.route("/", erasureApi);
@@ -63,6 +64,7 @@ const app = createApplicationApi((app) => {
     web.route("/", myAccountRoute);
     web.route("/", transactionsRoute);
     web.route("/", agentsRoute);
+    web.route("/", requestDepositRoute);
   });
 
   app.route("/", webApp);
