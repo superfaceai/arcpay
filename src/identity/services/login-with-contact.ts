@@ -13,7 +13,7 @@ import {
   SendTransactionalSMS,
 } from "@/communications/interfaces";
 import { sendTransactionalSMS } from "@/communications/twilio/adapters";
-import { sendTransactionalEmail } from "@/communications/mock/adapters";
+import { sendTransactionalEmail } from "@/communications/sendgrid/adapters";
 
 const LoginWithPhone = z.object({
   phone: PhoneNumber,
