@@ -12,5 +12,6 @@ export type SendTransactionalSMS = (input: {
 
 export type SendTransactionalEmail = (input: {
   to: string;
+  subject: string;
   plainTextMessage: string;
 }) => Promise<Result<{ status: "sent" | "failed" }, TransactionalEmailError>>;
