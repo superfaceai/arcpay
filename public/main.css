@@ -44,12 +44,16 @@ body {
 }
 
 .logo {
-  font-size: 1.5rem;
+  font-size: 1.70rem;
   font-weight: 600;
   color: var(--color-primary-foreground);
   letter-spacing: -0.01em;
   margin: 0;
   padding: 0;
+}
+
+.logo > span {
+  color: var(--color-primary);
 }
 
 code,

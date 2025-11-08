@@ -1,5 +1,6 @@
 import { Account } from "@/identity/entities";
 import type { FC } from "hono/jsx";
+import { Logo } from "./Logo";
 
 export const AppLayout: FC = (props) => {
   return <div className="app-layout">{props.children}</div>;
@@ -20,10 +21,12 @@ export const AppNavigation: FC<AppNavigationProps> = (
   return (
     <nav className="app-navigation">
       <div>
-        {props.backLink && (
+        {props.backLink ? (
           <a href={props.backLink} className="button ghost">
             <div className="avatar">←</div>
           </a>
+        ) : (
+          <Logo />
         )}
       </div>
 
