@@ -14,7 +14,7 @@ interface ApiDocsProps {
 export const ApiDocs: FC<ApiDocsProps> = (props: ApiDocsProps) => {
   return (
     <Layout>
-      <div style={{ maxWidth: "70ch", margin: "0 auto" }}>
+      <div style={{ maxWidth: "70ch", margin: "1rem auto" }} className="padding-content">
         <h1 className="space-between">
           Arc Pay API
           <div>

@@ -33,7 +33,7 @@ export const ApiKeysList: FC<ApiKeysListProps> = (props: ApiKeysListProps) => {
             <strong>Resources</strong>
           </p>
 
-          <a href="/" className="button small secondary">
+          <a href="/docs/api" className="button small secondary">
             Read API docs
           </a>
         </div>
