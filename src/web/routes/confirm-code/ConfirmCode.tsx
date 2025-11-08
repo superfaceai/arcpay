@@ -13,7 +13,16 @@ export const ConfirmCode: FC = () => {
         <form id="confirm-phone-form" method="post" action="/confirm-code">
           <div class="form-field">
             <label for="code">Confirmation code</label>
-            <input class="large" type="number" id="code" name="code" placeholder="XXXXXX" required />
+            <input
+              class="large"
+              type="number"
+              id="code"
+              name="code"
+              placeholder="XXXXXX"
+              autocomplete="one-time-code"
+              inputmode="numeric"
+              required
+            />
             <p class="text-small">Enter the code you received via email</p>
           </div>
 
