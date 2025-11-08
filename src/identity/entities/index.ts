@@ -8,3 +8,5 @@ export * from "./confirmation-code.entity.js";
 export * from "./confirmation-code.db.js";
 export * from "./contact-verification.entity.js";
 export * from "./contact-verification.db.js";
+export * from "./agent.entity.js";
+export * from "./agent.db.js";
