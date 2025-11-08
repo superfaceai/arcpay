@@ -1,19 +1,27 @@
 import { Layout } from "@/web/components/Layout";
+import {
+  OutsideAppLayout,
+  OutsideNavigation,
+} from "@/web/components/OutsideAppLayout";
 import { FC } from "hono/jsx";
 
 export const ConfirmCode: FC = () => {
   return (
     <Layout>
-      <h1>Confirm Phone Number</h1>
-      <p>A confirmation code has been sent to your phone number.</p>
-      <form id="confirm-phone-form" method="post" action="/confirm-code">
-        <div class="form-field">
-          <label for="code">Confirmation Code</label>
-          <input type="number" id="code" name="code" required />
-        </div>
+      <OutsideNavigation closeLink="/login" />
+      <OutsideAppLayout>
+        <form id="confirm-phone-form" method="post" action="/confirm-code">
+          <div class="form-field">
+            <label for="code">Confirmation code</label>
+            <input class="large" type="number" id="code" name="code" placeholder="XXXXXX" required />
+            <p class="text-small">Enter the code you received via SMS</p>
+          </div>
 
-        <button type="submit">Confirm Phone Number</button>
-      </form>
+          <button type="submit" class="primary large">
+            Confirm phone number
+          </button>
+        </form>
+      </OutsideAppLayout>
     </Layout>
   );
 };

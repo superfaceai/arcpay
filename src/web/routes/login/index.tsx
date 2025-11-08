@@ -40,7 +40,7 @@ export const loginRoute = createWebRoute()
       if (!phoneResult.success) {
         await updateSession(c, {
           phone,
-          error: phoneResult.error.message,
+          error: phoneResult.error.issues[0].message,
         });
         await new Promise((resolve) => setTimeout(resolve, 300));
         return c.redirect(`/login`);
