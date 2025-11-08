@@ -11,12 +11,19 @@
   --color-secondary: #c8c0cf;
   --color-secondary-foreground: #302937;
 
+  --color-payment-incoming: #055717;
+
   --color-ghost: #f9f9f9;
   --color-danger: #dc3545;
   --color-success: #28a745;
   --color-error: #dc3545;
   --color-warning: #ffc107;
   --color-info: #007bff;
+
+  --font-size-base: 1rem;
+  --font-size-small: 0.85rem;
+
+  --padding-content: 0.8rem;
 }
 
 body {
@@ -27,6 +34,13 @@ body {
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.padding-content {
+  padding: 0 var(--padding-content);
+}
+.m-0 {
+  margin: 0 !important;
 }
 
 code,
@@ -45,7 +59,7 @@ pre {
 
 main {
   margin: 0 auto;
-  padding: 2rem 0.5rem;
+  padding: 2rem 0.25rem;
   box-sizing: border-box;
   width: 100%;
   min-height: 100vh;
@@ -229,6 +243,7 @@ h1 {
   font-size: 2rem;
   font-weight: 600;
   color: var(--color-foreground);
+  letter-spacing: -0.02em;
   margin: 0 0 1rem 0;
   padding: 0;
 }
@@ -237,38 +252,75 @@ h2 {
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--color-foreground);
-  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.75rem 0;
+  padding: 0;
 }
 
 h3 {
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-foreground);
+  letter-spacing: -0.01em;
   margin-bottom: 0.25rem;
+  padding: 0;
+}
+
+.text-small {
+  font-size: var(--font-size-small);
+}
+
+a {
+  font-size: 1rem;
+  color: var(--color-primary-foreground);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  transition: color 0.2s, text-decoration-color 0.2s;
+  text-decoration-color: var(--color-secondary);
+}
+a:hover {
+  text-decoration-color: var(--color-secondary-foreground);
+  color: var(--color-foreground);
 }
 
 .app-layout {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 2.5rem;
   max-width: 90ch;
   margin: 0 auto;
-  padding: 2rem 0.5rem;
   box-sizing: border-box;
   width: 100%;
   min-height: 100vh;
-}
-
-.primary-actions {
-  display: flex;
-  gap: 0.5rem;
 }
 
 .muted {
   color: var(--color-muted-foreground);
 }
 
-.balances {
+.balances-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.balances-section > .total {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.balances-section > .total > h1 {
+  margin: 0;
+}
+
+.balances-section .primary-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+
+ul.balances {
   display: flex;
   flex-direction: row;
   gap: 0.75rem;
@@ -318,6 +370,112 @@ li.balance:hover {
   font-weight: 600;
   color: var(--color-foreground);
 }
+
+
+ul.transactions {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+}
+
+li.transaction {
+  list-style: none;
+  padding: var(--padding-content);
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 0.75rem;
+  background-color: var(--color-background);
+  transition: background-color 0.2s;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+li.transaction:hover {
+  background-color: var(--color-card);
+}
+
+li.transaction .transaction-left {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  justify-content: start;
+}
+
+li.transaction .transaction-icon {
+  width: 3rem;
+  height: 3rem;
+  background-color: var(--color-card-dark);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none
+}
+
+li.transaction .transaction-details {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 0.3rem;
+}
+li.transaction .transaction-details > .transaction-type {
+  font-weight: 600;
+}
+li.transaction .transaction-details > .transaction-status {
+  font-size: 0.85rem;
+  color: var(--color-muted-foreground);
+}
+
+li.transaction .transaction-money {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  gap: 0.3rem;
+}
+li.transaction .transaction-money > .value {
+  font-weight: 600;
+  text-align: right;
+}
+li.transaction .transaction-money > .value.incoming {
+  color: var(--color-payment-incoming);
+}
+
+li.transaction .transaction-money > .fee {
+  font-size: 0.85rem;
+  color: var(--color-muted-foreground);
+}
+li.transaction .transaction-money > .fee-short {
+  display: none;
+  font-size: 0.85rem;
+  color: var(--color-muted-foreground);
+}
+
+@media (max-width: 600px) {
+  /* li.transaction {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  li.transaction .transaction-money {
+    align-items: start;
+    justify-content: start;
+  } */
+
+  li.transaction .transaction-money > .fee-short {
+    display: block;
+  }
+  li.transaction .transaction-money > .fee {
+    display: none
+  }
+}
+
 
 /* App Navigation Styles */
 .app-navigation {

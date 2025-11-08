@@ -1,5 +1,6 @@
 import Big from "big.js";
 
+import { DAY } from "@/lib";
 import { createWebRoute, getSession } from "@/web/services";
 import { withWebAuth } from "@/web/middleware";
 
@@ -9,9 +10,8 @@ import { listBalances, listLocations } from "@/balances/services";
 import { listPayments, listTransactions } from "@/payments/services";
 import { sortBalancesDesc } from "@/balances/entities";
 
-const minute = 60 * 1000;
-const hour = 60 * minute;
-const day = 24 * hour;
+
+const dataFrom = new Date(Date.now() - 7 * DAY);
 
 export const dashboardRoute = createWebRoute().get(
   "/dashboard",
@@ -51,7 +51,7 @@ export const dashboardRoute = createWebRoute().get(
     const transactions = await listTransactions({
       accountId,
       live: isLive,
-      filter: { from: new Date(Date.now() - 7 * day), to: new Date() },
+      filter: { from: dataFrom },
     });
     if (!transactions.ok) {
       return c.text(transactions.error.message, 500);
@@ -60,7 +60,7 @@ export const dashboardRoute = createWebRoute().get(
     const payments = await listPayments({
       accountId,
       live: isLive,
-      dto: { from: new Date(Date.now() - 7 * day), to: new Date() },
+      dto: { from: dataFrom },
     });
 
     if (!payments.ok) {
