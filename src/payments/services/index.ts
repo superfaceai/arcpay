@@ -9,3 +9,4 @@ export * from "./get-payment-mandate.js";
 export * from "./capture-payment.js";
 export * from "./list-payment-captures.js";
 export * from "./get-payment-capture.js";
+export * from "./get-transaction.js";
