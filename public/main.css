@@ -286,7 +286,7 @@ a:hover {
 .app-layout {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 3rem;
   max-width: 90ch;
   margin: 0 auto;
   box-sizing: border-box;
@@ -318,7 +318,6 @@ a:hover {
   display: flex;
   gap: 0.5rem;
 }
-
 
 ul.balances {
   display: flex;
@@ -371,6 +370,18 @@ li.balance:hover {
   color: var(--color-foreground);
 }
 
+.transactions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.transactions-section  h2 {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 var(--padding-content);
+  align-items: center;
+}
 
 ul.transactions {
   display: flex;
