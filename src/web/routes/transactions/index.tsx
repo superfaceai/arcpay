@@ -6,8 +6,6 @@ import { AllTransactions } from "./AllTransactions";
 import { loadAccountById } from "@/identity/entities";
 import { listPayments, listTransactions } from "@/payments/services";
 
-const dataFrom = new Date(Date.now() - 30 * DAY);
-
 export const transactionsRoute = createWebRoute().get(
   "/all-transactions",
   withWebAuth(),
@@ -19,6 +17,8 @@ export const transactionsRoute = createWebRoute().get(
 
     const { accountId, isLive } = session.account;
     const account = (await loadAccountById(accountId))!;
+
+    const dataFrom = new Date(Date.now() - 30 * DAY);
 
     const transactions = await listTransactions({
       accountId,

@@ -23,11 +23,7 @@ export const AllTransactions: FC<AllTransactionsProps> = (
 
         <div className="transactions-section">
           <h2>
-            <span>Transactions</span>
-
-            {/* <a href="#transactions" className="text-small">
-              View all
-            </a> */}
+            <span>Transactions (30 days)</span>
           </h2>
 
           <TransactionsList
