@@ -53,6 +53,12 @@ body {
 
 .logo > span {
   color: var(--color-primary);
+  font-weight: 900;
+}
+
+.logo.large {
+  font-size: 2.5rem;
+  font-weight: 700;
 }
 
 code,
@@ -882,4 +888,57 @@ li.agent:hover {
   padding: 0;
   margin: 0;
   display: inline-block;
+}
+
+.index {
+  display: flex;
+  height: 100svh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-sizing: border-box;
+  padding: var(--padding-content);
+}
+
+.index .index-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+
+.index .index-content p {
+  width: 100%;
+  max-width: 40ch;
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--color-primary-foreground);
+  line-height: 1.6;
+}
+
+.index .index-content .buttons {
+  display: flex;
+  gap: 0.25rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.index .footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--color-muted-foreground);
+  font-size: 0.8rem;
+  padding: var(--padding-content) 0;
+}
+
+.index .footer img {
+  width: 120px;
 }

@@ -32,6 +32,7 @@ import { myAccountRoute } from "@/web/routes/my-account";
 import { transactionsRoute } from "@/web/routes/transactions";
 import { agentsRoute } from "@/web/routes/agents";
 import { requestDepositRoute } from "@/web/routes/deposit";
+import { indexRoute } from "@/web/routes/index";
 
 const app = createApplicationApi((app) => {
   app.route("/", erasureApi);
@@ -55,6 +56,7 @@ const app = createApplicationApi((app) => {
   const resources = listResources(app, ["/wallet", "/acp_checkouts"]);
 
   const webApp = createWebApplication((web) => {
+    web.route("/", indexRoute);
     web.route("/", apiDocsRoute(resources));
     web.route("/", loginRoute);
     web.route("/", logoutRoute);
