@@ -84,8 +84,8 @@ export const Home: FC<HomeProps> = (props: HomeProps) => {
         </div>
 
         <div className="transactions-section">
-          <h2>
-            <span>Transactions</span>
+          <h2 class="space-between padding-content">
+            Transactions
 
             <a href="/all-transactions" className="text-small">
               View all

@@ -30,16 +30,30 @@ export const listAgents = async ({
 }): Promise<Agent[]> => {
   return [
     {
-      id: agentId(),
+      id: "agt_c8UsxMvPnlGMVN3Hd19cm",
       name: "Dash (Office Bot)",
       on_behalf_of: accountId,
       allowance: {
         frequency: "monthly",
         amount: "250",
         currency: "USDC",
-        categories: ["food", "beverages", "stationary", "other"],
+        categories: ["food", "beverages", "stationary"],
       },
       rules: ["buy supplies for office", "buy food for office"],
     },
   ];
+};
+
+export const loadAgentById = async ({
+  accountId,
+  live,
+  id,
+}: {
+  accountId: string;
+  live: boolean;
+  id: string;
+}): Promise<Agent | null> => {
+  const agent = await db.hgetall<Agent>(storageKey({ accountId, live, id }));
+  if (!agent) return null;
+  return Agent.parse(agent);
 };

@@ -288,6 +288,14 @@ h3 {
   padding: 0;
 }
 
+h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin-bottom: 0.15rem;
+  padding: 0;
+}
+
 .text-small {
   font-size: var(--font-size-small);
 }
@@ -404,12 +412,13 @@ li.balance {
   gap: 0.5rem;
 }
 
-.transactions-section h1,h2 {
+/* .transactions-section  h1,h2,h3,h4 {
   display: flex;
   justify-content: space-between;
-  padding: 0 var(--padding-content);
+  padding: 0 var(--padding-content) !important;
   align-items: center;
-}
+  box-sizing: border-box;
+} */
 
 .transaction-details {
   display: flex;
@@ -443,6 +452,10 @@ li.balance {
   gap: 0.5rem;
   max-width: 45ch;
   margin: 0 auto;
+}
+
+.transaction-box-narrow > h3 {
+  margin-top: 1rem;
 }
 
 .transaction-box-list {
@@ -606,7 +619,15 @@ li.transaction .transaction-left {
 .agents-section {
   display: flex;
   flex-direction: column;
+  align-items: start;
+  justify-content: start;
   gap: 1rem;
+  padding: 0 var(--padding-content);
+}
+
+.agents-section > h1,h2,h3,h4 {
+  margin: 0;
+  padding: 0;
 }
 
 .agents-section > .total {
@@ -625,16 +646,18 @@ li.transaction .transaction-left {
 }
 
 ul.agents {
+  width: 100%;
   display: flex;
   flex-direction: row;
   gap: 0.75rem;
   overflow-x: auto;
-  padding: 0 var(--padding-content);
+  padding: 0;
   margin: 0;
 }
 
 li.agent {
   list-style: none;
+  box-sizing: border-box;
   padding: 1.2rem;
   width: 78%;
   max-width: 40ch;
@@ -689,6 +712,40 @@ li.agent:hover {
   font-size: 1.3rem;
   font-weight: 600;
   color: var(--color-foreground);
+}
+
+.agent-box {
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  width: 100%;
+  gap: 1.25rem;
+  padding: var(--padding-content);
+  border-radius: 0.75rem;
+  transition: background-color 0.2s;
+}
+
+.agent-box.filled {
+  background-color: var(--color-card);
+}
+.agent-box.outlined {
+  border: 1px solid var(--color-card-dark);
+}
+
+.agent-box-content {
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  width: 100%;
+  gap: 0.125rem;
+}
+.agent-box-content > span {
+  font-size: 0.85rem;
+  color: var(--color-muted-foreground);
 }
 
 
