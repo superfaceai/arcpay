@@ -2,11 +2,16 @@ import Big from "big.js";
 import { Layout } from "@/web/components/Layout";
 import { FC } from "hono/jsx";
 
-import { Account } from "@/identity/entities";
+import {
+  Account,
+  Agent,
+  AgentWithRemainingAllowance,
+} from "@/identity/entities";
 import { Balance, Location } from "@/balances/entities";
 import { Payment, Transaction } from "@/payments/entities";
 import { AppLayout, AppNavigation } from "@/web/components/AppLayout";
 import { TransactionsList } from "../transactions/components/TransactionsList";
+import { IconZap } from "@/web/components/icons";
 
 type HomeProps = {
   account: Account;
@@ -15,6 +20,7 @@ type HomeProps = {
   locations: Location[];
   payments: Payment[];
   transactions: Transaction[];
+  agents: AgentWithRemainingAllowance[];
 };
 
 export const Home: FC<HomeProps> = (props: HomeProps) => {
@@ -40,11 +46,7 @@ export const Home: FC<HomeProps> = (props: HomeProps) => {
 
           <ul className="balances">
             {props.balances.map((balance) => (
-              <li
-                className="balance"
-                key={balance.id}
-                onClick={() => alert(balance.id)}
-              >
+              <li className="balance" key={balance.id}>
                 <div className="balance-currency">
                   <div>&nbsp;</div>
                   {balance.currency}
@@ -57,9 +59,33 @@ export const Home: FC<HomeProps> = (props: HomeProps) => {
           </ul>
         </div>
 
+        <div className="agents-section">
+          <h2>Agents</h2>
+
+          <ul className="agents">
+            {props.agents.map((agent) => (
+              <li className="agent" key={agent.id}>
+                <a href={`/agents/${agent.id}`}>&nbsp;</a>
+
+                <div className="agent-title">
+                  <div>
+                    <IconZap />
+                  </div>
+
+                  {agent.name}
+                </div>
+
+                <span className="agent-amount">
+                  {agent.remainingAllowance.amount} {agent.allowance.currency}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <div className="transactions-section">
-          <h2>
-            <span>Transactions</span>
+          <h2 class="space-between padding-content">
+            Transactions
 
             <a href="/all-transactions" className="text-small">
               View all
