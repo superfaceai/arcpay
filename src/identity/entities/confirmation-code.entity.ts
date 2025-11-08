@@ -6,7 +6,8 @@ export const generateConfirmationCode = () =>
 
 export const ConfirmationCode = z.object({
   code: z.number(),
-  phone: PhoneNumber,
+  phone: PhoneNumber.optional(),
+  email: z.email().optional(),
   created_at: DateCodec,
 });
 

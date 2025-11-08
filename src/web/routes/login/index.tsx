@@ -1,7 +1,7 @@
+import { z } from "zod";
 import { validator } from "hono/validator";
-import { PhoneNumber } from "@/lib";
 
-import { loginViaPhone } from "@/identity/services";
+import { loginWithContact } from "@/identity/services";
 import { loadAccountById } from "@/identity/entities";
 
 import {
@@ -21,42 +21,44 @@ export const loginRoute = createWebRoute()
       if (account) return c.redirect("/home");
     }
 
-    return c.html(<Login phone={session?.phone} error={error} />);
+    return c.html(<Login email={session?.email} error={error} />);
   })
   .post(
     "/login",
     validator("form", async (value, c) => {
-      const phone = value["phone"];
-      if (typeof phone !== "string" || phone.trim() === "") {
+      const email = value["email"];
+      if (typeof email !== "string" || email.trim() === "") {
         await updateSession(c, {
-          error: "Phone number is required",
+          error: "Email address is required",
         });
         await new Promise((resolve) => setTimeout(resolve, 300));
         return c.redirect(`/login`);
       }
 
-      const phoneResult = PhoneNumber.safeParse(phone);
+      const emailResult = z.email().safeParse(email);
 
-      if (!phoneResult.success) {
+      if (!emailResult.success) {
         await updateSession(c, {
-          phone,
-          error: phoneResult.error.issues[0].message,
+          email,
+          error: emailResult.error.issues[0].message,
         });
         await new Promise((resolve) => setTimeout(resolve, 300));
         return c.redirect(`/login`);
       }
       return {
-        phone: phoneResult.data,
+        email: emailResult.data
       };
     }),
     async (c) => {
       const form = c.req.valid("form");
 
-      const confirmationCodeResult = await loginViaPhone({ phone: form.phone });
+      const confirmationCodeResult = await loginWithContact({
+        email: form.email,
+      });
 
       if (!confirmationCodeResult.ok) {
         await updateSession(c, {
-          phone: form.phone,
+          email: form.email,
           error: "Failed to send login code",
         });
         await new Promise((resolve) => setTimeout(resolve, 300));
@@ -64,7 +66,7 @@ export const loginRoute = createWebRoute()
       }
 
       await updateSession(c, {
-        phone: form.phone,
+        email: form.email,
       });
 
       return c.redirect("/confirm-code");

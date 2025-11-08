@@ -14,11 +14,11 @@ export const ConfirmCode: FC = () => {
           <div class="form-field">
             <label for="code">Confirmation code</label>
             <input class="large" type="number" id="code" name="code" placeholder="XXXXXX" required />
-            <p class="text-small">Enter the code you received via SMS</p>
+            <p class="text-small">Enter the code you received via email</p>
           </div>
 
           <button type="submit" class="primary large">
-            Confirm phone number
+            Confirm email
           </button>
         </form>
       </OutsideAppLayout>

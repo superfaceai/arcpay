@@ -11,8 +11,8 @@ import { signUp } from "@/identity/services";
 
 export const createAccountRoute = createWebRoute()
   .get("/create-account", async (c) => {
-    const phv = c.req.query("phv");
-    if (typeof phv !== "string" || phv.trim() === "") {
+    const ctv = c.req.query("ctv");
+    if (typeof ctv !== "string" || ctv.trim() === "") {
       return c.redirect("/login");
     }
 
@@ -20,8 +20,8 @@ export const createAccountRoute = createWebRoute()
 
     return c.html(
       <CreateAccount
-        phone={session?.phone ?? ""}
-        phoneVerificationSecret={phv}
+        email={session?.email ?? ""}
+        contactVerificationSecret={ctv}
         error={error}
       />
     );
@@ -30,12 +30,12 @@ export const createAccountRoute = createWebRoute()
     "/create-account",
     validator("form", async (value, c) => {
       const name = value["name"];
-      const phv = value["phv"];
-      const phone = value["phone"];
+      const ctv = value["ctv"];
+      const email = value["email"];
 
-      if (typeof phv !== "string" || phv.trim() === "") {
+      if (typeof ctv !== "string" || ctv.trim() === "") {
         await updateSession(c, {
-          error: "Phone verification expired",
+          error: "Email verification expired",
         });
         await new Promise((resolve) => setTimeout(resolve, 200));
         return c.redirect("/login");
@@ -60,8 +60,8 @@ export const createAccountRoute = createWebRoute()
 
       return {
         name: name.trim(),
-        phone: phone.toString(),
-        phv,
+        email: email.toString(),
+        ctv,
       };
     }),
     async (c) => {
@@ -69,7 +69,7 @@ export const createAccountRoute = createWebRoute()
 
       const signUpResult = await signUp({
         name: form.name,
-        phone: { number: form.phone, verification_secret: form.phv },
+        contact: { email: form.email, verification_secret: form.ctv },
       });
 
       if (!signUpResult.ok) {

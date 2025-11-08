@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import type { SessionEnv } from "@hono/session";
 
 export type WebSessionData = {
-  phone?: string;
+  email?: string;
   error?: string;
   account: null | {
     accountId: string;

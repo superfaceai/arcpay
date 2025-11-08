@@ -64,10 +64,10 @@ export const confirmCodeRoute = createWebRoute()
         await new Promise((resolve) => setTimeout(resolve, 500));
         return c.redirect("/home");
       }
-      
+
       await new Promise((resolve) => setTimeout(resolve, 500));
       return c.redirect(
-        `/create-account?phv=${confirmCodeResult.value.phoneVerification.secret}`
+        `/create-account?ctv=${confirmCodeResult.value.contactVerification.secret}`
       );
     }
   );

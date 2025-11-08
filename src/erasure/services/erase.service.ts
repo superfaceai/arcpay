@@ -4,7 +4,7 @@ import { eraseCallsForAccount } from "@/api/entities";
 import {
   eraseAccount,
   eraseApiKeysForAccount,
-  erasePhoneVerification,
+  eraseContactVerifications,
   loadAccountById,
 } from "@/identity/entities";
 import {
@@ -32,7 +32,11 @@ export const erase = async ({
     const phoneNumbers = account.contacts
       .filter((contact) => contact.method === "phone")
       .map((contact) => contact.phone_number);
-    await erasePhoneVerification({ phoneNumbers });
+    const emails = account.contacts
+      .filter((contact) => contact.method === "email")
+      .map((contact) => contact.email);
+
+    await eraseContactVerifications({ phoneNumbers, emails });
   }
 
   await eraseNotificationsForAccount({ accountId });

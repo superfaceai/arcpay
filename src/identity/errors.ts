@@ -5,8 +5,8 @@ export interface CodeConfirmationError {
   readonly message: string;
 }
 
-export interface PhoneVerificationError {
-  readonly type: "PhoneVerificationError";
+export interface ContactVerificationError {
+  readonly type: "ContactVerificationError";
   readonly message: string;
 }
 

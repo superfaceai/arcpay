@@ -12,44 +12,87 @@ import {
   saveAccount,
   AccountHandle,
   loadAccountByHandle,
-  loadPhoneVerification,
+  loadContactVerification,
   ContactPhone,
   contactId,
+  Contact,
+  ContactEmail,
 } from "@/identity/entities";
 import {
   AccountHandleNotAvailableError,
-  PhoneVerificationError,
+  ContactVerificationError,
 } from "@/identity/errors";
+
+const SignContactPhone = z.object({
+  phone: PhoneNumber,
+  verification_secret: z.string().min(64),
+});
+const SignContactEmail = z.object({
+  email: z.email(),
+  verification_secret: z.string().min(64),
+});
+export const SignContactDTO = z.union([SignContactPhone, SignContactEmail]);
 
 export const SignUpDTO = z.object({
   name: z.string().min(3),
   handle: AccountHandle.optional(),
-  phone: z
-    .object({
-      number: PhoneNumber,
-      verification_secret: z.string().min(64),
-    })
-    .optional(),
+  contact: SignContactDTO.optional(),
 });
 
 export const signUp = async (
   dto: z.infer<typeof SignUpDTO>
 ): Promise<
-  Result<ApiKey, AccountHandleNotAvailableError | PhoneVerificationError>
+  Result<ApiKey, AccountHandleNotAvailableError | ContactVerificationError>
 > => {
   const live = Config.IS_PRODUCTION;
 
-  if (dto.phone) {
-    const phoneVerification = await loadPhoneVerification(dto.phone.number);
+  let primaryContact: Contact | undefined = undefined;
 
-    if (
-      !phoneVerification ||
-      phoneVerification.secret !== dto.phone.verification_secret
-    )
-      return err({
-        type: "PhoneVerificationError",
-        message: "Phone verification is invalid or has expired",
+  if (dto.contact) {
+    if ("phone" in dto.contact) {
+      const contactVerification = await loadContactVerification({
+        phone: dto.contact.phone,
       });
+
+      if (
+        !contactVerification ||
+        contactVerification.secret !== dto.contact.verification_secret
+      )
+        return err({
+          type: "ContactVerificationError",
+          message: "Phone verification is invalid or has expired",
+        });
+
+      primaryContact = ContactPhone.parse({
+        id: contactId(),
+        method: "phone",
+        label: "Primary",
+        phone_number: dto.contact.phone,
+        verified: true,
+      });
+    }
+    if ("email" in dto.contact) {
+      const contactVerification = await loadContactVerification({
+        email: dto.contact.email,
+      });
+
+      if (
+        !contactVerification ||
+        contactVerification.secret !== dto.contact.verification_secret
+      )
+        return err({
+          type: "ContactVerificationError",
+          message: "Email verification is invalid or has expired",
+        });
+
+      primaryContact = ContactEmail.parse({
+        id: contactId(),
+        method: "email",
+        label: "Primary",
+        email: dto.contact.email,
+        verified: true,
+      });
+    }
   }
 
   const handleResult = await getAccountHandle({
@@ -63,17 +106,7 @@ export const signUp = async (
     type: "individual",
     name: dto.name,
     handle: handleResult.value,
-    contacts: dto.phone
-      ? [
-          ContactPhone.parse({
-            id: contactId(),
-            method: "phone",
-            label: "Primary",
-            phone_number: dto.phone.number,
-            verified: true,
-          }),
-        ]
-      : [],
+    contacts: primaryContact ? [primaryContact] : [],
   });
 
   const apiKey = ApiKey.parse({

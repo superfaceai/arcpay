@@ -6,8 +6,8 @@ import {
 } from "@/web/components/OutsideAppLayout";
 
 type CreateAccountProps = {
-  phone: string;
-  phoneVerificationSecret: string;
+  email: string;
+  contactVerificationSecret: string;
   error?: string;
 };
 
@@ -23,7 +23,7 @@ export const CreateAccount: FC<CreateAccountProps> = (
         <form
           id="create-account-form"
           method="post"
-          action={`/create-account?phv=${props.phoneVerificationSecret}`}
+          action={`/create-account?ctv=${props.contactVerificationSecret}`}
         >
           <div class="form-field">
             <label for="name">Name</label>
@@ -37,16 +37,16 @@ export const CreateAccount: FC<CreateAccountProps> = (
             />
             <input
               type="hidden"
-              id="phone"
-              name="phone"
-              value={props.phone}
+              id="ctv"
+              name="ctv"
+              value={props.contactVerificationSecret}
               readonly
             />
             <input
               type="hidden"
-              id="phv"
-              name="phv"
-              value={props.phoneVerificationSecret}
+              id="email"
+              name="email"
+              value={props.email}
               readonly
             />
           </div>

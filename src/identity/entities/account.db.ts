@@ -5,11 +5,16 @@ const storageKey = (id: string) => `acct:${id}`;
 const storageKeyByHandle = (handle: string) => `acct:handle:${handle}`;
 const storageKeyByPhone = (phone: string) =>
   `acct:phone:${phone.replace(/\D/g, "")}`;
+const storageKeyByEmail = (email: string) => `acct:email:${email.trim()}`;
 
 export const saveAccount = async (account: Account) => {
   const phone = account.contacts?.find(
     (contact) => contact.method === "phone"
   )?.phone_number;
+
+  const email = account.contacts?.find(
+    (contact) => contact.method === "email"
+  )?.email;
 
   const pipeline = db.multi();
 
@@ -17,6 +22,9 @@ export const saveAccount = async (account: Account) => {
   pipeline.set(storageKeyByHandle(account.handle), account.id);
   if (phone) {
     pipeline.set(storageKeyByPhone(phone), account.id);
+  }
+  if (email) {
+    pipeline.set(storageKeyByEmail(email), account.id);
   }
   await pipeline.exec();
 
@@ -40,6 +48,12 @@ export const loadAccountByPhone = async (phone: string) => {
   return loadAccountById(accountId);
 };
 
+export const loadAccountByEmail = async (email: string) => {
+  const accountId = await db.get<string>(storageKeyByEmail(email));
+  if (!accountId) return null;
+  return loadAccountById(accountId);
+};
+
 export const eraseAccount = async ({ accountId }: { accountId: string }) => {
   const account = await loadAccountById(accountId);
   if (!account) return;
@@ -48,12 +62,19 @@ export const eraseAccount = async ({ accountId }: { accountId: string }) => {
     (contact) => contact.method === "phone"
   )?.phone_number;
 
+  const email = account.contacts.find(
+    (contact) => contact.method === "email"
+  )?.email;
+
   const pipeline = db.multi();
 
   pipeline.del(storageKey(accountId));
   pipeline.del(storageKeyByHandle(account.handle));
   if (phone) {
     pipeline.del(storageKeyByPhone(phone));
+  }
+  if (email) {
+    pipeline.del(storageKeyByEmail(email));
   }
 
   await pipeline.exec();

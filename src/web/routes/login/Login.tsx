@@ -6,7 +6,7 @@ import {
 } from "@/web/components/OutsideAppLayout";
 
 type LoginProps = {
-  phone?: string;
+  email?: string;
   error?: string;
 };
 
@@ -15,18 +15,18 @@ export const Login: FC<LoginProps> = (props: LoginProps) => {
     <Layout>
       <OutsideNavigation closeLink="/" />
       <OutsideAppLayout>
-        <form id="open-account-form" method="post" action="/login">
+        <form id="login-form" method="post" action="/login">
           {props.error && <p class="error-message">{props.error}</p>}
 
           <div class="form-field">
-            <label for="phone">Phone number</label>
+            <label for="email">Email address</label>
             <input
               class="large"
-              type="tel"
-              id="phone"
-              name="phone"
-              value={props.phone}
-              placeholder="+XX XXX XXX XXX"
+              type="email"
+              id="email"
+              name="email"
+              value={props.email}
+              placeholder="your@email.com"
               required
             />
           </div>
