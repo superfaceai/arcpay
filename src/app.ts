@@ -25,7 +25,7 @@ import { acpCheckoutsMcp } from "@/acp-checkouts/mcp";
 import { indexRoute } from "@/web/routes/index";
 import { loginRoute } from "@/web/routes/login";
 import { confirmCodeRoute } from "@/web/routes/confirm-code";
-import { homeRoute } from "@/web/routes/dashboard";
+import { homeRoute } from "@/web/routes/home";
 import { createAccountRoute } from "@/web/routes/create-account";
 import { logoutRoute } from "@/web/routes/logout";
 import { myAccountRoute } from "@/web/routes/my-account";
