@@ -5,11 +5,15 @@ import { createWebRoute, getSession } from "@/web/services";
 import { withWebAuth } from "@/web/middleware";
 
 import { Home } from "./Home";
-import { loadAccountById } from "@/identity/entities";
+import {
+  withRemainingAllowance,
+  AgentWithRemainingAllowance,
+  loadAccountById,
+  listAgents,
+} from "@/identity/entities";
 import { listBalances, listLocations } from "@/balances/services";
 import { listPayments, listTransactions } from "@/payments/services";
 import { sortBalancesDesc } from "@/balances/entities";
-
 
 const dataFrom = new Date(Date.now() - 7 * DAY);
 
@@ -69,6 +73,12 @@ export const homeRoute = createWebRoute().get(
 
     const sortedBalances = balances.value.sort(sortBalancesDesc);
 
+    const agentDefinitions = await listAgents({ accountId });
+
+    const agents: AgentWithRemainingAllowance[] = agentDefinitions.map(
+      (agent) => withRemainingAllowance(agent, totalUsdcBalance)
+    );
+
     return c.html(
       <Home
         account={account}
@@ -77,6 +87,7 @@ export const homeRoute = createWebRoute().get(
         locations={locations.value}
         payments={payments.value}
         transactions={transactions.value}
+        agents={agents}
       />
     );
   }

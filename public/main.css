@@ -371,11 +371,8 @@ li.balance {
   gap: 0.5rem;
   align-items: start;
   justify-content: space-between;
-  cursor: pointer;
 }
-li.balance:hover {
-  background-color: var(--color-card-dark);
-}
+
 
 .balance-currency {
   font-size: 1rem;
@@ -604,6 +601,94 @@ li.transaction .transaction-left {
   cursor: pointer;
   transition: background 0.16s;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Liberation Mono", "Courier New", monospace;
+}
+
+.agents-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.agents-section > .total {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.agents-section > .total > h1 {
+  margin: 0;
+}
+
+.agents-section .primary-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+ul.agents {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding: 0 var(--padding-content);
+  margin: 0;
+}
+
+li.agent {
+  list-style: none;
+  padding: 1.2rem;
+  width: 78%;
+  max-width: 40ch;
+  border-radius: 1.125rem;
+  background-color: var(--color-card);
+  transition: background-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: start;
+  justify-content: space-between;
+  position: relative;
+  z-index: 10;
+}
+
+li.agent a {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  text-decoration: none;
+}
+
+li.agent:hover {
+  background-color: var(--color-card-dark);
+}
+
+.agent-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.agent-title>div {
+  font-size: 0.8rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: var(--color-card-dark);
+  font-weight: 400;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.agent-amount {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--color-foreground);
 }
 
 
