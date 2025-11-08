@@ -67,6 +67,8 @@ function TransactionLine({
 
   return (
     <li className="transaction" key={transaction.id}>
+      <a href={`/txn/${transaction.id}`}>&nbsp;</a>
+
       <div className="transaction-left">
         <div className="transaction-icon">
           {payment ? <IconBanknoteUp /> : <IconCoins />}
