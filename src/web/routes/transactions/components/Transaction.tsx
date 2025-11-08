@@ -158,7 +158,7 @@ export const Transaction: FC<TransactionProps> = ({
               <div className="value">
                 {payment.trigger.method === "user"
                   ? "Manually"
-                  : "By counterparty"}
+                  : "Counterparty charge"}
               </div>
             </div>
           )}
