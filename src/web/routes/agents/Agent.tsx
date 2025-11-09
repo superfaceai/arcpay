@@ -21,8 +21,11 @@ export const Agent: FC<AgentProps> = (props: AgentProps) => {
           <div className="agent-box filled">
             <div className="agent-box-content">
               <span>Allowance</span>
-              <h3 className="space-between">
-                {props.agent.allowance.amount} {props.agent.allowance.currency}{" "}
+              <h3>
+                <span>
+                  {props.agent.allowance.amount}{" "}
+                  {props.agent.allowance.currency}
+                </span>{" "}
                 <span className="muted">
                   every{" "}
                   {props.agent.allowance.frequency === "daily"
