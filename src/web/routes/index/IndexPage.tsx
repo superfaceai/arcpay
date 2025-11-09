@@ -13,7 +13,7 @@ export const IndexPage: FC<IndexPageProps> = (props: IndexPageProps) => {
 
           <p>
             Secure and easy way for your AI agents to pay for physical or
-            digital goods and services —autonomously, on your terms
+            digital goods and services—autonomously, on your terms
           </p>
 
           <a href="/login" className="button primary large">

@@ -9,11 +9,29 @@ export const Layout: FC = (props) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta
           name="description"
-          content="Arc Pay: Secure and easy way for AI agents to pay for goods and services autonomously."
+          content="Secure and easy way for your AI agents to pay for physical or digital goods and services—autonomously, on your terms"
         />
         <meta
           name="keywords"
           content="Arc Pay, payments, AI agents, USDC, Arc Network"
+        />
+        <meta name="theme-color" content="#ffffff" />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Arc Pay" />
+        <meta
+          property="og:description"
+          content="Secure and easy way for your AI agents to pay for physical or digital goods and services—autonomously, on your terms"
+        />
+        <meta property="og:site_name" content="Arc Pay" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Arc Pay" />
+        <meta
+          name="twitter:description"
+          content="Secure and easy way for your AI agents to pay for physical or digital goods and services—autonomously, on your terms"
         />
 
         <link
