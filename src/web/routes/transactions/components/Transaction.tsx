@@ -137,8 +137,13 @@ export const Transaction: FC<TransactionProps> = ({
           {paymentTransaction.blockchain.counterparty && (
             <div className="item">
               <div className="label">Counterparty</div>
-              <div className="value" title={paymentTransaction.blockchain.counterparty}>
-                {formatBlockchainAddress(paymentTransaction.blockchain.counterparty)}
+              <div
+                className="value"
+                title={paymentTransaction.blockchain.counterparty}
+              >
+                {formatBlockchainAddress(
+                  paymentTransaction.blockchain.counterparty
+                )}
               </div>
             </div>
           )}
@@ -173,20 +178,26 @@ export const Transaction: FC<TransactionProps> = ({
           )}
         </div>
 
-        <h3>Fees</h3>
+        {feeTransactions.length > 0 && (
+          <>
+            <h3>Fees</h3>
 
-        <div className="transaction-box-list">
-          {feeTransactions.map((feeTransaction) => (
-            <div className="item">
-              <div className="label">
-                {feeTransaction.fee_type === "network" ? "Network Fee" : "Fee"}
-              </div>
-              <div className="value">
-                {feeTransaction.amount} {feeTransaction.currency}
-              </div>
+            <div className="transaction-box-list">
+              {feeTransactions.map((feeTransaction) => (
+                <div className="item">
+                  <div className="label">
+                    {feeTransaction.fee_type === "network"
+                      ? "Network Fee"
+                      : "Fee"}
+                  </div>
+                  <div className="value">
+                    {feeTransaction.amount} {feeTransaction.currency}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
 
         {Object.keys(metadata).length > 0 && (
           <>
@@ -195,12 +206,8 @@ export const Transaction: FC<TransactionProps> = ({
             <div className="transaction-box-list">
               {Object.keys(metadata).map((key) => (
                 <div className="item">
-                  <div className="label">
-                    {key}
-                  </div>
-                  <div className="value">
-                    {metadata[key]}
-                  </div>
+                  <div className="label">{key}</div>
+                  <div className="value">{metadata[key]}</div>
                 </div>
               ))}
             </div>
