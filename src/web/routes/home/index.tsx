@@ -28,7 +28,22 @@ export const homeRoute = createWebRoute().get(
 
     const account = (await loadAccountById(accountId))!;
 
-    const balances = await listBalances({ accountId, live: isLive });
+    const dataFrom = new Date(Date.now() - 7 * DAY);
+
+    const [balances, locations, transactions, payments] = await Promise.all([
+      listBalances({ accountId, live: isLive }),
+      listLocations({ accountId, live: isLive }),
+      listTransactions({
+        accountId,
+        live: isLive,
+        filter: { from: dataFrom },
+      }),
+      listPayments({
+        accountId,
+        live: isLive,
+        dto: { from: dataFrom },
+      }),
+    ]);
 
     if (!balances.ok) {
       return c.text(balances.error.message, 500);
@@ -44,28 +59,13 @@ export const homeRoute = createWebRoute().get(
       .toFixed(2)
       .toString();
 
-    const locations = await listLocations({ accountId, live: isLive });
-
     if (!locations.ok) {
       return c.text(locations.error.message, 500);
     }
 
-    const dataFrom = new Date(Date.now() - 7 * DAY);
-
-    const transactions = await listTransactions({
-      accountId,
-      live: isLive,
-      filter: { from: dataFrom },
-    });
     if (!transactions.ok) {
       return c.text(transactions.error.message, 500);
     }
-
-    const payments = await listPayments({
-      accountId,
-      live: isLive,
-      dto: { from: dataFrom },
-    });
 
     if (!payments.ok) {
       return c.text(payments.error.message, 500);
