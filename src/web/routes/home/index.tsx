@@ -15,8 +15,6 @@ import { listBalances, listLocations } from "@/balances/services";
 import { listPayments, listTransactions } from "@/payments/services";
 import { sortBalancesDesc } from "@/balances/entities";
 
-const dataFrom = new Date(Date.now() - 7 * DAY);
-
 export const homeRoute = createWebRoute().get(
   "/home",
   withWebAuth(),
@@ -51,6 +49,8 @@ export const homeRoute = createWebRoute().get(
     if (!locations.ok) {
       return c.text(locations.error.message, 500);
     }
+
+    const dataFrom = new Date(Date.now() - 7 * DAY);
 
     const transactions = await listTransactions({
       accountId,

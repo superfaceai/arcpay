@@ -87,7 +87,7 @@ export const Home: FC<HomeProps> = (props: HomeProps) => {
 
         <div className="transactions-section">
           <h2 class="space-between padding-content">
-            Transactions
+            Transactions in past 7 days
             <a href="/all-transactions" className="text-small">
               View all
             </a>
@@ -96,6 +96,14 @@ export const Home: FC<HomeProps> = (props: HomeProps) => {
           <TransactionsList
             payments={props.payments}
             transactions={props.transactions}
+            emptyContent={
+              <>
+                <p>
+                  No transactions in past seven days.{" "}
+                  <a href="/all-transactions">View 90 days</a>
+                </p>
+              </>
+            }
           />
         </div>
       </AppLayout>

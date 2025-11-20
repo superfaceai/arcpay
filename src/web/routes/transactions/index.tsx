@@ -23,7 +23,7 @@ export const transactionsRoute = createWebRoute()
     const { accountId, isLive } = session.account;
     const account = (await loadAccountById(accountId))!;
 
-    const dataFrom = new Date(Date.now() - 30 * DAY);
+    const dataFrom = new Date(Date.now() - 90 * DAY);
 
     const transactions = await listTransactions({
       accountId,

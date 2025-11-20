@@ -1,5 +1,4 @@
-import Big from "big.js";
-import { FC } from "hono/jsx";
+import { FC, Child } from "hono/jsx";
 
 import { Payment, Transaction } from "@/payments/entities";
 import { DAY } from "@/lib";
@@ -10,6 +9,7 @@ import { formatAmount, formatName } from "./formatting";
 type TransactionsListProps = {
   payments: Payment[];
   transactions: Transaction[];
+  emptyContent?: Child;
 };
 
 export const TransactionsList: FC<TransactionsListProps> = (
@@ -22,6 +22,14 @@ export const TransactionsList: FC<TransactionsListProps> = (
   const paymentTransactions = props.transactions.filter(
     (transaction) => transaction.type === "payment"
   );
+
+  if (paymentTransactions.length === 0) {
+    return (
+      <div className="transactions-empty">
+        {props.emptyContent || "No transactions in current period"}
+      </div>
+    );
+  }
 
   return (
     <ul className="transactions">

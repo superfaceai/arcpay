@@ -23,7 +23,7 @@ export const AllTransactions: FC<AllTransactionsProps> = (
 
         <div className="transactions-section">
           <h2>
-            <span>Transactions (30 days)</span>
+            <span>Transactions (90 days)</span>
           </h2>
 
           <TransactionsList
