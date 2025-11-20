@@ -435,7 +435,7 @@ li.balance {
   padding: var(--padding-content);
   min-height: 10rem;
   border-radius: 0.75rem;
-  border: 1px solid var(--color-card-dark);
+  border: 1px dashed var(--color-card-dark);
 }
 
 .transaction-details {
