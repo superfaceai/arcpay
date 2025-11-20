@@ -4,27 +4,39 @@ import { client } from "../client.js";
 import { isValidToken, Token } from "@/balances/values";
 import { BlockchainWalletActionError } from "@/balances/errors";
 
+type TokenLookupResult =
+  | { isSupported: true; token: Token }
+  | { isSupported: false; token: string };
+
 export const mapCircleTokenIdToToken = async (
   tokenId: string
-): Promise<Token> => {
+): Promise<TokenLookupResult> => {
   const cachedToken = CIRCLE_TOKEN_IDS[tokenId];
   if (cachedToken) {
-    return cachedToken;
+    return { isSupported: true, token: cachedToken };
   }
 
-  const token = await lookupToken(tokenId);
-
-  if (!token.ok) {
-    throw new Error(token.error.message);
+  if (CIRCLE_UNSUPPORTED_TOKEN_IDS[tokenId]) {
+    return { isSupported: false, token: CIRCLE_UNSUPPORTED_TOKEN_IDS[tokenId] };
   }
 
-  CIRCLE_TOKEN_IDS[tokenId] = token.value; // doesn't persist anyways
-  return token.value;
+  const tokenSymbol = await lookupTokenSymbol(tokenId);
+
+  if (!tokenSymbol.ok)
+    throw new Error(`Token lookup failed: ${tokenSymbol.error.message}`);
+
+  if (!isValidToken(tokenSymbol.value)) {
+    CIRCLE_UNSUPPORTED_TOKEN_IDS[tokenId] = tokenSymbol.value; // doesn't persist anyways
+    return { isSupported: false, token: tokenSymbol.value };
+  } else {
+    CIRCLE_TOKEN_IDS[tokenId] = tokenSymbol.value; // doesn't persist anyways
+    return { isSupported: true, token: tokenSymbol.value };
+  }
 };
 
-const lookupToken = async (
+const lookupTokenSymbol = async (
   tokenId: string
-): Promise<Result<Token, BlockchainWalletActionError>> =>
+): Promise<Result<string, BlockchainWalletActionError>> =>
   tryAsync(
     async () => {
       const token = await client.getToken({
@@ -37,13 +49,7 @@ const lookupToken = async (
 
       console.info("NEW_TOKEN_FOUND", token.data.token);
 
-      const symbol = token.data.token?.symbol;
-
-      if (!isValidToken(symbol)) {
-        throw new Error(`Invalid Circle token symbol: ${symbol}`);
-      }
-
-      return symbol as Token;
+      return token.data.token?.symbol || "";
     },
     (error) => ({
       type: "BlockchainWalletActionError",
@@ -84,4 +90,9 @@ const CIRCLE_TOKEN_IDS: { [key: string]: Token } = {
   // Solana
   "33ca4ef6-2500-5d79-82bf-e3036139cc29": "USDC",
   "8fb3cadb-0ef4-573d-8fcd-e194f961c728": "USDC",
+};
+
+const CIRCLE_UNSUPPORTED_TOKEN_IDS: { [key: string]: string } = {
+  // Arc
+  "b5780066-e5db-552a-895c-d5271a120cd2": "PUMP",
 };

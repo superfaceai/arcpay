@@ -32,6 +32,16 @@ export const mapCircleTransaction = async ({
   walletIdToLocation: Record<string, string>;
 }): Promise<BlockchainTransaction[]> => {
   const paymentToken = await mapCircleTokenIdToToken(circleTx.tokenId ?? "");
+
+  if (!paymentToken.isSupported) {
+    // For now, ignore unsupported token transactions
+    console.warn(
+      `TX_IGNORED: '${circleTx.id}' unsupported token: ${paymentToken.token}`,
+      JSON.stringify(circleTx, null, 2)
+    );
+
+    return [];
+  }
   const blockchain = mapCircleBlockchain(circleTx.blockchain);
   const nativeToken = getNativeTokenFor({ blockchain });
 
@@ -82,7 +92,7 @@ export const mapCircleTransaction = async ({
     amount: mapAmount(circleTx.amounts?.[0], {
       negative: circleTx.transactionType === "OUTBOUND",
     }),
-    currency: tokenToCurrency(paymentToken),
+    currency: tokenToCurrency(paymentToken.token),
     network: "blockchain",
     blockchain: {
       hash,
