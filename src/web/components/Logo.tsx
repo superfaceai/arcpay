@@ -1,9 +1,19 @@
 import { FC } from "hono/jsx";
 
-export const Logo: FC = () => {
-  return <div className="logo"><span>◠</span> Pay</div>;
+type LogoProps = {
+  variant: "full" | "short";
+  size: "medium" | "large";
 };
 
-export const LogoLarge: FC = () => {
-  return <div className="logo large"><span>◠</span> Arc Pay</div>;
+const logoSizeClass: Record<LogoProps["size"], string> = {
+  medium: "logo medium",
+  large: "logo large",
+};
+
+export const Logo: FC<LogoProps> = (props: LogoProps) => {
+  return (
+    <div className={logoSizeClass[props.size]}>
+      <span>◠</span> {props.variant === "full" ? "Arc Pay" : "Pay"}
+    </div>
+  );
 };

@@ -1,6 +1,6 @@
 import { FC } from "hono/jsx";
 import { Layout } from "@/web/components/Layout";
-import { LogoLarge } from "@/web/components/Logo";
+import { Logo } from "@/web/components/Logo";
 
 interface IndexPageProps {}
 
@@ -9,7 +9,7 @@ export const IndexPage: FC<IndexPageProps> = (props: IndexPageProps) => {
     <Layout>
       <div className="index">
         <div className="index-content">
-          <LogoLarge />
+          <Logo variant="full" size="large" />
 
           <p>
             Secure and easy way for your AI agents to pay for physical or

@@ -14,7 +14,7 @@ export const OutsideNavigation: FC<OutsideNavigationProps> = (
   return (
     <nav className="outside-navigation">
       <div className="narrow">
-        <Logo />
+        <Logo variant="short" size="medium" />
 
         <div>
           {props.closeLink && (

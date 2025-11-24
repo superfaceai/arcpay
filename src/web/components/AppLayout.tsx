@@ -26,7 +26,7 @@ export const AppNavigation: FC<AppNavigationProps> = (
             <div className="avatar">←</div>
           </a>
         ) : (
-          <Logo />
+          <Logo variant="short" size="medium" />
         )}
       </div>
 
