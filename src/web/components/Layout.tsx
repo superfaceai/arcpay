@@ -9,29 +9,29 @@ export const Layout: FC = (props) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta
           name="description"
-          content="Secure and easy way for your AI agents to pay for physical or digital goods and services—autonomously, on your terms"
+          content="Arc Pay lets your AI assistants make approved purchases on their own. You set the limits and rules—and every payment stays visible and under control."
         />
         <meta
           name="keywords"
-          content="Arc Pay, payments, AI agents, USDC, Arc Network"
+          content="Arc Pay, agentic wallet, payments, AI agents, USDC, Arc Network"
         />
         <meta name="theme-color" content="#ffffff" />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Arc Pay" />
+        <meta property="og:title" content="Arc Pay • Agentic Wallet" />
         <meta
           property="og:description"
-          content="Secure and easy way for your AI agents to pay for physical or digital goods and services—autonomously, on your terms"
+          content="Arc Pay lets your AI assistants make approved purchases on their own. You set the limits and rules—and every payment stays visible and under control."
         />
-        <meta property="og:site_name" content="Arc Pay" />
+        <meta property="og:site_name" content="Arc Pay • Agentic Wallet" />
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Arc Pay" />
+        <meta name="twitter:title" content="Arc Pay • Agentic Wallet" />
         <meta
           name="twitter:description"
-          content="Secure and easy way for your AI agents to pay for physical or digital goods and services—autonomously, on your terms"
+          content="Arc Pay lets your AI assistants make approved purchases on their own. You set the limits and rules—and every payment stays visible and under control."
         />
 
         <link
@@ -49,7 +49,7 @@ export const Layout: FC = (props) => {
         />
         <link rel="manifest" href="/site.webmanifest" />
 
-        <title>Arc Pay</title>
+        <title>Arc Pay • Agentic wallet</title>
         <link rel="stylesheet" href="/main.css" />
       </head>
       <body>
