@@ -14,18 +14,18 @@ export const IndexPage: FC<IndexPageProps> = (props: IndexPageProps) => {
 
       <div className="index">
         <div className="content">
-          <h1>
+          <h1 class="fade-in">
             Enable payments
             <br />
             for your AI agents
           </h1>
 
-          <p>
+          <p class="fade-in">
             Arc Pay is secure and easy way for your AI agents to pay for
             physical or digital goods and services—autonomously, on your terms
           </p>
 
-          <form method="post" action="/login">
+          <form method="post" action="/login" class="fade-in">
             <div class="form-field">
               <input
                 class="large"
@@ -43,7 +43,7 @@ export const IndexPage: FC<IndexPageProps> = (props: IndexPageProps) => {
           </form>
 
           <img
-            class="diagram"
+            class="diagram fade-in"
             src="/arc_pay_agentic_wallet.png"
             alt="Arc Pay: Agentic wallet"
           />
