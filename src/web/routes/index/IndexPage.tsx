@@ -1,6 +1,7 @@
 import { FC } from "hono/jsx";
 import { Layout } from "@/web/components/Layout";
 import { Header } from "@/web/components/Header";
+import { Footer } from "@/web/components/Footer";
 
 interface IndexPageProps {
   isLoggedIn: boolean;
@@ -20,8 +21,8 @@ export const IndexPage: FC<IndexPageProps> = (props: IndexPageProps) => {
           </h1>
 
           <p>
-            Arc Pay is secure and easy way for your AI agents to pay for physical or
-            digital goods and services—autonomously, on your terms
+            Arc Pay is secure and easy way for your AI agents to pay for
+            physical or digital goods and services—autonomously, on your terms
           </p>
 
           <form method="post" action="/login">
@@ -40,15 +41,16 @@ export const IndexPage: FC<IndexPageProps> = (props: IndexPageProps) => {
               Get agentic wallet
             </button>
           </form>
-        </div>
 
-        <div className="footer">
-          by
-          <a href="https://superface.ai?utm_source=arcpay" target="_blank">
-            <img src="/sf-logotype-dark.svg" alt="Superface" />
-          </a>
+          <img
+            class="diagram"
+            src="/arc_pay_agentic_wallet.png"
+            alt="Arc Pay: Agentic wallet"
+          />
         </div>
       </div>
+
+      <Footer />
     </Layout>
   );
 };

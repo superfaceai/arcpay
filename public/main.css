@@ -313,6 +313,37 @@ header.primary {
   }
 }
 
+footer.primary {
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-inline: var(--padding-content);
+  padding-block: calc(var(--padding-content) * 1.5);
+
+  & span.copyright {
+    color: var(--color-muted-foreground);
+    font-size: var(--font-size-small);
+  }
+
+  & span.by {
+    color: var(--color-muted-foreground);
+    font-size: var(--font-size-small);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    & img {
+      width: 100px;
+    }
+  }
+
+}
+
 .space-between {
   display: flex;
   flex-direction: row;
@@ -980,7 +1011,7 @@ h2 {
   justify-content: center;
   gap: 0.5rem;
   box-sizing: border-box;
-  padding: 0 var(--padding-content);
+  padding-inline: var(--padding-content);
 
   & h1 {
     text-align: center;
@@ -999,6 +1030,7 @@ h2 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding-block: calc(var(--padding-content) * 6);
     gap: 1rem;
 
     & p {
@@ -1014,23 +1046,16 @@ h2 {
       width: 100%;
       max-width: 40ch;
     }
-  }
 
-  & .footer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    color: var(--color-muted-foreground);
-    font-size: 0.8rem;
-    padding: var(--padding-content) 0;
-
-    & img {
-      width: 120px;
+    & img.diagram {
+      width: 100%;
+      max-width: 80ch;
+      height: auto;
+      object-fit: contain;
+      object-position: center;
+      margin-top: 2rem;
     }
   }
-
 }
 
 .apidocs {

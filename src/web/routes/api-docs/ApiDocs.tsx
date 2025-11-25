@@ -1,6 +1,7 @@
 import { FC } from "hono/jsx";
 import { Layout } from "@/web/components/Layout";
 import { Header } from "@/web/components/Header";
+import { Footer } from "@/web/components/Footer";
 
 interface Resource {
   url: string;
@@ -222,6 +223,8 @@ export const ApiDocs: FC<ApiDocsProps> = (props: ApiDocsProps) => {
   "granted_mandate_secret": "paym_eNSM2UiaOaUdlfKU6_secret_2k8ZabXp..."
 }`}</pre>
       </div>
+
+      <Footer />
     </Layout>
   );
 };
