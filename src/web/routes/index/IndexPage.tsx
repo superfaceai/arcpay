@@ -12,27 +12,34 @@ export const IndexPage: FC<IndexPageProps> = (props: IndexPageProps) => {
       <Header isLoggedIn={props.isLoggedIn} />
 
       <div className="index">
-        <div className="index-content">
-          <Logo variant="full" size="large" />
+        <div className="content">
+          <h1>
+            Enable payments
+            <br />
+            for your AI agents
+          </h1>
 
           <p>
-            Secure and easy way for your AI agents to pay for physical or
+            Arc Pay is secure and easy way for your AI agents to pay for physical or
             digital goods and services—autonomously, on your terms
           </p>
 
-          <a href="/login" className="button primary large">
-            Log in
-          </a>
+          <form method="post" action="/login">
+            <div class="form-field">
+              <input
+                class="large"
+                type="email"
+                id="email"
+                name="email"
+                placeholder="your@email.com"
+                required
+              />
+            </div>
 
-          <div className="buttons">
-            <a
-              href="https://github.com/superfaceai/arcpay"
-              className="button ghost small"
-              target="_blank"
-            >
-              GitHub
-            </a>
-          </div>
+            <button type="submit" class="primary large">
+              Get agentic wallet
+            </button>
+          </form>
         </div>
 
         <div className="footer">
