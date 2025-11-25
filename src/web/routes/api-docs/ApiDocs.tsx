@@ -1,5 +1,6 @@
 import { FC } from "hono/jsx";
 import { Layout } from "@/web/components/Layout";
+import { Header } from "@/web/components/Header";
 
 interface Resource {
   url: string;
@@ -14,18 +15,19 @@ interface ApiDocsProps {
 export const ApiDocs: FC<ApiDocsProps> = (props: ApiDocsProps) => {
   return (
     <Layout>
-      <div
-        style={{ maxWidth: "70ch", margin: "1rem auto" }}
-        className="padding-content"
-      >
-        <h1 className="space-between">
-          Arc Pay API
-          <div>
-            <a href="/login" className="button small primary">
-              Log in
-            </a>
-          </div>
-        </h1>
+      <Header />
+      <div className="apidocs">
+        <h2>Demo seller</h2>
+        <p>
+          Use the demo merchant store to try out Arc Pay wallet with agentic
+          commerce protocol (ACP)
+        </p>
+
+        <div className="demostore">
+          <a href="https://merchant-demo.arcpay.ai" target="_blank">
+            https://merchant-demo.arcpay.ai
+          </a>
+        </div>
 
         <h2>Obtain an API key</h2>
 

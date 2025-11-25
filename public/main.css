@@ -23,6 +23,7 @@
   --font-size-small: 0.85rem;
 
   --padding-content: 0.8rem;
+  --max-content-width: 90ch;
 }
 
 body {
@@ -281,7 +282,7 @@ a.button:disabled {
 /* App Layout Styles */
 header.primary {
   width: 100%;
-  max-width: 90ch;
+  max-width: var(--max-content-width);
   margin: 0 auto;
   display: flex;
   flex-direction: row;
@@ -994,4 +995,23 @@ li.agent:hover {
 
 .index .footer img {
   width: 120px;
+}
+
+.apidocs {
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  padding: var(--padding-content);
+  box-sizing: border-box;
+
+  h1,h2,h3 {
+    text-align: left;
+  }
+
+  div.demostore {
+    color: var(--color-primary-foreground);
+    padding: var(--padding-content);
+    border-radius: 0.75rem;
+    background-color: var(--color-primary);
+    margin-bottom: 1.2rem;
+  }
 }
