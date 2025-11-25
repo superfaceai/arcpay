@@ -10,12 +10,13 @@ interface Resource {
 interface ApiDocsProps {
   host: string;
   resources: Resource[];
+  isLoggedIn: boolean;
 }
 
 export const ApiDocs: FC<ApiDocsProps> = (props: ApiDocsProps) => {
   return (
     <Layout>
-      <Header />
+      <Header isLoggedIn={props.isLoggedIn} />
       <div className="apidocs">
         <h2>Demo seller</h2>
         <p>

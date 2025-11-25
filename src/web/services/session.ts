@@ -45,3 +45,10 @@ export const getSessionAndRemoveError = async (
   }
   return { session, error: error ?? undefined };
 };
+
+export const isLoggedIn = async (
+  c: Context<SessionEnv<WebSessionData>>
+): Promise<boolean> => {
+  const session = await getSession(c);
+  return !!session.account;
+};
