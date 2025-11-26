@@ -37,9 +37,9 @@ export const IndexPage: FC<IndexPageProps> = (props: IndexPageProps) => {
           </p> */}
 
           <p class="fade-in">
-            Arc Pay lets your AI assistants make approved purchases on their own.
-            You set the limits and rules—and every payment stays visible and
-            under control.
+            Arc Pay lets your AI assistants make approved purchases on their
+            own. You set the limits and rules—and every payment stays visible
+            and under control.
           </p>
 
           <form method="post" action="/login" class="fade-in">
@@ -68,7 +68,7 @@ export const IndexPage: FC<IndexPageProps> = (props: IndexPageProps) => {
           <h2 class="cta fade-in">
             Add payments to
             <br />
-            your AI workflow
+            your AI workflows
           </h2>
 
           <a href="/login" class="button secondary large fade-in">
