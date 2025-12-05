@@ -1,4 +1,5 @@
 import Config from "@/config";
+import { Currency } from "@/balances/values";
 import { loadFeatureState, saveFeatureState } from "./entities";
 
 const DB_STATE_KEY = "initial-funding";
@@ -30,6 +31,7 @@ export const InitialFundingFeature = {
   getInitialFundingSettings: () => {
     return {
       amountUsdc: Config.FEATURE_INITIAL_FUNDING_AMOUNT_USDC!,
+      currency: "USDC" as Currency,
       blockchain: Config.FEATURE_INITIAL_FUNDING_BLOCKCHAIN!,
       privateKey: Config.FEATURE_INITIAL_FUNDING_BLOCKCHAIN_PRIVATEKEY!,
     };
