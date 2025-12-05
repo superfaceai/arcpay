@@ -26,6 +26,7 @@
     "nanoid": "^5.1.6",
     "twilio": "^5.10.4",
     "uuid": "^13.0.0",
+    "viem": "^2.38.6",
     "zod": "^4.1.12"
   },
   "devDependencies": {
@@ -37,7 +38,6 @@
     "@types/uuid": "^10.0.0",
     "tsc-alias": "^1.8.16",
     "tsx": "^4.7.1",
-    "typescript": "^5.8.3",
-    "viem": "^2.38.6"
+    "typescript": "^5.8.3"
   }
 }
