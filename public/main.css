@@ -376,11 +376,6 @@ footer.primary {
   padding-inline: var(--padding-content);
   padding-block: calc(var(--padding-content) * 1.5);
 
-  & span.copyright {
-    color: var(--color-muted-foreground);
-    font-size: var(--font-size-small);
-  }
-
   & span.by {
     color: var(--color-muted-foreground);
     font-size: var(--font-size-small);
@@ -393,6 +388,14 @@ footer.primary {
     }
   }
 
+}
+
+.footer-links {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: var(--font-size-small);
 }
 
 .space-between {
@@ -465,15 +468,36 @@ a:hover {
 .app-layout {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 5rem;
   max-width: 90ch;
   margin: 0 auto;
   box-sizing: border-box;
   width: 100%;
   min-height: 80svh;
+  flex-grow: 1;
   padding-inline: 0.25rem;
-  padding-top: var(--padding-content);
-  padding-bottom: var(--padding-content);
+  padding-block: var(--padding-content);
+
+  & .app-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    margin: 0 auto;
+    box-sizing: border-box;
+    width: 100%;
+    flex-grow: 1;
+  }
+
+  & footer {
+    width: 100%;
+    max-width: var(--max-content-width);
+    margin: 0 auto;
+    display: flex;
+    box-sizing: border-box;
+    align-items: center;
+    gap: 1rem;
+    padding-inline: var(--padding-content);
+  }
 }
 
 .test-mode {
@@ -1217,10 +1241,12 @@ h2 {
       color: var(--color-primary-foreground);
       animation: spin 1s linear infinite;
     }
+
     &.success {
       color: var(--color-success);
       background-color: var(--color-success-bg);
     }
+
     &.error {
       color: var(--color-danger);
       background-color: var(--color-danger-bg);
@@ -1230,7 +1256,7 @@ h2 {
       width: 1.5rem;
       height: 1.5rem;
       transform-origin: center;
-      transform-box:fill-box;
+      transform-box: fill-box;
     }
   }
 

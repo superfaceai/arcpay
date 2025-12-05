@@ -1,11 +1,12 @@
 import { FC } from "hono/jsx";
+import { FooterLinks } from "./FooterLinks";
 
 interface FooterProps {}
 
 export const Footer: FC<FooterProps> = (props: FooterProps) => {
   return (
     <footer className="primary">
-      <span class="copyright">&copy; 2025</span>
+      <FooterLinks />
 
       <span class="by">
         by

@@ -1,9 +1,18 @@
 import { Account } from "@/identity/entities";
 import type { FC } from "hono/jsx";
 import { Logo } from "./Logo";
+import { FooterLinks } from "./FooterLinks";
 
 export const AppLayout: FC = (props) => {
-  return <div className="app-layout">{props.children}</div>;
+  return (
+    <div className="app-layout">
+      <div className="app-content">{props.children}</div>
+
+      <footer>
+        <FooterLinks />
+      </footer>
+    </div>
+  );
 };
 
 type AppNavigationProps = {
