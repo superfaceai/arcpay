@@ -1,6 +1,10 @@
-import type { FC } from "hono/jsx";
+import type { FC, PropsWithChildren } from "hono/jsx";
 
-export const Layout: FC = (props) => {
+type LayoutProps = {
+  isTestMode?: boolean;
+};
+
+export const Layout: FC<PropsWithChildren<LayoutProps>> = (props) => {
   return (
     <html lang="en">
       <head>
@@ -15,7 +19,10 @@ export const Layout: FC = (props) => {
           name="keywords"
           content="Arc Pay, agentic wallet, payments, AI agents, USDC, Arc Network"
         />
-        <meta name="theme-color" content="#ffffff" />
+        <meta
+          name="theme-color"
+          content={props.isTestMode ? "#f2f0f4" : "#ffffff"}
+        />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
@@ -53,7 +60,19 @@ export const Layout: FC = (props) => {
         <link rel="stylesheet" href="/main.css" />
       </head>
       <body>
-        <main>{props.children}</main>
+        <main className={props.isTestMode ? "test" : ""}>
+          {props.isTestMode ? (
+            <>
+              <div className="test-mode">
+                <strong>You are in sandbox.</strong>{" "}
+                <span>All payments happen on testing networks</span>
+              </div>
+              <div className="layout-container">{props.children}</div>
+            </>
+          ) : (
+            props.children
+          )}
+        </main>
       </body>
     </html>
   );

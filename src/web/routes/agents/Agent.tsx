@@ -7,11 +7,12 @@ import { AppLayout, AppNavigation } from "@/web/components/AppLayout";
 type AgentProps = {
   account: Account;
   agent: AgentWithRemainingAllowance;
+  isTestMode: boolean;
 };
 
 export const Agent: FC<AgentProps> = (props: AgentProps) => {
   return (
-    <Layout>
+    <Layout isTestMode={props.isTestMode}>
       <AppLayout>
         <AppNavigation account={props.account} backLink="/home" />
 

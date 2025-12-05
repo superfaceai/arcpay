@@ -8,11 +8,12 @@ import {
 
 type LogoutProps = {
   removeOnly?: boolean;
+  isTestMode: boolean;
 };
 
 export const Logout: FC<LogoutProps> = (props: LogoutProps) => {
   return (
-    <Layout>
+    <Layout isTestMode={props.isTestMode}>
       <OutsideNavigation closeLink="/login" />
       <OutsideAppLayout>
         {props.removeOnly ? (

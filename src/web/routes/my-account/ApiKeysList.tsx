@@ -7,11 +7,12 @@ import { AppLayout, AppNavigation } from "@/web/components/AppLayout";
 type ApiKeysListProps = {
   account: Account;
   apiKeys: ApiKey[];
+  isTestMode: boolean;
 };
 
 export const ApiKeysList: FC<ApiKeysListProps> = (props: ApiKeysListProps) => {
   return (
-    <Layout>
+    <Layout isTestMode={props.isTestMode}>
       <AppLayout>
         <AppNavigation account={props.account} backLink="/my-account" />
 

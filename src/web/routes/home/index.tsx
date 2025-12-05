@@ -81,6 +81,7 @@ export const homeRoute = createWebRoute().get(
 
     return c.html(
       <Home
+        isTestMode={!isLive}
         account={account}
         balances={sortedBalances}
         totalUsdcBalance={totalUsdcBalance}

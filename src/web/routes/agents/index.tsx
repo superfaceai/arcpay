@@ -56,6 +56,8 @@ export const agentsRoute = createWebRoute().get(
       totalUsdcBalance
     );
 
-    return c.html(<AgentComponent account={account} agent={agent} />);
+    return c.html(
+      <AgentComponent account={account} agent={agent} isTestMode={!isLive} />
+    );
   }
 );

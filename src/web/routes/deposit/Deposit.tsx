@@ -8,11 +8,12 @@ import {
 
 type DepositProps = {
   error?: string;
+  isTestMode: boolean;
 };
 
-export const Deposit: FC<DepositProps> = ({ error }: DepositProps) => {
+export const Deposit: FC<DepositProps> = ({ error, isTestMode }: DepositProps) => {
   return (
-    <Layout>
+    <Layout isTestMode={isTestMode}>
       <OutsideNavigation closeLink="/login" />
       <OutsideAppLayout>
         <h2>Request a deposit for testnet funds</h2>

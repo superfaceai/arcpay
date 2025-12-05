@@ -1,7 +1,6 @@
 import {
   createWebRoute,
   getSession,
-  getSessionAndRemoveError,
   updateSession,
 } from "@/web/services";
 
@@ -11,9 +10,15 @@ import { erase } from "@/erasure/services";
 
 export const logoutRoute = createWebRoute()
   .get("/logout", withWebAuth({ redirectTo: "/login" }), async (c) => {
+    const session = await getSession(c);
     const remove = c.req.query("remove");
 
-    return c.html(<Logout removeOnly={remove === "true"} />);
+    return c.html(
+      <Logout
+        removeOnly={remove === "true"}
+        isTestMode={!session.account?.isLive}
+      />
+    );
   })
   .post("/logout", async (c) => {
     const session = await getSession(c);

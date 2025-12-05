@@ -49,6 +49,7 @@ export const transactionsRoute = createWebRoute()
         account={account}
         payments={payments.value}
         transactions={transactions.value}
+        isTestMode={!isLive}
       />
     );
   })
@@ -87,6 +88,7 @@ export const transactionsRoute = createWebRoute()
         locations={locations.value}
         payment={transactionDetail.value?.payment}
         capture={transactionDetail.value?.capture}
+        isTestMode={!isLive}
       />
     );
   });

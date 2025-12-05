@@ -11,13 +11,14 @@ type AllTransactionsProps = {
   account: Account;
   payments: Payment[];
   transactions: Transaction[];
+  isTestMode: boolean;
 };
 
 export const AllTransactions: FC<AllTransactionsProps> = (
   props: AllTransactionsProps
 ) => {
   return (
-    <Layout>
+    <Layout isTestMode={props.isTestMode}>
       <AppLayout>
         <AppNavigation account={props.account} backLink="/home" />
 

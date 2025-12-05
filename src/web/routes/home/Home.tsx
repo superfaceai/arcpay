@@ -21,11 +21,12 @@ type HomeProps = {
   payments: Payment[];
   transactions: Transaction[];
   agents: AgentWithRemainingAllowance[];
+  isTestMode: boolean;
 };
 
 export const Home: FC<HomeProps> = (props: HomeProps) => {
   return (
-    <Layout>
+    <Layout isTestMode={props.isTestMode}>
       <AppLayout>
         <AppNavigation account={props.account} />
 

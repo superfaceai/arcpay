@@ -16,7 +16,7 @@ export const myAccountRoute = createWebRoute()
 
     const account = (await loadAccountById(accountId))!;
 
-    return c.html(<MyAccount account={account} />);
+    return c.html(<MyAccount account={account} isTestMode={!isLive} />);
   })
   .get("/my-account/api-keys", withWebAuth(), async (c) => {
     const session = await getSession(c);
@@ -30,5 +30,7 @@ export const myAccountRoute = createWebRoute()
 
     const apiKeys = await listApiKeysForAccount({ accountId });
 
-    return c.html(<ApiKeysList account={account} apiKeys={apiKeys} />);
+    return c.html(
+      <ApiKeysList account={account} apiKeys={apiKeys} isTestMode={!isLive} />
+    );
   });

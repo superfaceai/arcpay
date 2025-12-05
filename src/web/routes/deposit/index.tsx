@@ -13,7 +13,7 @@ export const requestDepositRoute = createWebRoute()
   .get("/request-deposit", withWebAuth({ redirectTo: "/login" }), async (c) => {
     const { session, error } = await getSessionAndRemoveError(c);
 
-    return c.html(<Deposit error={error} />);
+    return c.html(<Deposit error={error} isTestMode={!session.account?.isLive} />);
   })
   .post(
     "/request-deposit",

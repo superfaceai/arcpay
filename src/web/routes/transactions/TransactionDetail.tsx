@@ -14,13 +14,14 @@ type TransactionDetailProps = {
   locations: Location[];
   payment?: Payment;
   capture?: PaymentCapture;
+  isTestMode: boolean;
 };
 
 export const TransactionDetail: FC<TransactionDetailProps> = (
   props: TransactionDetailProps
 ) => {
   return (
-    <Layout>
+    <Layout isTestMode={props.isTestMode}>
       <AppLayout>
         <AppNavigation account={props.account} backLink="/home" />
 

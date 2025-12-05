@@ -6,11 +6,12 @@ import { AppLayout, AppNavigation } from "@/web/components/AppLayout";
 
 type MyAccountProps = {
   account: Account;
+  isTestMode: boolean;
 };
 
 export const MyAccount: FC<MyAccountProps> = (props: MyAccountProps) => {
   return (
-    <Layout>
+    <Layout isTestMode={props.isTestMode}>
       <AppLayout>
         <AppNavigation account={props.account} backLink="/home" />
 
