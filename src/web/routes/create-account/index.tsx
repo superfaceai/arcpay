@@ -8,6 +8,7 @@ import {
 
 import { CreateAccount } from "./CreateAccount";
 import { signUp } from "@/identity/services";
+import { InitialFundingFeature } from "@/features/initial-funding";
 
 export const createAccountRoute = createWebRoute()
   .get("/create-account", async (c) => {
@@ -94,8 +95,24 @@ export const createAccountRoute = createWebRoute()
           isLive: signUpResult.value.live,
         },
       });
-
       await new Promise((resolve) => setTimeout(resolve, 500));
+
+      if (!InitialFundingFeature.isEnabled()) {
+        console.info(
+          `Skipping initial funding for ${form.email} (feature is disabled)`
+        );
+      } else {
+        if (
+          await InitialFundingFeature.canUseInitialFunding({
+            live: signUpResult.value.live,
+          })
+        ) {
+          console.info(`TODO: Run initial funding for ${form.email}`);
+        } else {
+          console.info(`Skipping initial funding for ${form.email} (cannot be used)`);
+        }
+      }
+
       return c.redirect("/home");
     }
   );
