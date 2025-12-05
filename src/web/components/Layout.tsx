@@ -58,6 +58,7 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = (props) => {
 
         <title>Arc Pay • Agentic wallet</title>
         <link rel="stylesheet" href="/main.css" />
+        <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.6/bundles/datastar.js"></script>
       </head>
       <body>
         <main className={props.isTestMode ? "test" : ""}>
