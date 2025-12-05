@@ -16,6 +16,7 @@ import {
   erasePaymentsForAccount,
   erasePaymentMandatesForAccount,
   erasePaymentCapturesForAccount,
+  eraseInitialFundingsForAccount,
 } from "@/payments/entities";
 import {
   eraseNotificationRulesForAccount,
@@ -46,6 +47,7 @@ export const erase = async ({
   await erasePaymentCapturesForAccount({ accountId });
   await eraseTransactionsForAccount({ accountId });
   await eraseCallsForAccount({ accountId });
+  await eraseInitialFundingsForAccount({ accountId });
   await eraseLocationsForAccount({ accountId });
   await eraseBalancesForAccount({ accountId });
   await eraseAccount({ accountId });

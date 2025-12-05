@@ -7,3 +7,5 @@ export * from "./payment-mandate.entity.js";
 export * from "./payment-mandate.db.js";
 export * from "./payment-capture.entity.js";
 export * from "./payment-capture.db.js";
+export * from "./initial-funding.entity.js";
+export * from "./initial-funding.db.js";

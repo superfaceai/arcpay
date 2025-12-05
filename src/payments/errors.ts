@@ -92,3 +92,8 @@ export interface PaymentMandateMismatchError {
 export interface PaymentCaptureError {
   readonly type: "PaymentCaptureError";
 }
+
+export interface InitialFundingNotAllowed {
+  readonly type: "InitialFundingNotAllowed";
+  readonly reason: "disabled" | "quota_exceeded";
+}

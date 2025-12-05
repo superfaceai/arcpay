@@ -10,3 +10,5 @@ export * from "./capture-payment.js";
 export * from "./list-payment-captures.js";
 export * from "./get-payment-capture.js";
 export * from "./get-transaction.js";
+export * from "./request-initial-funding.js";
+export * from "./execute-initial-funding.js";
