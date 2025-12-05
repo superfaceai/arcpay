@@ -13,11 +13,11 @@
 
   --color-payment-incoming: #055717;
 
-  --color-ghost: #f9f9f9;
-  --color-danger: #dc3545;
+  --color-success-bg: #e8faef;
+  --color-success: #009838;
+  --color-danger-bg: #ffe2e5;
+  --color-danger: #bc0013;
   --color-danger-dark: #b32836;
-  --color-warning: #ffc107;
-  --color-info: #007bff;
 
   --font-size-base: 1rem;
   --font-size-small: 0.85rem;
@@ -329,6 +329,16 @@ a.button:disabled {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
@@ -1182,5 +1192,57 @@ h2 {
     border-radius: 0.75rem;
     background-color: var(--color-primary);
     margin-bottom: 1.2rem;
+  }
+}
+
+.initial-funding {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  max-width: 40ch;
+
+  & .status {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+
+    &.loading {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--color-primary-foreground);
+      animation: spin 1s linear infinite;
+    }
+    &.success {
+      color: var(--color-success);
+      background-color: var(--color-success-bg);
+    }
+    &.error {
+      color: var(--color-danger);
+      background-color: var(--color-danger-bg);
+    }
+
+    & svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      transform-origin: center;
+      transform-box:fill-box;
+    }
+  }
+
+  & .message {
+    color: var(--color-primary-foreground);
+    max-width: 40ch;
+    text-align: center;
+  }
+
+  & .redirecting {
+    font-size: 0.8rem;
+    color: var(--color-muted-foreground);
+    text-align: center;
   }
 }

@@ -8,7 +8,8 @@ import {
 
 import { CreateAccount } from "./CreateAccount";
 import { signUp } from "@/identity/services";
-import { InitialFundingFeature } from "@/features/initial-funding";
+
+import { requestInitialFunding } from "@/payments/services";
 
 export const createAccountRoute = createWebRoute()
   .get("/create-account", async (c) => {
@@ -95,24 +96,26 @@ export const createAccountRoute = createWebRoute()
           isLive: signUpResult.value.live,
         },
       });
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 250));
 
-      if (!InitialFundingFeature.isEnabled()) {
-        console.info(
-          `Skipping initial funding for ${form.email} (feature is disabled)`
-        );
-      } else {
-        if (
-          await InitialFundingFeature.canUseInitialFunding({
-            live: signUpResult.value.live,
-          })
-        ) {
-          console.info(`TODO: Run initial funding for ${form.email}`);
-        } else {
-          console.info(`Skipping initial funding for ${form.email} (cannot be used)`);
+      const initialFundingResult = await requestInitialFunding({
+        accountId: signUpResult.value.account,
+        live: signUpResult.value.live,
+      });
+
+      if (!initialFundingResult.ok) {
+        if (initialFundingResult.error.reason === "disabled") {
+          console.info(
+            `Skipping initial funding for ${form.email} (feature is disabled)`
+          );
+        } else if (initialFundingResult.error.reason === "quota_exceeded") {
+          console.info(
+            `Skipping initial funding for ${form.email} (quota exceeded)`
+          );
         }
+        return c.redirect("/home");
       }
 
-      return c.redirect("/home");
+      return c.redirect(`/initial-funding/${initialFundingResult.value.id}`);
     }
   );

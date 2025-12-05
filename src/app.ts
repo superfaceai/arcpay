@@ -27,6 +27,7 @@ import { loginRoute } from "@/web/routes/login";
 import { confirmCodeRoute } from "@/web/routes/confirm-code";
 import { homeRoute } from "@/web/routes/home";
 import { createAccountRoute } from "@/web/routes/create-account";
+import { initialFundingRoute } from "@/web/routes/initial-funding";
 import { logoutRoute } from "@/web/routes/logout";
 import { myAccountRoute } from "@/web/routes/my-account";
 import { transactionsRoute } from "@/web/routes/transactions";
@@ -62,6 +63,7 @@ const app = createApplicationApi((app) => {
     web.route("/", logoutRoute);
     web.route("/", confirmCodeRoute);
     web.route("/", createAccountRoute);
+    web.route("/", initialFundingRoute);
     web.route("/", homeRoute);
     web.route("/", myAccountRoute);
     web.route("/", transactionsRoute);
