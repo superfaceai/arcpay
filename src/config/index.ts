@@ -17,6 +17,7 @@ const ConfigSchema = z.object({
   TWILIO_PHONE_NUMBER: z.string().optional(),
   SENDGRID_API_KEY: z.string().optional(),
   SENDGRID_FROM_EMAIL: z.string().optional(),
+
   FEATURE_INITIAL_FUNDING_ENABLED: z
     .preprocess((env) => env === "true", z.boolean())
     .default(false),
@@ -26,6 +27,17 @@ const ConfigSchema = z.object({
     .optional(),
   FEATURE_INITIAL_FUNDING_BLOCKCHAIN: z.enum(BLOCKCHAINS).optional(),
   FEATURE_INITIAL_FUNDING_BLOCKCHAIN_PRIVATEKEY: z.string().min(3).optional(),
+
+  FEATURE_RETURN_FUNDS_ON_ACCOUNT_DELETION_ENABLED: z
+    .preprocess((env) => env === "true", z.boolean())
+    .default(false),
+  FEATURE_RETURN_FUNDS_ON_ACCOUNT_DELETION_BLOCKCHAIN: z
+    .enum(BLOCKCHAINS)
+    .optional(),
+  FEATURE_RETURN_FUNDS_ON_ACCOUNT_DELETION_ADDRESS: z
+    .string()
+    .min(3)
+    .optional(),
 });
 
 const parsedConfig = ConfigSchema.safeParse(process.env);

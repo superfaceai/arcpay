@@ -1,3 +1,4 @@
+import Big from "big.js";
 import { ok, Result } from "@/lib";
 
 import { eraseCallsForAccount } from "@/api/entities";
@@ -22,12 +23,69 @@ import {
   eraseNotificationRulesForAccount,
   eraseNotificationsForAccount,
 } from "@/notifications/entities";
+import { ReturnFundsOnErasureFeature } from "@/features/return-funds-on-erasure";
+import { hasBalanceInSingleLocation } from "@/balances/services";
+import { pay } from "@/payments/services";
 
 export const erase = async ({
   accountId,
 }: {
   accountId: string;
 }): Promise<Result<void, void>> => {
+  if (ReturnFundsOnErasureFeature.isEnabled()) {
+    const returnFundsSettings =
+      ReturnFundsOnErasureFeature.getReturnFundsOnErasureSettings();
+
+    const hasBalance = await hasBalanceInSingleLocation({
+      accountId,
+      live: false,
+      amount: "0.15", // Check if there's at least 0.2 USDC on the account
+      currency: returnFundsSettings.currency,
+      preferredBlockchain: returnFundsSettings.blockchain,
+    });
+
+    if (
+      hasBalance.ok &&
+      hasBalance.value.hasBalance &&
+      hasBalance.value.inSingleLocation &&
+      hasBalance.value.inPreferredBlockchain
+    ) {
+      const amountAvailable = hasBalance.value.availableAmount;
+
+      const amountToReturn = Big(amountAvailable).sub(Big(0.1)).toString();
+
+      const returnPayment = await pay({
+        live: false,
+        trigger: {
+          senderAccountId: accountId,
+          trigger: "user",
+          authorization: { method: "user" },
+        },
+        dto: {
+          amount: amountToReturn,
+          currency: returnFundsSettings.currency,
+          method: "crypto",
+          crypto: {
+            blockchain: returnFundsSettings.blockchain!,
+            address: returnFundsSettings.address!,
+          },
+        },
+      });
+
+      if (!returnPayment.ok) {
+        console.error(
+          `Failed to return funds (${
+            returnFundsSettings.currency
+          } ${amountToReturn}): ${JSON.stringify(returnPayment.error)}`
+        );
+      } else {
+        console.info(
+          `Returned funds (${returnFundsSettings.currency} ${amountToReturn}) on ${returnFundsSettings.blockchain} to ${returnFundsSettings.address}`
+        );
+      }
+    }
+  }
+
   const account = await loadAccountById(accountId);
   if (account) {
     const phoneNumbers = account.contacts
