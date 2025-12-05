@@ -36,6 +36,7 @@ export const executeInitialFunding = async ({
   const fundingSettings = InitialFundingFeature.getInitialFundingSettings();
 
   // 1) Ensure a location exists for the funding currency on the preferred blockchain
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   const locationResult = await ensureLocation({
     accountId: initialFunding.account,
     live: initialFunding.live,
@@ -72,6 +73,8 @@ export const executeInitialFunding = async ({
         `Initial funding is only available on 'arc' (not '${fundingSettings.blockchain}')`
       );
     }
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const receiverWalletAddress = locationResult.value.address;
 
