@@ -37,7 +37,11 @@ export const Home: FC<HomeProps> = (props: HomeProps) => {
           </div>
 
           <div className="primary-actions">
-            <a href="#send" className="button primary small">
+            <a
+              href="#send"
+              className="button primary small"
+              onclick="alert('Sending is not yet available in the dashboard. Please use the API to send payments')"
+            >
               Send
             </a>
             <a href="/request-deposit" className="button primary small">
