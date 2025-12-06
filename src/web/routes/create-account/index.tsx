@@ -97,12 +97,12 @@ export const createAccountRoute = createWebRoute()
         },
       });
       await new Promise((resolve) => setTimeout(resolve, 250));
-
+      
       const initialFundingResult = await requestInitialFunding({
         accountId: signUpResult.value.account,
         live: signUpResult.value.live,
       });
-
+      
       if (!initialFundingResult.ok) {
         if (initialFundingResult.error.reason === "disabled") {
           console.info(
@@ -113,6 +113,7 @@ export const createAccountRoute = createWebRoute()
             `Skipping initial funding for ${form.email} (quota exceeded)`
           );
         }
+        await new Promise((resolve) => setTimeout(resolve, 300));
         return c.redirect("/home");
       }
 
