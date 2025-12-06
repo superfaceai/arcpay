@@ -44,7 +44,7 @@ export const listAgents = async ({
   return [
     {
       id: "agt_c8UsxMvPnlGMVN3Hd19cm",
-      name: "Dash (Office Bot)",
+      name: "Dash (Demo Agent)",
       on_behalf_of: accountId,
       allowance: {
         frequency: "monthly",
