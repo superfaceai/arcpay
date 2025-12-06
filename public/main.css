@@ -2,6 +2,7 @@
   --color-background: #fff;
   --color-foreground: #000;
   --color-muted-foreground: #67606b;
+  --color-card-light: #f8f7f9;
   --color-card: #f2f0f4;
   --color-card-dark: #eae7ed;
 
@@ -1270,5 +1271,124 @@ h2 {
     font-size: 0.8rem;
     color: var(--color-muted-foreground);
     text-align: center;
+  }
+}
+
+div.snippet {
+  --space: var(--padding-content);
+  --btn-size: 2rem;
+
+  padding: 0;
+  border-radius: calc(var(--padding-content) * 0.6);
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  background-color: var(--color-card-dark);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.125rem;
+
+  & .content {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: var(--space);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Liberation Mono", "Courier New", monospace;
+    white-space: pre;
+    overflow-x: auto;
+
+    &.public {
+      display: block;
+    }
+
+    &.obfuscated {
+      display: none;
+    }
+  }
+
+  &:has(.actions button.show-obfuscated input[type="checkbox"]:checked) .content {
+    &.public {
+      display: none;
+    }
+
+    &.obfuscated {
+      display: block;
+    }
+  }
+
+  & .actions {
+    padding-right: calc(var(--space) * 0.5);
+    display: flex;
+    align-items: center;
+
+    & button {
+      width: var(--btn-size);
+      height: var(--btn-size);
+      position: relative;
+
+      & input[type="checkbox"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: var(--btn-size);
+        height: var(--btn-size);
+        cursor: pointer;
+        opacity: 0;
+      }
+
+      & .icon {
+        transition: opacity 0.12s;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: var(--btn-size);
+        height: var(--btn-size);
+        display: grid;
+        place-items: center;
+        pointer-events: none;
+
+        & svg {
+          width: 1rem;
+          height: 1rem;
+        }
+
+        &.icon-base {
+          opacity: 1;
+        }
+
+        &.icon-engaged {
+          opacity: 0;
+        }
+      }
+
+      /* If button doesnt have a checkbox, change icons on focus */
+      &:not(:has(input[type="checkbox"])):focus .icon,
+      &:not(:has(input[type="checkbox"])):focus-visible .icon {
+        &.icon-base {
+          opacity: 0;
+        }
+
+        &.icon-engaged {
+          opacity: 1;
+        }
+      }
+
+      /* If button has a checked checkbox, change icons when checkbox is checked */
+      &:has(input[type="checkbox"]:checked) .icon {
+        &.icon-base {
+          opacity: 0;
+        }
+
+        &.icon-engaged {
+          opacity: 1;
+        }
+      }
+
+    }
   }
 }
