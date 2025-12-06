@@ -1323,6 +1323,12 @@ h2 {
       border: 1px solid var(--color-card-dark);
 
       & h3 {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: start;
+        gap: 0.5rem;
         text-align: left;
       }
 
@@ -1336,7 +1342,6 @@ h2 {
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.03em;
-        margin-left: 0.5rem;
       }
 
       & p {
@@ -1385,6 +1390,7 @@ div.snippet {
     height: 100%;
     box-sizing: border-box;
     padding: var(--space);
+    padding-right: calc(var(--space) * 0.5);
     font-size: 0.85rem;
     line-height: 1.5;
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Liberation Mono", "Courier New", monospace;

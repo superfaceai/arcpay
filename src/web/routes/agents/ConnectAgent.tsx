@@ -36,6 +36,11 @@ export const ConnectAgent: FC<ConnectAgentProps> = (
               <h3>Connect wallet MCPs</h3>
               <p>Connect Arc Pay wallet MCP server to your agent.</p>
 
+              <p>
+                Add new <code>Tool</code> → <code>MCP Sever</code> (
+                <em>remote</em> or <em>hosted</em>) → Manually fill the address:
+              </p>
+
               <Snippet content={props.walletMcpUrl} />
 
               <p>
@@ -46,6 +51,7 @@ export const ConnectAgent: FC<ConnectAgentProps> = (
                 </a>{" "}
                 shopping MCP server.
               </p>
+
               <Snippet content={props.acpMcpUrl} />
             </div>
 
@@ -53,10 +59,12 @@ export const ConnectAgent: FC<ConnectAgentProps> = (
 
             <div className="step">
               <h3>Authentication</h3>
+
               <p>
                 Use this key API key to authenticate your agent with the Arc Pay
-                MCP servers.
+                MCP servers
               </p>
+
               <Snippet
                 content={props.apiKey.key}
                 obfuscatedContent={
@@ -64,12 +72,17 @@ export const ConnectAgent: FC<ConnectAgentProps> = (
                   "••••••••••••••••••••••••••••••••"
                 }
               />
+              
+              <p>
+                If necessary, choose <code>Bearer</code> authentication type
+              </p>
             </div>
 
             <div class="separator" />
 
             <div className="step optional">
               <h3>AI agent instructions</h3>
+
               <p>
                 Add instructions to help your agent navigate shopping carts,
                 checkouts, and payments with permissions.
