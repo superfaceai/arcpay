@@ -36,7 +36,11 @@ export const ConnectAgent: FC<ConnectAgentProps> = (
                 <em>remote</em> or <em>hosted</em>) → Manually fill the address:
               </p>
 
-              <Snippet content={props.walletMcpUrl} />
+              <Snippet
+                content={props.walletMcpUrl}
+                copyText="Wallet MCP"
+                copyPrimary
+              />
 
               <p>
                 To help your agent navigate shopping carts & checkouts, connect
@@ -47,7 +51,7 @@ export const ConnectAgent: FC<ConnectAgentProps> = (
                 shopping MCP server.
               </p>
 
-              <Snippet content={props.acpMcpUrl} />
+              <Snippet content={props.acpMcpUrl} copyText="Shopping MCP" />
             </div>
 
             <div class="separator" />
@@ -66,6 +70,8 @@ export const ConnectAgent: FC<ConnectAgentProps> = (
                   props.apiKey.key.slice(0, 12) +
                   "••••••••••••••••••••••••••••••••"
                 }
+                copyText="MCP key"
+                copyPrimary
               />
 
               <p>

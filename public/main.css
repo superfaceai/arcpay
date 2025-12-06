@@ -1384,6 +1384,7 @@ div.snippet {
   --space: var(--padding-content);
   --btn-size: 2rem;
   --radius: calc(var(--padding-content) * 1.9);
+  --icon-size: 1rem;
 
   padding: 0;
   border-radius: var(--radius);
@@ -1444,9 +1445,21 @@ div.snippet {
     align-items: start;
 
     & button {
-      width: var(--btn-size);
+      --btn-width: var(--btn-size);
+
+      width: var(--btn-width);
       height: var(--btn-size);
       position: relative;
+
+      &:has(.label) {
+        --btn-width: max-content;
+        padding-right: 2rem;
+      }
+      
+      & .label {
+        padding-left: calc(var(--icon-size) + 0.2rem);
+
+      }
 
       & input[type="checkbox"] {
         position: absolute;
@@ -1470,8 +1483,8 @@ div.snippet {
         pointer-events: none;
 
         & svg {
-          width: 1rem;
-          height: 1rem;
+          width: var(--icon-size);
+          height: var(--icon-size);
         }
 
         &.icon-base {

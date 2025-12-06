@@ -4,6 +4,8 @@ import { IconCheck, IconCopy, IconEye, IconEyeOff } from "./icons";
 interface SnippetProps {
   content: string;
   obfuscatedContent?: string;
+  copyPrimary?: boolean;
+  copyText?: string;
 }
 
 export const Snippet: FC<SnippetProps> = (props: SnippetProps) => {
@@ -37,13 +39,20 @@ export const Snippet: FC<SnippetProps> = (props: SnippetProps) => {
             </button>
           )}
 
-          <button class="ghost" tabIndex={0} id={snippetId}>
+          <button
+            class={props.copyPrimary ? "primary small" : "ghost small"}
+            tabIndex={0}
+            id={snippetId}
+          >
             <span class="icon icon-base">
               <IconCopy />
             </span>
             <span class="icon icon-engaged">
               <IconCheck />
             </span>
+            {props.copyText && (
+              <span class="label">{props.copyText}</span>
+            )}
           </button>
         </div>
       </div>
