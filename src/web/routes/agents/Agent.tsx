@@ -3,6 +3,7 @@ import { FC } from "hono/jsx";
 
 import { Account, AgentWithRemainingAllowance } from "@/identity/entities";
 import { AppLayout, AppNavigation } from "@/web/components/AppLayout";
+import { AgentHeader } from "@/web/components/AgentHeader";
 
 type AgentProps = {
   account: Account;
@@ -17,7 +18,16 @@ export const Agent: FC<AgentProps> = (props: AgentProps) => {
         <AppNavigation account={props.account} backLink="/home" />
 
         <div className="agents-section">
-          <h1 className="padding-content">{props.agent.name}</h1>
+          <AgentHeader agentName={props.agent.name}>
+            <a
+              href={`/connect?agent=${props.agent.id}`}
+              className="button primary small"
+            >
+              Connect to wallet
+            </a>
+          </AgentHeader>
+
+          <div>&nbsp;</div>
 
           <div className="agent-box filled">
             <div className="agent-box-content">
@@ -70,12 +80,6 @@ export const Agent: FC<AgentProps> = (props: AgentProps) => {
               </div>
             ))}
           </div>
-        </div>
-
-        <div className="agents-section">
-          <a href={`/agents/${props.agent.id}/connect`} className="button primary large">
-            Connect Agent
-          </a>
         </div>
       </AppLayout>
     </Layout>

@@ -7,6 +7,7 @@
   --color-card-dark: #eae7ed;
 
   --color-primary: #e4c5ff;
+  --color-primary-lighter: #f2e6ff;
   --color-primary-foreground: #2b0a49;
 
   --color-secondary: #c8c0cf;
@@ -230,7 +231,17 @@ a.button {
   display: flex;
   align-items: center;
   text-align: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
+
+  &:has(svg) {
+    padding-right: 0.8rem !important;
+  }
+
+  & svg {
+    width: 1rem;
+    height: 1rem;
+    stroke-width: 1.5;
+  }
 }
 
 button[type="submit"],
@@ -243,6 +254,20 @@ a.button.primary {
 button[type="submit"]:hover,
 button.primary:hover,
 a.button.primary:hover {
+  background-color: var(--color-primary-foreground);
+  color: var(--color-primary);
+}
+
+button[type="submit"],
+button.primary-lighter,
+a.button.primary-lighter {
+  background-color: var(--color-primary-lighter);
+  color: var(--color-primary-foreground);
+}
+
+button[type="submit"]:hover,
+button.primary-lighter:hover,
+a.button.primary-lighter:hover {
   background-color: var(--color-primary-foreground);
   color: var(--color-primary);
 }
@@ -939,7 +964,7 @@ li.agent:hover {
   justify-content: start;
   width: 100%;
   gap: 1.25rem;
-  padding: var(--padding-content);
+  padding: calc(var(--padding-content) * 1.5);
   border-radius: 0.75rem;
   transition: background-color 0.2s;
 }
@@ -1291,16 +1316,6 @@ h2 {
     padding: 0;
   }
 
-  & .header {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: start;
-    gap: 0.25rem;
-    box-sizing: border-box;
-    padding: 0 var(--padding-content);
-  }
-
   & .steps-list {
     display: flex;
     flex-direction: column;
@@ -1319,8 +1334,7 @@ h2 {
       gap: 0.75rem;
       padding: calc(var(--padding-content) * 1.5);
       border-radius: 0.75rem;
-      background-color: var(--color-card-light);
-      border: 1px solid var(--color-card-dark);
+      background-color: var(--color-card);
 
       & h3 {
         width: 100%;
@@ -1328,6 +1342,8 @@ h2 {
         flex-direction: row;
         align-items: center;
         justify-content: start;
+        font-size: 1.5rem;
+        color: var(--color-primary-foreground);
         gap: 0.5rem;
         text-align: left;
       }
@@ -1344,8 +1360,8 @@ h2 {
         letter-spacing: 0.03em;
       }
 
-      & p {
-        /* color: var(--color-muted-foreground); */
+      & p,ul {
+        color: var(--color-muted-foreground);
         line-height: 1.5;
       }
 
@@ -1353,10 +1369,6 @@ h2 {
         margin: 0;
         padding: 0;
         padding-left: 1.5rem;
-
-        & li {
-          line-height: 1.5;
-        }
       }
     }
 
@@ -1493,7 +1505,24 @@ div.snippet {
           opacity: 1;
         }
       }
-
     }
+  }
+}
+
+.agent-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 10rem;
+  gap: 0.5rem;
+  box-sizing: border-box;
+
+  & h1 {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--color-primary-foreground);
   }
 }

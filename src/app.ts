@@ -32,6 +32,7 @@ import { logoutRoute } from "@/web/routes/logout";
 import { myAccountRoute } from "@/web/routes/my-account";
 import { transactionsRoute } from "@/web/routes/transactions";
 import { agentsRoute } from "@/web/routes/agents";
+import { connectRoute } from "@/web/routes/connect";
 import { requestDepositRoute } from "@/web/routes/deposit";
 import { indexRoute } from "@/web/routes/index";
 
@@ -68,6 +69,7 @@ const app = createApplicationApi((app) => {
     web.route("/", myAccountRoute);
     web.route("/", transactionsRoute);
     web.route("/", agentsRoute);
+    web.route("/", connectRoute);
     web.route("/", requestDepositRoute);
   });
 

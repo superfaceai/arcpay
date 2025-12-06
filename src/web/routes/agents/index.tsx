@@ -4,21 +4,19 @@ import { createWebRoute, getSession } from "@/web/services";
 import { withWebAuth } from "@/web/middleware";
 
 import { Agent } from "./Agent";
-import { ConnectAgent } from "./ConnectAgent";
+
 import {
   withRemainingAllowance,
   AgentWithRemainingAllowance,
   loadAccountById,
   listAgents,
-  listApiKeysForAccount,
 } from "@/identity/entities";
 import { listBalances } from "@/balances/services";
 
-import { acpCheckoutsMcpUrl } from "@/acp-checkouts/mcp";
-import { walletMcpUrl } from "@/wallet/mcp";
-
-export const agentsRoute = createWebRoute()
-  .get("/agents/:agentId", withWebAuth(), async (c) => {
+export const agentsRoute = createWebRoute().get(
+  "/agents/:agentId",
+  withWebAuth(),
+  async (c) => {
     const session = await getSession(c);
     if (!session.account) {
       return c.redirect("/login");
@@ -61,43 +59,5 @@ export const agentsRoute = createWebRoute()
     return c.html(
       <Agent account={account} agent={agent} isTestMode={!isLive} />
     );
-  })
-  .get("/agents/:agentId/connect", withWebAuth(), async (c) => {
-    const session = await getSession(c);
-    if (!session.account) {
-      return c.redirect("/login");
-    }
-
-    const { accountId, isLive } = session.account;
-    const agentId = c.req.param("agentId");
-
-    const agentDefinitions = await listAgents({ accountId });
-    const agentDefinition = agentDefinitions.find(
-      (agent) => agent.id === agentId
-    );
-    if (!agentDefinition) {
-      return c.redirect("/home");
-    }
-
-    const baseUrl = new URL(c.req.url).origin;
-
-    const account = (await loadAccountById(accountId))!;
-    const apiKeys = (await listApiKeysForAccount({ accountId })).filter(
-      (apiKey) => apiKey.live === isLive
-    );
-
-    if (!apiKeys.length) {
-      return c.redirect(`/agents/${agentId}`);
-    }
-
-    return c.html(
-      <ConnectAgent
-        account={account}
-        agent={agentDefinition}
-        isTestMode={!isLive}
-        walletMcpUrl={walletMcpUrl(baseUrl)}
-        acpMcpUrl={acpCheckoutsMcpUrl(baseUrl)}
-        apiKey={apiKeys[0]}
-      />
-    );
-  });
+  }
+);

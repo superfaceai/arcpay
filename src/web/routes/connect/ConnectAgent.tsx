@@ -4,6 +4,7 @@ import { FC } from "hono/jsx";
 import { Account, Agent, ApiKey } from "@/identity/entities";
 import { AppLayout, AppNavigation } from "@/web/components/AppLayout";
 import { Snippet } from "@/web/components/Snippet";
+import { AgentHeader } from "@/web/components/AgentHeader";
 
 type ConnectAgentProps = {
   isTestMode: boolean;
@@ -20,16 +21,10 @@ export const ConnectAgent: FC<ConnectAgentProps> = (
   return (
     <Layout isTestMode={props.isTestMode}>
       <AppLayout>
-        <AppNavigation
-          account={props.account}
-          backLink={`/agents/${props.agent.id}`}
-        />
+        <AppNavigation account={props.account} backLink={`/home`} />
 
         <div className="connect-agent">
-          <div className="header">
-            <span>{props.agent.name}</span>
-            <h1>Connect wallet</h1>
-          </div>
+          <AgentHeader agentName={props.agent.name} />
 
           <div className="steps-list">
             <div className="step">
@@ -72,7 +67,7 @@ export const ConnectAgent: FC<ConnectAgentProps> = (
                   "••••••••••••••••••••••••••••••••"
                 }
               />
-              
+
               <p>
                 If necessary, choose <code>Bearer</code> authentication type
               </p>
