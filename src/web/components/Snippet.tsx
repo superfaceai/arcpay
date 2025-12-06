@@ -8,10 +8,15 @@ interface SnippetProps {
 
 export const Snippet: FC<SnippetProps> = (props: SnippetProps) => {
   const snippetId = Math.random().toString(36).slice(2);
+  const isMultiline = props.content.includes("\n");
 
   return (
     <>
-      <div className="snippet">
+      <div
+        className={["snippet", isMultiline && "multiline"]
+          .filter(Boolean)
+          .join(" ")}
+      >
         <div className="content public">
           {props.obfuscatedContent || props.content}
         </div>

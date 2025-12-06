@@ -1371,19 +1371,25 @@ h2 {
 div.snippet {
   --space: var(--padding-content);
   --btn-size: 2rem;
+  --radius: calc(var(--padding-content) * 1.9);
 
   padding: 0;
-  border-radius: calc(var(--padding-content) * 0.6);
+  border-radius: var(--radius);
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
-  background-color: var(--color-card-dark);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-primary);
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: stretch;
   justify-content: space-between;
   gap: 0.125rem;
+
+  &.multiline {
+    --radius: calc(var(--padding-content));
+  }
 
   & .content {
     width: 100%;
@@ -1391,8 +1397,10 @@ div.snippet {
     box-sizing: border-box;
     padding: var(--space);
     padding-right: calc(var(--space) * 0.5);
-    font-size: 0.85rem;
+    color: var(--color-primary-foreground);
+    font-size: 0.875rem;
     line-height: 1.5;
+    font-weight: 500;
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Liberation Mono", "Courier New", monospace;
     white-space: pre;
     overflow-x: auto;
@@ -1417,9 +1425,11 @@ div.snippet {
   }
 
   & .actions {
+    padding-top: calc(var(--space) * 0.51);
     padding-right: calc(var(--space) * 0.5);
+    box-sizing: border-box;
     display: flex;
-    align-items: center;
+    align-items: start;
 
     & button {
       width: var(--btn-size);
