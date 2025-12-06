@@ -10,6 +10,9 @@ import {
   confirmOrderAndPayTool,
 } from "@/acp-checkouts/mcp-tools";
 
+export const acpCheckoutsMcpUrl = (baseUrl: string) =>
+  new URL("/acp_checkouts", baseUrl).toString();
+
 export const acpCheckoutsMcp = createApi().all(
   "/acp_checkouts",
   withAuth(),

@@ -8,6 +8,9 @@ import {
   readPermissionsTool,
 } from "@/wallet/mcp-tools";
 
+export const walletMcpUrl = (baseUrl: string) =>
+  new URL("/wallet", baseUrl).toString();
+
 export const walletMcp = createApi().all("/wallet", withAuth(), async (c) => {
   const accountId = c.get("accountId");
   const live = c.get("isLive");
