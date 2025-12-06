@@ -73,7 +73,7 @@ export const Agent: FC<AgentProps> = (props: AgentProps) => {
         </div>
 
         <div className="agents-section">
-          <a href={`#`} className="button primary large">
+          <a href={`/agents/${props.agent.id}/connect`} className="button primary large">
             Connect Agent
           </a>
         </div>
