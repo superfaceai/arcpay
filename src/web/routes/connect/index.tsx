@@ -1,7 +1,7 @@
 import { createWebRoute, getSession } from "@/web/services";
 import { withWebAuth } from "@/web/middleware";
 
-import { ConnectAgent } from "./ConnectAgent";
+import { ConnectAgentGeneric } from "./ConnectAgentGeneric";
 import {
   loadAccountById,
   listAgents,
@@ -45,7 +45,7 @@ export const connectRoute = createWebRoute().get(
     }
 
     return c.html(
-      <ConnectAgent
+      <ConnectAgentGeneric
         account={account}
         agent={agent}
         isTestMode={!isLive}

@@ -15,7 +15,7 @@ type ConnectAgentProps = {
   apiKey: ApiKey;
 };
 
-export const ConnectAgent: FC<ConnectAgentProps> = (
+export const ConnectAgentGeneric: FC<ConnectAgentProps> = (
   props: ConnectAgentProps
 ) => {
   return (
