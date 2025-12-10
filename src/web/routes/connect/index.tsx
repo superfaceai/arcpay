@@ -2,6 +2,7 @@ import { createWebRoute, getSession } from "@/web/services";
 import { withWebAuth } from "@/web/middleware";
 
 import { ConnectAgentGeneric } from "./ConnectAgentGeneric";
+import { ConnectAgentOpenAIBuilder } from "./ConnectAgentOpenAIBuilder";
 import {
   loadAccountById,
   listAgents,
@@ -24,10 +25,11 @@ export const connectRoute = createWebRoute().get(
     const agentsList = await listAgents({ accountId });
 
     const agentId = c.req.query("agent");
+    const guide = c.req.query("g");
 
-    const agent = agentId ? agentsList.find(
-      (agent) => agent.id === agentId
-    ) : agentsList[0];
+    const agent = agentId
+      ? agentsList.find((agent) => agent.id === agentId)
+      : agentsList[0];
 
     if (!agent) {
       return c.redirect("/home");
@@ -42,6 +44,19 @@ export const connectRoute = createWebRoute().get(
 
     if (!apiKeys.length) {
       return c.redirect(`/agents/${agentId}`);
+    }
+
+    if (!guide || guide === "openai-builder") {
+      return c.html(
+        <ConnectAgentOpenAIBuilder
+          account={account}
+          agent={agent}
+          isTestMode={!isLive}
+          walletMcpUrl={walletMcpUrl(baseUrl)}
+          acpMcpUrl={acpCheckoutsMcpUrl(baseUrl)}
+          apiKey={apiKeys[0]}
+        />
+      );
     }
 
     return c.html(

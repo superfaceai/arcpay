@@ -38,6 +38,10 @@ const ConfigSchema = z.object({
     .string()
     .min(3)
     .optional(),
+
+  GUIDE_OPENAI_BUILDER_WALLET_MCP_VIDEO_URL: z.string().optional(),
+  GUIDE_OPENAI_BUILDER_SHOPPING_MCP_VIDEO_URL: z.string().optional(),
+  GUIDE_OPENAI_BUILDER_INSTRUCTIONS_VIDEO_URL: z.string().optional(),
 });
 
 const parsedConfig = ConfigSchema.safeParse(process.env);
