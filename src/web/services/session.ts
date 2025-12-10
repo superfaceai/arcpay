@@ -34,6 +34,29 @@ export const getSession = async (
   return session;
 };
 
+export const getSessionAccount = async (
+  c: Context<SessionEnv<WebSessionData>>,
+  opts?: { retry: number }
+): Promise<WebSessionData["account"]> => {
+  let attemptsLeft = opts?.retry ?? 1;
+  let account: WebSessionData["account"] = null;
+  const maxWaitTime = (opts?.retry ?? 1) * 500;
+
+  while (attemptsLeft > 0) {
+    const session = await getSession(c);
+    if (session.account) {
+      return session.account;
+    }
+
+    await new Promise((resolve) =>
+      setTimeout(resolve, maxWaitTime / attemptsLeft)
+    );
+    attemptsLeft--;
+  }
+
+  return account;
+};
+
 export const getSessionAndRemoveError = async (
   c: Context<SessionEnv<WebSessionData>>
 ): Promise<{ session: WebSessionData; error: string | undefined }> => {

@@ -1,6 +1,6 @@
 import { streamSSE } from "hono/streaming";
 
-import { createWebRoute, getSession, patchElements } from "@/web/services";
+import { createWebRoute, getSession, getSessionAccount, patchElements } from "@/web/services";
 import {
   loadInitialFunding,
   InitialFunding as InitialFundingEntity,
@@ -12,21 +12,19 @@ import { executeInitialFunding } from "@/payments/services";
 export const initialFundingRoute = createWebRoute()
   .get("/initial-funding/:id", async (c) => {
     const id = c.req.param("id");
-    const session = await getSession(c);
+    const account = await getSessionAccount(c, { retry: 3 });
 
-    if (!session?.account) {
+    if (!account) {
       return c.redirect("/login");
     }
 
     let attemptsLeft = 3;
-
     let initialFunding: InitialFundingEntity | null = null;
-
     while (attemptsLeft > 0) {
       initialFunding = await loadInitialFunding({
         id,
-        accountId: session?.account.accountId ?? "",
-        live: session?.account.isLive ?? false,
+        accountId: account.accountId,
+        live: account.isLive,
       });
 
       if (initialFunding) {
@@ -44,7 +42,7 @@ export const initialFundingRoute = createWebRoute()
     return c.html(
       <InitialFunding
         initialFunding={initialFunding}
-        isTestMode={!session?.account.isLive}
+        isTestMode={!account.isLive}
         executeEndpoint={`/initial-funding/${id}`}
       />
     );
@@ -91,3 +89,4 @@ export const initialFundingRoute = createWebRoute()
       });
     });
   });
+
