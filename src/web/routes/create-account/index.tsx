@@ -96,7 +96,7 @@ export const createAccountRoute = createWebRoute()
           isLive: signUpResult.value.live,
         },
       });
-      await new Promise((resolve) => setTimeout(resolve, 250));
+      await new Promise((resolve) => setTimeout(resolve, 300));
       
       const initialFundingResult = await requestInitialFunding({
         accountId: signUpResult.value.account,
@@ -113,10 +113,11 @@ export const createAccountRoute = createWebRoute()
             `Skipping initial funding for ${form.email} (quota exceeded)`
           );
         }
-        await new Promise((resolve) => setTimeout(resolve, 300));
+        await new Promise((resolve) => setTimeout(resolve, 250));
         return c.redirect("/home");
       }
-
+      
+      await new Promise((resolve) => setTimeout(resolve, 300));
       return c.redirect(`/initial-funding/${initialFundingResult.value.id}`);
     }
   );
