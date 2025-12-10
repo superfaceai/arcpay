@@ -97,12 +97,12 @@ export const createAccountRoute = createWebRoute()
         },
       });
       await new Promise((resolve) => setTimeout(resolve, 300));
-      
+
       const initialFundingResult = await requestInitialFunding({
         accountId: signUpResult.value.account,
         live: signUpResult.value.live,
       });
-      
+
       if (!initialFundingResult.ok) {
         if (initialFundingResult.error.reason === "disabled") {
           console.info(
@@ -116,9 +116,12 @@ export const createAccountRoute = createWebRoute()
         await new Promise((resolve) => setTimeout(resolve, 250));
         return c.redirect("/home");
       }
-      
+
       // Wait for 1 second to avoid eventual consistency issues with the initial funding
       await new Promise((resolve) => setTimeout(resolve, 1_000));
-      return c.redirect(`/initial-funding/${initialFundingResult.value.id}`);
+      return c.redirect(
+        `/initial-funding/${initialFundingResult.value.id}`,
+        303
+      );
     }
   );
