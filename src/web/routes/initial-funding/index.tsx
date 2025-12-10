@@ -1,7 +1,10 @@
 import { streamSSE } from "hono/streaming";
 
 import { createWebRoute, getSession, patchElements } from "@/web/services";
-import { loadInitialFunding } from "@/payments/entities";
+import {
+  loadInitialFunding,
+  InitialFunding as InitialFundingEntity,
+} from "@/payments/entities";
 
 import { InitialFunding, InitialFundingState } from "./InitialFunding";
 import { executeInitialFunding } from "@/payments/services";
@@ -15,11 +18,24 @@ export const initialFundingRoute = createWebRoute()
       return c.redirect("/login");
     }
 
-    const initialFunding = await loadInitialFunding({
-      id,
-      accountId: session?.account.accountId ?? "",
-      live: session?.account.isLive ?? false,
-    });
+    let attemptsLeft = 3;
+
+    let initialFunding: InitialFundingEntity | null = null;
+
+    while (attemptsLeft > 0) {
+      initialFunding = await loadInitialFunding({
+        id,
+        accountId: session?.account.accountId ?? "",
+        live: session?.account.isLive ?? false,
+      });
+
+      if (initialFunding) {
+        break;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 1_500 / attemptsLeft));
+      attemptsLeft--;
+    }
 
     if (!initialFunding) {
       return c.redirect("/home");
