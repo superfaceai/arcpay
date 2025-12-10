@@ -93,7 +93,8 @@ export const ConnectAgentGeneric: FC<ConnectAgentProps> = (
                 content={`Payment actions:
 - When asked to purchase goods, find the available products
 - Reason about the product's choices, quantities, and prices
-- Select the best product(s) for the user`}
+- Select the best product(s) for the user
+- Addresses are available via wallet`}
               />
             </div>
 
