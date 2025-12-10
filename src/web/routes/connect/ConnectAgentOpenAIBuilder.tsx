@@ -36,7 +36,7 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
                 <video
                   src={Config.GUIDE_OPENAI_BUILDER_WALLET_MCP_VIDEO_URL}
                   controls
-                  // autoPlay
+                  autoPlay
                   loop
                   muted
                   playsInline
@@ -81,7 +81,6 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
                 <video
                   src={Config.GUIDE_OPENAI_BUILDER_SHOPPING_MCP_VIDEO_URL}
                   controls
-                  // autoPlay
                   loop
                   muted
                   playsInline
@@ -130,7 +129,6 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
                 <video
                   src={Config.GUIDE_OPENAI_BUILDER_INSTRUCTIONS_VIDEO_URL}
                   controls
-                  // autoPlay
                   loop
                   muted
                   playsInline
@@ -177,7 +175,7 @@ Merchant:
               </p>
 
               <Snippet
-                content={`umm, we ran out of coffee on the 7th floor`}
+                content={`We need to replenish coffee filters on the 7th floor.\nLast time the 500pcs package was enough, order new ones`}
                 copyText="Copy prompt"
               />
 
