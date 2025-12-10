@@ -117,7 +117,8 @@ export const createAccountRoute = createWebRoute()
         return c.redirect("/home");
       }
       
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      // Wait for 1 second to avoid eventual consistency issues with the initial funding
+      await new Promise((resolve) => setTimeout(resolve, 1_000));
       return c.redirect(`/initial-funding/${initialFundingResult.value.id}`);
     }
   );
