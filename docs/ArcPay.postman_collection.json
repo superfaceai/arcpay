@@ -117,10 +117,12 @@
 									"pm.collectionVariables.set(\"ACCOUNT_ID\", \"\");",
 									"pm.collectionVariables.set(\"PHONE_CONTACT_ID\", \"\");",
 									"pm.collectionVariables.set(\"PRIMARY_LOCATION_ID\", \"\");",
+									"pm.collectionVariables.set(\"SECONDARY_LOCATION_ID\", \"\");",
 									"pm.collectionVariables.set(\"PAYMENT_MANDATE_ID\", \"\");",
 									"pm.collectionVariables.set(\"PAYMENT_MANDATE_SECRET\", \"\");",
 									"pm.collectionVariables.set(\"PAYMENT_CAPTURE_ID\", \"\");",
 									"pm.collectionVariables.set(\"NOTIFICATION_RULE_ID\", \"\");",
+									"pm.collectionVariables.set(\"LATEST_BRIDGE_TRANSFER_ID\", \"\");",
 									""
 								],
 								"type": "text/javascript",
@@ -374,7 +376,13 @@
 									"const jsonData = pm.response.json();",
 									"",
 									"if (jsonData.data && jsonData.data.length > 0) {",
-									"    pm.collectionVariables.set(\"PRIMARY_LOCATION_ID\", jsonData.data[0].id);",
+									"    const lastIndex = jsonData.data.length-1;",
+									"    pm.collectionVariables.set(\"PRIMARY_LOCATION_ID\", jsonData.data[lastIndex].id);",
+									"    if (jsonData.data.length > 1) {",
+									"        pm.collectionVariables.set(\"SECONDARY_LOCATION_ID\", jsonData.data[lastIndex-1].id);",
+									"    } else {",
+									"        pm.collectionVariables.set(\"SECONDARY_LOCATION_ID\", \"\");",
+									"    }",
 									"}",
 									""
 								],
@@ -1006,6 +1014,154 @@
 							],
 							"path": [
 								"payment_captures"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bridge amount between locations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()",
+									"",
+									"if ('id' in response) {",
+									"    pm.collectionVariables.set('LATEST_BRIDGE_TRANSFER_ID', response.id)",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Idempotency-Key",
+								"value": "bridge-transfer-1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": \"1\",\n    \"currency\": \"USDC\",\n    \"from_location\": \"{{PRIMARY_LOCATION_ID}}\",\n    \"to_location\": \"{{SECONDARY_LOCATION_ID}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/bridge/transfers",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"bridge",
+								"transfers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List bridge transfers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"if (jsonData.data && jsonData.data.length > 0) {",
+									"    pm.collectionVariables.set(\"LATEST_BRIDGE_TRANSFER_ID\", jsonData.data[0].id);",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/bridge/transfers?from=2026-01-01T19:30:00.000Z",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"bridge",
+								"transfers"
+							],
+							"query": [
+								{
+									"key": "from",
+									"value": "2026-01-01T19:30:00.000Z"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retry Bridge transfer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Idempotency-Key",
+								"value": "retry-bridge-transfer-1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{HOST}}/bridge/transfers/{{LATEST_BRIDGE_TRANSFER_ID}}/retry",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"bridge",
+								"transfers",
+								"{{LATEST_BRIDGE_TRANSFER_ID}}",
+								"retry"
 							]
 						}
 					},
@@ -1720,6 +1876,14 @@
 			}
 		},
 		{
+			"key": "SECONDARY_LOCATION_ID",
+			"value": "",
+			"description": {
+				"content": "Populates automatically after listing all locations",
+				"type": "text/plain"
+			}
+		},
+		{
 			"key": "PAYMENT_MANDATE_ID",
 			"value": "",
 			"description": {
@@ -1748,6 +1912,14 @@
 			"value": "",
 			"description": {
 				"content": "Populates automatically after creating/listing notification rule",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "LATEST_BRIDGE_TRANSFER_ID",
+			"value": "",
+			"description": {
+				"content": "Populates automatically after creating/listing bridge transfer",
 				"type": "text/plain"
 			}
 		}
