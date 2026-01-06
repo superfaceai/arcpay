@@ -1,7 +1,12 @@
 import { ApiKey, Account, Contact } from "@/identity/entities";
 import { Location } from "@/balances/entities";
 import { Balance } from "@/balances/entities";
-import { Deposit, PaymentMandate, PaymentCapture } from "@/payments/entities";
+import {
+  Deposit,
+  PaymentMandate,
+  PaymentCapture,
+  BridgeTransfer,
+} from "@/payments/entities";
 import { Payment } from "@/payments/entities";
 import { Transaction } from "@/payments/entities";
 import { NotificationRule, Notification } from "@/notifications/entities";
@@ -22,7 +27,8 @@ export type ObjectName =
   | "payment_capture"
   | "transaction"
   | "notification_rule"
-  | "notification";
+  | "notification"
+  | "bridge_transfer";
 
 export type ExpectedObject<Name extends ObjectName> = Name extends "apikey"
   ? ApiKey
@@ -48,4 +54,6 @@ export type ExpectedObject<Name extends ObjectName> = Name extends "apikey"
   ? NotificationRule
   : Name extends "notification"
   ? Notification
+  : Name extends "bridge_transfer"
+  ? BridgeTransfer
   : never;

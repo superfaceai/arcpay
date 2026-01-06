@@ -1,11 +1,16 @@
 import { Result } from "@/lib";
 
-import { Blockchain } from "@/balances/values";
+import { Amount, Blockchain } from "@/balances/values";
 import { Currency } from "@/balances/values";
-import { PaymentTransaction, FeeTransaction } from "@/payments/entities";
+import {
+  PaymentTransaction,
+  FeeTransaction,
+  BridgeTransfer,
+} from "@/payments/entities";
 import {
   BlockchainPaymentActionError,
   BlockchainActionRateExceeded,
+  BlockchainBridgeError,
 } from "@/payments/errors";
 
 export type DepositTestnetMoney = (params: {
@@ -52,3 +57,19 @@ export type SendBlockchainTransaction = (params: {
     BlockchainPaymentActionError
   >
 >;
+
+export type BridgeUSDCBetweenBlockchains = (params: {
+  amount: Amount;
+  from: {
+    address: string;
+    blockchain: Blockchain;
+    locationId: string;
+  };
+  to: {
+    address: string;
+    blockchain: Blockchain;
+    locationId: string;
+  };
+  accountId: string;
+  live: boolean;
+}) => Promise<Result<BridgeTransfer, BlockchainBridgeError>>;
