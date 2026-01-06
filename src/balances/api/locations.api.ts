@@ -1,10 +1,49 @@
 import { createApi } from "@/api/services";
 import { ProblemJson, ApiObject, ApiList } from "@/api/values";
-import { withAuth } from "@/api/middlewares";
+import { withAuth, withIdempotency, withValidation } from "@/api/middlewares";
 
 import { listLocations } from "@/balances/services";
+import { createLocation } from "../services/create-location";
+import z from "zod";
+import { Location } from "../entities";
+import { Blockchain } from "../values";
+
+export const OpenLocationDTO = z.object({
+  type: Location.shape.type,
+  blockchain: Blockchain,
+});
 
 export const locationsApi = createApi()
+  .post(
+    "/locations",
+    withAuth(),
+    withIdempotency(),
+    withValidation("json", OpenLocationDTO),
+    async (c) => {
+      const accountId = c.get("accountId");
+      const live = c.get("isLive");
+      const blockchain = c.req.valid("json").blockchain;
+
+      const createLocationResult = await createLocation({
+        accountId,
+        live,
+        blockchain,
+      });
+
+      if (!createLocationResult.ok) {
+        return ProblemJson(
+          c,
+          500,
+          "Error creating wallet on blockchain",
+          createLocationResult.error.message
+        );
+      }
+
+      return c.json(ApiObject("location", createLocationResult.value), {
+        status: 201,
+      });
+    }
+  )
   .get("/locations", withAuth(), async (c) => {
     const locations = await listLocations({
       accountId: c.get("accountId"),

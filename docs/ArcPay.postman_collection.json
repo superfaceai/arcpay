@@ -410,6 +410,48 @@
 					"response": []
 				},
 				{
+					"name": "Open new location",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{SECRET_KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Idempotency-Key",
+								"value": "new-location-1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"crypto_wallet\",\n    \"blockchain\": \"base\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/locations",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"locations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Retrieve a location",
 					"request": {
 						"auth": {
@@ -1648,42 +1690,66 @@
 		{
 			"key": "SECRET_KEY",
 			"value": "",
-			"description": "Populates automatically after a sign up"
+			"description": {
+				"content": "Populates automatically after a sign up",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "ACCOUNT_ID",
 			"value": "",
-			"description": "Populates automatically after sign up/fetching my account"
+			"description": {
+				"content": "Populates automatically after sign up/fetching my account",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "PHONE_CONTACT_ID",
 			"value": "",
-			"description": "Populates automatically after fetching an account detail"
+			"description": {
+				"content": "Populates automatically after fetching an account detail",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "PRIMARY_LOCATION_ID",
 			"value": "",
-			"description": "Populates automatically after listing all locations"
+			"description": {
+				"content": "Populates automatically after listing all locations",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "PAYMENT_MANDATE_ID",
 			"value": "",
-			"description": "Populates automatically after payment delegation/listing payment mandates"
+			"description": {
+				"content": "Populates automatically after payment delegation/listing payment mandates",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "PAYMENT_MANDATE_SECRET",
 			"value": "",
-			"description": "Populates automatically after payment delegation"
+			"description": {
+				"content": "Populates automatically after payment delegation",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "PAYMENT_CAPTURE_ID",
 			"value": "",
-			"description": "Populates automatically after capturing a payment"
+			"description": {
+				"content": "Populates automatically after capturing a payment",
+				"type": "text/plain"
+			}
 		},
 		{
 			"key": "NOTIFICATION_RULE_ID",
 			"value": "",
-			"description": "Populates automatically after creating/listing notification rule"
+			"description": {
+				"content": "Populates automatically after creating/listing notification rule",
+				"type": "text/plain"
+			}
 		}
 	]
 }
