@@ -73,3 +73,7 @@ export type BridgeUSDCBetweenBlockchains = (params: {
   accountId: string;
   live: boolean;
 }) => Promise<Result<BridgeTransfer, BlockchainBridgeError>>;
+
+export type RetryUSDCBridgeBetweenBlockchains = (params: {
+  bridgeTransfer: BridgeTransfer;
+}) => Promise<Result<BridgeTransfer, BlockchainBridgeError>>;

@@ -6,10 +6,11 @@ import { mapAmount } from "@/balances/values";
 import { BridgeTransfer, bridgeTransferId } from "@/payments/entities";
 import { BridgeUSDCBetweenBlockchains } from "@/payments/interfaces";
 
-import { BridgeKit, BridgeResult } from "@circle-fin/bridge-kit";
+import { BridgeKit } from "@circle-fin/bridge-kit";
 
 import { circleWalletsAdapter } from "../circle-wallets-adapter";
 import { chooseCircleBridgeBlockchain } from "../bridge-blockchain";
+import { mapBridgeStatus } from "../services/map-bridge-status";
 
 export const bridgeUSDCBetweenBlockchains: BridgeUSDCBetweenBlockchains =
   async ({ amount, from, to, accountId, live }) =>
@@ -45,7 +46,7 @@ export const bridgeUSDCBetweenBlockchains: BridgeUSDCBetweenBlockchains =
           currency: "USDC",
           from_location: from.locationId,
           to_location: to.locationId,
-          status: mapStatus(result.state),
+          status: mapBridgeStatus(result.state),
           created_at: new Date(),
           raw: withBigIntSerialization(result),
         });
@@ -55,11 +56,3 @@ export const bridgeUSDCBetweenBlockchains: BridgeUSDCBetweenBlockchains =
         message: String(error),
       })
     );
-
-
-const mapStatus = (status: BridgeResult['state']): BridgeTransfer['status'] => {
-  if (status === "pending") return "retrying";
-  if (status === "success") return "succeeded";
-  if (status === "error") return "failed";
-  throw new Error(`Unknown status: ${status}`);
-};

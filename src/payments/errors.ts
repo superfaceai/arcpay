@@ -114,3 +114,8 @@ export interface BridgeTransferCurrencyError {
   readonly reason: "not_supported";
   readonly currency: Currency;
 }
+
+export interface BridgeTransferRetryError {
+  readonly type: "BridgeTransferRetryError";
+  readonly reason: "already_succeeded" | "already_retrying";
+}

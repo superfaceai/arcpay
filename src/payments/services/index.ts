@@ -13,3 +13,4 @@ export * from "./get-transaction.js";
 export * from "./request-initial-funding.js";
 export * from "./execute-initial-funding.js";
 export * from "./bridge-amount.js";
+export * from "./retry-bridge-transfer.js";
