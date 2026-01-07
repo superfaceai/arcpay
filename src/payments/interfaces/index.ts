@@ -87,4 +87,14 @@ export type BridgeUSDCBetweenBlockchains = (params: {
 
 export type RetryUSDCBridgeBetweenBlockchains = (params: {
   bridgeTransfer: BridgeTransfer;
-}) => Promise<Result<BridgeTransfer, BlockchainBridgeError>>;
+}) => Promise<
+  Result<
+    {
+      bridge: BridgeTransfer;
+      approval?: { fee: FeeTransaction };
+      burn?: { tx: ReconciliationTransaction; fee: FeeTransaction };
+      mint?: { tx: ReconciliationTransaction; fee: FeeTransaction };
+    },
+    BlockchainBridgeError
+  >
+>;

@@ -1,17 +1,16 @@
 import { tryAsync } from "@/lib";
 
-import {
-  withBigIntDeserialization,
-  withBigIntSerialization,
-} from "@/lib/bigint";
+import { withBigIntDeserialization } from "@/lib/bigint";
 
-import { BridgeTransfer } from "@/payments/entities";
 import { RetryUSDCBridgeBetweenBlockchains } from "@/payments/interfaces";
 
 import { BridgeKit } from "@circle-fin/bridge-kit";
 
 import { circleWalletsAdapter } from "../circle-wallets-adapter";
-import { mapBridgeStatus } from "../services/map-bridge-result";
+import {
+  mapBridgeResult,
+  mapBridgeResultTransactions,
+} from "../services/map-bridge-result";
 
 export const retryUSDCBridgeBetweenBlockchains: RetryUSDCBridgeBetweenBlockchains =
   async ({ bridgeTransfer }) =>
@@ -28,11 +27,28 @@ export const retryUSDCBridgeBetweenBlockchains: RetryUSDCBridgeBetweenBlockchain
           to: circleWalletsAdapter,
         });
 
-        return BridgeTransfer.parse({
-          ...bridgeTransfer,
-          status: mapBridgeStatus(result.state),
-          raw: withBigIntSerialization(result),
+        const updatedBridgeTransfer = mapBridgeResult({
+          previousBridgeTransfer: bridgeTransfer,
+          amount: bridgeTransfer.amount,
+          from: { locationId: bridgeTransfer.from_location },
+          to: { locationId: bridgeTransfer.to_location },
+          accountId: bridgeTransfer.account,
+          live: bridgeTransfer.live,
+          raw: result,
         });
+
+        const transactions = mapBridgeResultTransactions({
+          bridge: bridgeTransfer,
+          raw: result,
+          previousRaw: withBigIntDeserialization(bridgeTransfer.raw),
+        });
+
+        return {
+          bridge: updatedBridgeTransfer,
+          approval: transactions.approval,
+          burn: transactions.burn,
+          mint: transactions.mint,
+        };
       },
       (error) => ({
         type: "BlockchainBridgeError",

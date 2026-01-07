@@ -7,7 +7,10 @@ import { BridgeKit } from "@circle-fin/bridge-kit";
 
 import { circleWalletsAdapter } from "../circle-wallets-adapter";
 import { chooseCircleBridgeBlockchain } from "../bridge-blockchain";
-import { mapBridgeResult } from "../services/map-bridge-result";
+import {
+  mapBridgeResult,
+  mapBridgeResultTransactions,
+} from "../services/map-bridge-result";
 
 export const bridgeUSDCBetweenBlockchains: BridgeUSDCBetweenBlockchains =
   async ({ amount, from, to, accountId, live }) =>
@@ -35,16 +38,26 @@ export const bridgeUSDCBetweenBlockchains: BridgeUSDCBetweenBlockchains =
           amount: mapAmount(amount, { negative: false }).toString(),
         });
 
-        const mappedResult = mapBridgeResult({
+        const bridgeTransfer = mapBridgeResult({
           amount,
           from,
           to,
           accountId,
           live,
-          result,
+          raw: result,
         });
 
-        return mappedResult;
+        const transactions = mapBridgeResultTransactions({
+          bridge: bridgeTransfer,
+          raw: result,
+        });
+
+        return {
+          bridge: bridgeTransfer,
+          approval: transactions.approval,
+          burn: transactions.burn,
+          mint: transactions.mint,
+        };
       },
       (error) => ({
         type: "BlockchainBridgeError",

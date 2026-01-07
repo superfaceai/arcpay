@@ -2,25 +2,20 @@ import { err, ok, Result } from "@/lib";
 
 import {
   BlockchainBridgeError,
-  BridgeTransferLocationError,
-  BridgeTransferCurrencyError,
-  PaymentInsufficientBalanceError,
   BridgeTransferRetryError,
 } from "@/payments/errors";
-import { BridgeTransfer, saveBridgeTransfer } from "@/payments/entities";
-import { BlockchainWalletActionError } from "@/balances/errors";
+import { BridgeTransfer, Transaction } from "@/payments/entities";
 
 import { RetryUSDCBridgeBetweenBlockchains } from "@/payments/interfaces";
 import { retryUSDCBridgeBetweenBlockchains } from "@/circle/adapters";
+import { saveBridgeTransferWithTransactions } from "../repositories";
 
 export const retryBridgeTransfer = async ({
   accountId,
-  live,
   bridgeTransfer,
   retryUSDCBridgeBetweenBlockchainsAdapter = retryUSDCBridgeBetweenBlockchains,
 }: {
   accountId: string;
-  live: boolean;
   bridgeTransfer: BridgeTransfer;
   retryUSDCBridgeBetweenBlockchainsAdapter?: RetryUSDCBridgeBetweenBlockchains;
 }): Promise<
@@ -49,10 +44,19 @@ export const retryBridgeTransfer = async ({
   if (!retryUSDCBridgeBetweenBlockchainsResult.ok)
     return retryUSDCBridgeBetweenBlockchainsResult;
 
-  await saveBridgeTransfer({
-    accountId,
-    bridgeTransfer: retryUSDCBridgeBetweenBlockchainsResult.value,
-  });
+  const txs = [
+    retryUSDCBridgeBetweenBlockchainsResult.value.approval?.fee,
+    retryUSDCBridgeBetweenBlockchainsResult.value.burn?.fee,
+    retryUSDCBridgeBetweenBlockchainsResult.value.burn?.tx,
+    retryUSDCBridgeBetweenBlockchainsResult.value.mint?.fee,
+    retryUSDCBridgeBetweenBlockchainsResult.value.mint?.tx,
+  ].filter(Boolean) as Transaction[];
 
-  return ok(retryUSDCBridgeBetweenBlockchainsResult.value);
+  await saveBridgeTransferWithTransactions(
+    accountId,
+    retryUSDCBridgeBetweenBlockchainsResult.value.bridge,
+    txs
+  );
+
+  return ok(retryUSDCBridgeBetweenBlockchainsResult.value.bridge);
 };

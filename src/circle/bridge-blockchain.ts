@@ -11,6 +11,26 @@ export const chooseCircleBridgeBlockchain = ({
   return BRIDGE_CHAIN_MAPPING[blockchain][live ? "mainnet" : "testnet"];
 };
 
+export const mapBridgeChainToCoreBlockchain = (
+  bridgeChain: string
+): CoreBlockchain | null => {
+  const coreBlockchain = Object.keys(BRIDGE_CHAIN_MAPPING).find(
+    (coreBlockchain) =>
+      BRIDGE_CHAIN_MAPPING[
+        coreBlockchain as CoreBlockchain
+      ].mainnet.toLowerCase() === bridgeChain.toLowerCase() ||
+      BRIDGE_CHAIN_MAPPING[
+        coreBlockchain as CoreBlockchain
+      ].testnet.toLowerCase() === bridgeChain.toLowerCase()
+  ) as CoreBlockchain;
+
+  if (!coreBlockchain) {
+    return null;
+  }
+
+  return coreBlockchain;
+};
+
 const BRIDGE_CHAIN_MAPPING: {
   [key in CoreBlockchain]: {
     mainnet: BridgeChain;

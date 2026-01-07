@@ -145,7 +145,6 @@ export const bridgingApi = createApi()
 
       const retryResult = await retryBridgeTransfer({
         accountId,
-        live,
         bridgeTransfer,
       });
 

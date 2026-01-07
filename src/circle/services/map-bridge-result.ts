@@ -7,7 +7,6 @@ import {
   mapAmount,
   tokenToCurrency,
 } from "@/balances/values";
-import { Blockchain } from "@/balances/values";
 import {
   BridgeTransfer,
   bridgeTransferId,
@@ -16,9 +15,9 @@ import {
   transactionId,
 } from "@/payments/entities";
 import { calculateFee } from "./calculate-fee";
+import { mapBridgeChainToCoreBlockchain } from "../bridge-blockchain";
 
-type BridgeMapping = {
-  bridge: BridgeTransfer;
+type BridgeTransactions = {
   approval?: { fee: FeeTransaction };
   burn?: { tx: ReconciliationTransaction; fee: FeeTransaction };
   mint?: { tx: ReconciliationTransaction; fee: FeeTransaction };
@@ -27,37 +26,28 @@ type BridgeMapping = {
 type StepTxData = { gasUsed?: bigint; effectiveGasPrice?: bigint };
 
 export const mapBridgeResult = ({
+  previousBridgeTransfer,
   amount,
   from,
   to,
   accountId,
   live,
-  result,
+  raw,
 }: {
+  previousBridgeTransfer?: BridgeTransfer;
   amount: Amount;
-  from: {
-    address: string;
-    blockchain: Blockchain;
-    locationId: string;
-  };
-  to: {
-    address: string;
-    blockchain: Blockchain;
-    locationId: string;
-  };
+  from: { locationId: string };
+  to: { locationId: string };
   accountId: string;
   live: boolean;
-  result: BridgeResult;
-}): BridgeMapping => {
-  const status = mapBridgeStatus(result.state);
+  raw: BridgeResult;
+}): BridgeTransfer => {
+  const status = mapBridgeStatus(raw.state);
 
-  const startDate = new Date();
-  const approvalDate = new Date(startDate.getTime() + 1);
-  const burnDate = new Date(startDate.getTime() + 2);
-  const mintDate = new Date(startDate.getTime() + 3);
+  const now = new Date();
 
   const bridge = BridgeTransfer.parse({
-    id: bridgeTransferId(),
+    id: previousBridgeTransfer?.id ?? bridgeTransferId(),
     live,
     account: accountId,
     amount: amount.toString(),
@@ -65,23 +55,54 @@ export const mapBridgeResult = ({
     from_location: from.locationId,
     to_location: to.locationId,
     status,
-    created_at: startDate,
-    ...(status === "succeeded" ? { finished_at: startDate } : {}),
-    raw: withBigIntSerialization(result),
+    created_at: previousBridgeTransfer?.created_at ?? now,
+    ...(status === "succeeded"
+      ? { finished_at: previousBridgeTransfer?.finished_at ?? now }
+      : {}),
+    raw: withBigIntSerialization(raw),
   });
 
-  const approvalSteps = result.steps.filter((step) => step.name === "approve");
-  const burnSteps = result.steps.filter((step) => step.name === "burn");
-  const mintSteps = result.steps.filter((step) => step.name === "mint");
+  return bridge;
+};
 
-  const approvalStep = approvalSteps.findLast(
-    (step) => step.state === "success"
-  );
-  const burnStep = burnSteps.findLast((step) => step.state === "success");
-  const mintStep = mintSteps.findLast((step) => step.state === "success");
+export const mapBridgeResultTransactions = ({
+  bridge,
+  raw,
+  previousRaw,
+}: {
+  bridge: BridgeTransfer;
+  raw: BridgeResult;
+  previousRaw?: BridgeResult;
+}): BridgeTransactions => {
+  const now = new Date();
+  const approvalDate = new Date(now.getTime() + 1);
+  const burnDate = new Date(now.getTime() + 2);
+  const mintDate = new Date(now.getTime() + 3);
 
-  const sourceChainDecimals = result.source.chain.nativeCurrency.decimals;
-  const targetChainDecimals = result.destination.chain.nativeCurrency.decimals;
+  const {
+    approvalStep: previousApprovalStep,
+    burnStep: previousBurnStep,
+    mintStep: previousMintStep,
+  } = breakoutSteps(previousRaw);
+
+  const { approvalStep, burnStep, mintStep } = breakoutSteps(raw);
+
+  const sourceBlockchain =
+    mapBridgeChainToCoreBlockchain(raw.source.chain.chain) ||
+    mapBridgeChainToCoreBlockchain(raw.source.chain.name);
+
+  const targetBlockchain =
+    mapBridgeChainToCoreBlockchain(raw.destination.chain.chain) ||
+    mapBridgeChainToCoreBlockchain(raw.destination.chain.name);
+
+  if (!sourceBlockchain || !targetBlockchain) {
+    throw new Error(
+      `Could not identify source or target blockchain ${raw.source.chain.chain} or ${raw.source.chain.name} or ${raw.destination.chain.chain} or ${raw.destination.chain.name}`
+    );
+  }
+
+  const sourceChainDecimals = raw.source.chain.nativeCurrency.decimals;
+  const targetChainDecimals = raw.destination.chain.nativeCurrency.decimals;
 
   const approvalFeeAmount = approvalStep
     ? calculateFee({
@@ -105,120 +126,122 @@ export const mapBridgeResult = ({
       })
     : "0";
 
-  const approval: BridgeMapping["approval"] = approvalStep
-    ? {
-        fee: {
-          id: transactionId(),
-          live,
-          status: "completed",
-          amount: mapAmount(approvalFeeAmount, { negative: true }),
-          currency: tokenToCurrency(
-            getNativeTokenFor({ blockchain: from.blockchain })
-          ),
-          location: from.locationId,
-          type: "fee",
-          purpose: "bridge_approval",
-          bridge: bridge.id,
-          fee_type: "network",
-          network: "blockchain",
-          blockchain: {
-            hash: approvalStep.txHash ?? "n/a",
-            explorer_url: approvalStep.explorerUrl,
+  const approval: BridgeTransactions["approval"] =
+    approvalStep && !previousApprovalStep
+      ? {
+          fee: {
+            id: transactionId(),
+            live: bridge.live,
+            status: "completed",
+            amount: mapAmount(approvalFeeAmount, { negative: true }),
+            currency: tokenToCurrency(
+              getNativeTokenFor({ blockchain: sourceBlockchain })
+            ),
+            location: bridge.from_location,
+            type: "fee",
+            purpose: "bridge_approval",
+            bridge: bridge.id,
+            fee_type: "network",
+            network: "blockchain",
+            blockchain: {
+              hash: approvalStep.txHash ?? "n/a",
+              explorer_url: approvalStep.explorerUrl,
+            },
+            created_at: approvalDate,
+            finished_at: approvalDate,
           },
-          created_at: approvalDate,
-          finished_at: approvalDate,
-        },
-      }
-    : undefined;
+        }
+      : undefined;
 
-  const burn: BridgeMapping["burn"] = burnStep
-    ? {
-        tx: {
-          id: transactionId(),
-          live,
-          status: "completed",
-          amount: mapAmount(amount, { negative: true }),
-          currency: "USDC",
-          type: "reconciliation",
-          location: from.locationId,
-          bridge: bridge.id,
-          network: "blockchain",
-          blockchain: {
-            hash: burnStep.txHash ?? "n/a",
-            explorer_url: burnStep.explorerUrl,
+  const burn: BridgeTransactions["burn"] =
+    burnStep && !previousBurnStep
+      ? {
+          tx: {
+            id: transactionId(),
+            live: bridge.live,
+            status: "completed",
+            amount: mapAmount(bridge.amount, { negative: true }),
+            currency: "USDC",
+            type: "reconciliation",
+            location: bridge.from_location,
+            bridge: bridge.id,
+            network: "blockchain",
+            blockchain: {
+              hash: burnStep.txHash ?? "n/a",
+              explorer_url: burnStep.explorerUrl,
+            },
+            created_at: burnDate,
+            finished_at: burnDate,
           },
-          created_at: burnDate,
-          finished_at: burnDate,
-        },
-        fee: {
-          id: transactionId(),
-          live,
-          status: "completed",
-          amount: mapAmount(burnFeeAmount, { negative: true }),
-          currency: tokenToCurrency(
-            getNativeTokenFor({ blockchain: from.blockchain })
-          ),
-          location: from.locationId,
-          type: "fee",
-          purpose: "burn",
-          bridge: bridge.id,
-          network: "blockchain",
-          fee_type: "network",
-          blockchain: {
-            hash: burnStep.txHash ?? "n/a",
-            explorer_url: burnStep.explorerUrl,
+          fee: {
+            id: transactionId(),
+            live: bridge.live,
+            status: "completed",
+            amount: mapAmount(burnFeeAmount, { negative: true }),
+            currency: tokenToCurrency(
+              getNativeTokenFor({ blockchain: sourceBlockchain })
+            ),
+            location: bridge.from_location,
+            type: "fee",
+            purpose: "burn",
+            bridge: bridge.id,
+            network: "blockchain",
+            fee_type: "network",
+            blockchain: {
+              hash: burnStep.txHash ?? "n/a",
+              explorer_url: burnStep.explorerUrl,
+            },
+            created_at: burnDate,
+            finished_at: burnDate,
           },
-          created_at: burnDate,
-          finished_at: burnDate,
-        },
-      }
-    : undefined;
+        }
+      : undefined;
 
-  const mint: BridgeMapping["mint"] = mintStep
-    ? {
-        tx: {
-          id: transactionId(),
-          live,
-          status: "completed",
-          amount: mapAmount(amount, { negative: false }),
-          currency: "USDC",
-          type: "reconciliation",
-          location: to.locationId,
-          bridge: bridge.id,
-          network: "blockchain",
-          blockchain: {
-            hash: mintStep.txHash ?? "n/a",
-            explorer_url: mintStep.explorerUrl,
+  const mint: BridgeTransactions["mint"] =
+    mintStep && !previousMintStep
+      ? {
+          tx: {
+            id: transactionId(),
+            live: bridge.live,
+            status: "completed",
+            amount: mapAmount(bridge.amount, { negative: false }),
+            currency: "USDC",
+            type: "reconciliation",
+            location: bridge.to_location,
+            bridge: bridge.id,
+            network: "blockchain",
+            blockchain: {
+              hash: mintStep.txHash ?? "n/a",
+              explorer_url: mintStep.explorerUrl,
+            },
+            created_at: mintDate,
+            finished_at: mintDate,
           },
-          created_at: mintDate,
-          finished_at: mintDate,
-        },
-        fee: {
-          id: transactionId(),
-          live,
-          status: "completed",
-          amount: mapAmount(mintFeeAmount, { negative: true }),
-          currency: tokenToCurrency(
-            getNativeTokenFor({ blockchain: to.blockchain })
-          ),
-          location: to.locationId,
-          type: "fee",
-          purpose: "mint",
-          bridge: bridge.id,
-          network: "blockchain",
-          fee_type: "network",
-          blockchain: {
-            hash: mintStep.txHash ?? "n/a",
-            explorer_url: mintStep.explorerUrl,
+          fee: {
+            id: transactionId(),
+            live: bridge.live,
+            status: "completed",
+            amount: mapAmount(mintFeeAmount, { negative: true }),
+            currency: tokenToCurrency(
+              getNativeTokenFor({ blockchain: targetBlockchain })
+            ),
+            location: bridge.to_location,
+            type: "fee",
+            purpose: "mint",
+            bridge: bridge.id,
+            network: "blockchain",
+            fee_type: "network",
+            blockchain: {
+              hash: mintStep.txHash ?? "n/a",
+              explorer_url: mintStep.explorerUrl,
+            },
+            created_at: mintDate,
+            finished_at: mintDate,
           },
-          created_at: mintDate,
-          finished_at: mintDate,
-        },
-      }
-    : undefined;
+        }
+      : undefined;
 
   return {
-    bridge,
     approval,
     burn,
     mint,
@@ -232,4 +255,35 @@ export const mapBridgeStatus = (
   if (status === "success") return "succeeded";
   if (status === "error") return "failed";
   throw new Error(`Unknown status: ${status}`);
+};
+
+const breakoutSteps = (
+  raw?: BridgeResult
+): {
+  approvalStep: BridgeResult["steps"][number] | undefined;
+  burnStep: BridgeResult["steps"][number] | undefined;
+  mintStep: BridgeResult["steps"][number] | undefined;
+} => {
+  if (!raw)
+    return {
+      approvalStep: undefined,
+      burnStep: undefined,
+      mintStep: undefined,
+    };
+
+  const approvalSteps = raw.steps.filter((step) => step.name === "approve");
+  const burnSteps = raw.steps.filter((step) => step.name === "burn");
+  const mintSteps = raw.steps.filter((step) => step.name === "mint");
+
+  const approvalStep = approvalSteps.findLast(
+    (step) => step.state === "success"
+  );
+  const burnStep = burnSteps.findLast((step) => step.state === "success");
+  const mintStep = mintSteps.findLast((step) => step.state === "success");
+
+  return {
+    approvalStep,
+    burnStep,
+    mintStep,
+  };
 };
