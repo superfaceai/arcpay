@@ -1,15 +1,14 @@
 import { z } from "zod";
 import Big from "big.js";
 
-const POSITIVE_AMOUNT_RE = /^\d*\.?\d+$/;
-const NEGATIVE_AMOUNT_RE = /^-?\d*\.?\d+$/;
+const POSITIVE_AMOUNT_RE = /^\d*\.?\d+([eE][+-]?\d+)?$/;
+const NEGATIVE_AMOUNT_RE = /^-?\d*\.?\d+([eE][+-]?\d+)?$/;
 
 export const PositiveAmount = z.codec(
   z.union([z.string().regex(POSITIVE_AMOUNT_RE), z.number()]),
   z.string(),
   {
-    decode: (amount) =>
-      typeof amount === "number" ? Big(amount).toString() : amount,
+    decode: (amount) => toPlainString(Big(amount)),
     encode: (amount) => amount,
   }
 );
@@ -19,8 +18,7 @@ export const NegativeAmount = z.codec(
   z.union([z.string().regex(NEGATIVE_AMOUNT_RE), z.number()]),
   z.string(),
   {
-    decode: (amount) =>
-      typeof amount === "number" ? Big(amount).toString() : amount,
+    decode: (amount) => toPlainString(Big(amount)),
     encode: (amount) => amount,
   }
 );
@@ -40,4 +38,9 @@ export const mapAmount = (
     .abs()
     .mul(negative ? -1 : 1)
     .toString();
+};
+
+const toPlainString = (big: Big): string => {
+  const e = big.e; // exponent
+  return e < 0 ? big.toFixed(-e + big.c.length - 1) : big.toString();
 };
