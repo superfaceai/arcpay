@@ -87,6 +87,7 @@ export const sendBlockchainTransaction: SendBlockchainTransaction = async ({
         blockchain: {
           hash: circleTxWithHash.txHash,
         },
+        purpose: "transfer",
         location: transaction.location,
         created_at: new Date(),
       };

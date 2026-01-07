@@ -77,6 +77,7 @@ export const mapCircleTransaction = async ({
       status,
       fee_type: "network",
       network: "blockchain",
+      purpose: "transfer",
       blockchain: {
         hash,
       },
