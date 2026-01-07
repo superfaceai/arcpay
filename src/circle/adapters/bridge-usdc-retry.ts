@@ -11,7 +11,7 @@ import { RetryUSDCBridgeBetweenBlockchains } from "@/payments/interfaces";
 import { BridgeKit } from "@circle-fin/bridge-kit";
 
 import { circleWalletsAdapter } from "../circle-wallets-adapter";
-import { mapBridgeStatus } from "../services/map-bridge-status";
+import { mapBridgeStatus } from "../services/map-bridge-result";
 
 export const retryUSDCBridgeBetweenBlockchains: RetryUSDCBridgeBetweenBlockchains =
   async ({ bridgeTransfer }) =>

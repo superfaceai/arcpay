@@ -1,16 +1,13 @@
 import { tryAsync } from "@/lib";
 
-import { withBigIntSerialization } from "@/lib/bigint";
-
 import { mapAmount } from "@/balances/values";
-import { BridgeTransfer, bridgeTransferId } from "@/payments/entities";
 import { BridgeUSDCBetweenBlockchains } from "@/payments/interfaces";
 
 import { BridgeKit } from "@circle-fin/bridge-kit";
 
 import { circleWalletsAdapter } from "../circle-wallets-adapter";
 import { chooseCircleBridgeBlockchain } from "../bridge-blockchain";
-import { mapBridgeStatus } from "../services/map-bridge-status";
+import { mapBridgeResult } from "../services/map-bridge-result";
 
 export const bridgeUSDCBetweenBlockchains: BridgeUSDCBetweenBlockchains =
   async ({ amount, from, to, accountId, live }) =>
@@ -38,18 +35,16 @@ export const bridgeUSDCBetweenBlockchains: BridgeUSDCBetweenBlockchains =
           amount: mapAmount(amount, { negative: false }).toString(),
         });
 
-        return BridgeTransfer.parse({
-          id: bridgeTransferId(),
+        const mappedResult = mapBridgeResult({
+          amount,
+          from,
+          to,
+          accountId,
           live,
-          account: accountId,
-          amount: amount.toString(),
-          currency: "USDC",
-          from_location: from.locationId,
-          to_location: to.locationId,
-          status: mapBridgeStatus(result.state),
-          created_at: new Date(),
-          raw: withBigIntSerialization(result),
+          result,
         });
+
+        return mappedResult;
       },
       (error) => ({
         type: "BlockchainBridgeError",

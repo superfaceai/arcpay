@@ -4,6 +4,7 @@ import { Amount, Currency } from "@/balances/values";
 import { Location } from "@/balances/entities";
 import { Payment } from "./payment.entity";
 import { PaymentCapture } from "./payment-capture.entity";
+import { BridgeTransfer } from "./bridge-transfer.entity";
 
 export const transactionId = () => generateId("txn");
 
@@ -28,6 +29,7 @@ const TransactionBase = z.object({
   location: Location.shape.id,
   payment: Payment.shape.id.optional(),
   capture: PaymentCapture.shape.id.optional(),
+  bridge: BridgeTransfer.shape.id.optional(),
   created_at: DateCodec,
   finished_at: DateCodec.optional(),
 });
@@ -44,18 +46,36 @@ export const PaymentTransaction = TransactionBase.extend({
 });
 export type PaymentTransaction = z.infer<typeof PaymentTransaction>;
 
-export const FeeTransaction = TransactionBase.extend({
-  type: z.literal("fee"),
-  fee_type: z.enum(["network"]),
+export const ReconciliationTransaction = TransactionBase.extend({
+  type: z.literal("reconciliation"),
   network: z.enum(["blockchain"]),
   blockchain: z.object({
     hash: z.string(),
+    counterparty: z.string().optional(),
+    explorer_url: z.string().optional(),
+  }),
+});
+export type ReconciliationTransaction = z.infer<
+  typeof ReconciliationTransaction
+>;
+
+export const FeeTransaction = TransactionBase.extend({
+  type: z.literal("fee"),
+  fee_type: z.enum(["network"]),
+  purpose: z
+    .enum(["transfer", "bridge_approval", "burn", "mint"])
+    .default("transfer"),
+  network: z.enum(["blockchain"]),
+  blockchain: z.object({
+    hash: z.string(),
+    explorer_url: z.string().optional(),
   }),
 });
 export type FeeTransaction = z.infer<typeof FeeTransaction>;
 
 export const Transaction = z.discriminatedUnion("type", [
   PaymentTransaction,
+  ReconciliationTransaction,
   FeeTransaction,
 ]);
 export type Transaction = z.infer<typeof Transaction>;
@@ -64,7 +84,7 @@ export type Transaction = z.infer<typeof Transaction>;
 export const remoteTransactionId = (
   tx: Pick<Transaction, "type" | "blockchain">
 ): string => {
-  if (tx.type === "payment" || tx.type === "fee") {
+  if (tx.type === "payment" || tx.type === "fee" || tx.type === "reconciliation") {
     return tx.blockchain.hash;
   }
 

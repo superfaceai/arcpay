@@ -120,7 +120,9 @@ const mergeTransactionsWithRemote = ({
   for (const remoteTx of remoteTransactions) {
     const dbTxIx = mergedTransactions.findIndex(
       (transaction) =>
-        transaction.type === remoteTx.type &&
+        (transaction.type === remoteTx.type ||
+          (transaction.type === "reconciliation" &&
+            remoteTx.type === "payment")) &&
         remoteTransactionId(transaction) === remoteTransactionId(remoteTx)
     );
 
@@ -145,11 +147,19 @@ const mergeTransactionsWithRemote = ({
               ...remoteTx,
               live,
             }
+          : remoteTx.type === "payment" && dbTx.type === "reconciliation"
+          ? {
+              ...dbTx,
+              ...remoteTx,
+              type: dbTx.type,
+              live,
+            }
           : {
               ...dbTx,
               ...remoteTx,
               live,
             };
+
       updatedTransactionIds.push(updatedTx.id);
       mergedTransactions.splice(dbTxIx, 1, updatedTx);
       continue;

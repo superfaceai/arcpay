@@ -13,10 +13,11 @@ import {
   BridgeTransferCurrencyError,
   PaymentInsufficientBalanceError,
 } from "@/payments/errors";
-import { BridgeTransfer, saveBridgeTransfer } from "@/payments/entities";
+import { BridgeTransfer, Transaction } from "@/payments/entities";
 
 import { BridgeUSDCBetweenBlockchains } from "@/payments/interfaces";
 import { bridgeUSDCBetweenBlockchains } from "@/circle/adapters";
+import { saveBridgeTransferWithTransactions } from "../repositories";
 
 export const BridgeAmountDTO = z.object({
   amount: Amount,
@@ -24,6 +25,11 @@ export const BridgeAmountDTO = z.object({
   from_location: Location.shape.id,
   to_location: Location.shape.id,
 });
+
+export type BridgeAmountOutcome = {
+  bridge: BridgeTransfer;
+  transactions: Transaction[];
+};
 
 export const bridgeAmount = async ({
   accountId,
@@ -150,10 +156,19 @@ export const bridgeAmount = async ({
   if (!bridgeUSDCBetweenBlockchainsResult.ok)
     return bridgeUSDCBetweenBlockchainsResult;
 
-  await saveBridgeTransfer({
-    accountId,
-    bridgeTransfer: bridgeUSDCBetweenBlockchainsResult.value,
-  });
+  const txs = [
+    bridgeUSDCBetweenBlockchainsResult.value.approval?.fee,
+    bridgeUSDCBetweenBlockchainsResult.value.burn?.fee,
+    bridgeUSDCBetweenBlockchainsResult.value.burn?.tx,
+    bridgeUSDCBetweenBlockchainsResult.value.mint?.fee,
+    bridgeUSDCBetweenBlockchainsResult.value.mint?.tx,
+  ].filter(Boolean) as Transaction[];
 
-  return ok(bridgeUSDCBetweenBlockchainsResult.value);
+  await saveBridgeTransferWithTransactions(
+    accountId,
+    bridgeUSDCBetweenBlockchainsResult.value.bridge,
+    txs
+  );
+
+  return ok(bridgeUSDCBetweenBlockchainsResult.value.bridge);
 };

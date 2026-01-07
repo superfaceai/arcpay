@@ -19,7 +19,7 @@ const storageKeyByAccount = ({
   live: boolean;
 }) => `btxs:${accountId}:${live ? "live" : "test"}`;
 
-const saveBridgeTransferViaPipeline = ({
+export const saveBridgeTransferViaPipeline = ({
   bridgeTransfer,
   accountId,
   pipeline,

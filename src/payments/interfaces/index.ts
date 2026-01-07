@@ -6,6 +6,7 @@ import {
   PaymentTransaction,
   FeeTransaction,
   BridgeTransfer,
+  ReconciliationTransaction,
 } from "@/payments/entities";
 import {
   BlockchainPaymentActionError,
@@ -72,7 +73,17 @@ export type BridgeUSDCBetweenBlockchains = (params: {
   };
   accountId: string;
   live: boolean;
-}) => Promise<Result<BridgeTransfer, BlockchainBridgeError>>;
+}) => Promise<
+  Result<
+    {
+      bridge: BridgeTransfer;
+      approval?: { fee: FeeTransaction };
+      burn?: { tx: ReconciliationTransaction; fee: FeeTransaction };
+      mint?: { tx: ReconciliationTransaction; fee: FeeTransaction };
+    },
+    BlockchainBridgeError
+  >
+>;
 
 export type RetryUSDCBridgeBetweenBlockchains = (params: {
   bridgeTransfer: BridgeTransfer;

@@ -1,9 +1,11 @@
 import { db } from "@/database";
 
 import {
+  BridgeTransfer,
   Payment,
   PaymentCapture,
   PaymentMandate,
+  saveBridgeTransferViaPipeline,
   savePaymentCaptureViaPipeline,
   savePaymentMandateViaPipeline,
   savePaymentViaPipeline,
@@ -56,6 +58,33 @@ export const savePaymentsWithTransactionsAndCaptures = async (
         pipeline,
       });
     }
+  }
+
+  await pipeline.exec();
+};
+
+/**
+ * Save a bridge transfer and its related transactions in a single DB transaction.
+ */
+export const saveBridgeTransferWithTransactions = async (
+  accountId: string,
+  bridge: BridgeTransfer,
+  transactions: Transaction[]
+) => {
+  const pipeline = db.multi();
+
+  saveBridgeTransferViaPipeline({
+    bridgeTransfer: bridge,
+    accountId,
+    pipeline,
+  });
+
+  for (const transaction of transactions) {
+    saveTransactionViaPipeline({
+      transaction,
+      accountId,
+      pipeline,
+    });
   }
 
   await pipeline.exec();
