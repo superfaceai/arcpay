@@ -91,7 +91,7 @@ const MAPPING: {
 } as const;
 
 const BLOCKCHAIN_EXPLORER_URL: Record<CircleBlockchain, string | null> = {
-  'ARC-TESTNET': "https://testnet.arcscan.app/tx/",
+  "ARC-TESTNET": "https://testnet.arcscan.app/tx/",
   MATIC: "https://polygonscan.com/tx/",
   "MATIC-AMOY": "https://amoy.polygonscan.com/tx/",
   ETH: "https://etherscan.io/tx/",
@@ -114,4 +114,6 @@ const BLOCKCHAIN_EXPLORER_URL: Record<CircleBlockchain, string | null> = {
   "EVM-TESTNET": null,
   APTOS: null,
   "APTOS-TESTNET": null,
+  MONAD: null,
+  "MONAD-TESTNET": null,
 };

@@ -7,6 +7,11 @@ export interface BlockchainPaymentActionError {
   readonly blockchain?: Blockchain;
 }
 
+export interface BlockchainBridgeError {
+  readonly type: "BlockchainBridgeError";
+  readonly message: string;
+}
+
 export interface BlockchainActionRateExceeded {
   readonly type: "BlockchainActionRateExceeded";
   readonly message: string;
@@ -96,4 +101,21 @@ export interface PaymentCaptureError {
 export interface InitialFundingNotAllowed {
   readonly type: "InitialFundingNotAllowed";
   readonly reason: "disabled" | "quota_exceeded";
+}
+
+export interface BridgeTransferLocationError {
+  readonly type: "BridgeTransferLocationError";
+  readonly reason: "not_found" | "unsupported";
+  readonly locationId: string;
+}
+
+export interface BridgeTransferCurrencyError {
+  readonly type: "BridgeTransferCurrencyError";
+  readonly reason: "not_supported";
+  readonly currency: Currency;
+}
+
+export interface BridgeTransferRetryError {
+  readonly type: "BridgeTransferRetryError";
+  readonly reason: "already_succeeded" | "already_retrying";
 }

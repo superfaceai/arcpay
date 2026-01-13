@@ -10,6 +10,8 @@
     "arc:send-money": "tsx scripts/send-money.ts"
   },
   "dependencies": {
+    "@circle-fin/adapter-circle-wallets": "^1.0.1",
+    "@circle-fin/bridge-kit": "^1.2.0",
     "@circle-fin/developer-controlled-wallets": "^9.2.0",
     "@hono/mcp": "^0.1.4",
     "@hono/session": "^0.2.0",

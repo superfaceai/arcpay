@@ -15,6 +15,7 @@ import {
   paymentsApi,
   paymentMandatesApi,
   paymentCapturesApi,
+  bridgingApi,
 } from "@/payments/api";
 import { notificationsApi } from "@/notifications/api";
 import { acpDelegatedPaymentsApi } from "@/acp/api/delegated-payments";
@@ -43,6 +44,7 @@ const app = createApplicationApi((app) => {
 
   app.route("/", balancesApi);
   app.route("/", locationsApi);
+  app.route("/", bridgingApi);
   app.route("/", depositsApi);
   app.route("/", paymentsApi);
   app.route("/", paymentMandatesApi);

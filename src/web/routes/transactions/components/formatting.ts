@@ -39,6 +39,8 @@ const formatTransactionName = (transaction: Transaction): string => {
   const counterparty =
     transaction.type === "payment"
       ? formatBlockchainAddress(transaction.blockchain.counterparty)
+      : transaction.type === "reconciliation"
+      ? "Reconciliation"
       : transaction.fee_type === "network"
       ? "Network Fee"
       : "Unknown";

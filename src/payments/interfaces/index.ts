@@ -1,11 +1,17 @@
 import { Result } from "@/lib";
 
-import { Blockchain } from "@/balances/values";
+import { Amount, Blockchain } from "@/balances/values";
 import { Currency } from "@/balances/values";
-import { PaymentTransaction, FeeTransaction } from "@/payments/entities";
+import {
+  PaymentTransaction,
+  FeeTransaction,
+  BridgeTransfer,
+  ReconciliationTransaction,
+} from "@/payments/entities";
 import {
   BlockchainPaymentActionError,
   BlockchainActionRateExceeded,
+  BlockchainBridgeError,
 } from "@/payments/errors";
 
 export type DepositTestnetMoney = (params: {
@@ -50,5 +56,45 @@ export type SendBlockchainTransaction = (params: {
   Result<
     { payment: PaymentTransaction; fee?: BlockchainTransaction },
     BlockchainPaymentActionError
+  >
+>;
+
+export type BridgeUSDCBetweenBlockchains = (params: {
+  amount: Amount;
+  from: {
+    address: string;
+    blockchain: Blockchain;
+    locationId: string;
+  };
+  to: {
+    address: string;
+    blockchain: Blockchain;
+    locationId: string;
+  };
+  accountId: string;
+  live: boolean;
+}) => Promise<
+  Result<
+    {
+      bridge: BridgeTransfer;
+      approval?: { fee: FeeTransaction };
+      burn?: { tx: ReconciliationTransaction; fee: FeeTransaction };
+      mint?: { tx: ReconciliationTransaction; fee: FeeTransaction };
+    },
+    BlockchainBridgeError
+  >
+>;
+
+export type RetryUSDCBridgeBetweenBlockchains = (params: {
+  bridgeTransfer: BridgeTransfer;
+}) => Promise<
+  Result<
+    {
+      bridge: BridgeTransfer;
+      approval?: { fee: FeeTransaction };
+      burn?: { tx: ReconciliationTransaction; fee: FeeTransaction };
+      mint?: { tx: ReconciliationTransaction; fee: FeeTransaction };
+    },
+    BlockchainBridgeError
   >
 >;
