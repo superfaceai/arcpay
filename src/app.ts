@@ -19,6 +19,7 @@ import {
 } from "@/payments/api";
 import { notificationsApi } from "@/notifications/api";
 import { acpDelegatedPaymentsApi } from "@/acp/api/delegated-payments";
+import { ucpSchemasApi } from "@/ucp/api";
 
 import { walletMcp } from "@/wallet/mcp";
 import { acpCheckoutsMcp } from "@/acp-checkouts/mcp";
@@ -36,6 +37,7 @@ import { agentsRoute } from "@/web/routes/agents";
 import { connectRoute } from "@/web/routes/connect";
 import { requestDepositRoute } from "@/web/routes/deposit";
 import { indexRoute } from "@/web/routes/index";
+import { ucpMerchantGuideRoute } from "./web/routes/ucp-merchant-guide";
 
 const app = createApplicationApi((app) => {
   app.route("/", erasureApi);
@@ -54,14 +56,20 @@ const app = createApplicationApi((app) => {
   app.route("/", notificationsApi);
 
   app.route("/", acpDelegatedPaymentsApi);
+  app.route("/", ucpSchemasApi);
   app.route("/", acpCheckoutsMcp);
   app.route("/", walletMcp);
 
-  const resources = listResources(app, ["/wallet", "/acp_checkouts"]);
+  const resources = listResources(app, [
+    "/wallet",
+    "/acp_checkouts",
+    ucpSchemasApi.routes[0].path,
+  ]);
 
   const webApp = createWebApplication((web) => {
     web.route("/", indexRoute);
     web.route("/", apiDocsRoute(resources));
+    web.route("/", ucpMerchantGuideRoute);
     web.route("/", loginRoute);
     web.route("/", logoutRoute);
     web.route("/", confirmCodeRoute);

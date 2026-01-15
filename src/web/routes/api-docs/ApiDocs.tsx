@@ -22,7 +22,8 @@ export const ApiDocs: FC<ApiDocsProps> = (props: ApiDocsProps) => {
         <h2>Demo seller</h2>
         <p>
           Use the demo merchant store to try out Arc Pay wallet with agentic
-          commerce protocol (ACP)
+          commerce protocol (ACP) or&nbsp;Universal
+          Commerce&nbsp;Protocol&nbsp;(UCP).
         </p>
 
         <div className="demostore">
@@ -138,6 +139,24 @@ export const ApiDocs: FC<ApiDocsProps> = (props: ApiDocsProps) => {
           Agentic Wallet MCP accepts <em>streamable HTTP</em> connections.
         </p>
 
+        <h2>Universal Commerce Protocol (UCP) for merchants</h2>
+
+        <p>
+          Arc Pay is a fully supported UCP payment handler that enables
+          merchants to accept payments from their customers' AI agents.
+        </p>
+
+        <p>
+          We provide a guide on how to accept Arc Pay payments with UCP in your
+          commerce platform.
+        </p>
+
+        <p>
+          <a href="/ucp/guides/arcpay-payment-handler">
+            → Read the UCP merchant guide
+          </a>
+        </p>
+
         <h2>Agentic Commerce Protocol (ACP)</h2>
 
         <p>
@@ -210,9 +229,9 @@ export const ApiDocs: FC<ApiDocsProps> = (props: ApiDocsProps) => {
 }`}</pre>
 
         <p>
-          Upon checkout competion, the merchant will receive a secret token that
-          can be used to pull the payment from the customer's wallet, up to the
-          authorized limit of the mandate:
+          Upon checkout completion, the merchant will receive a secret token
+          that can be used to pull the payment from the customer's wallet, up to
+          the authorized limit of the mandate:
         </p>
 
         <pre>{`POST /payment_captures
