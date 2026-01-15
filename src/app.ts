@@ -37,6 +37,7 @@ import { agentsRoute } from "@/web/routes/agents";
 import { connectRoute } from "@/web/routes/connect";
 import { requestDepositRoute } from "@/web/routes/deposit";
 import { indexRoute } from "@/web/routes/index";
+import { ucpMerchantGuideRoute } from "./web/routes/ucp-merchant-guide";
 
 const app = createApplicationApi((app) => {
   app.route("/", erasureApi);
@@ -68,6 +69,7 @@ const app = createApplicationApi((app) => {
   const webApp = createWebApplication((web) => {
     web.route("/", indexRoute);
     web.route("/", apiDocsRoute(resources));
+    web.route("/", ucpMerchantGuideRoute);
     web.route("/", loginRoute);
     web.route("/", logoutRoute);
     web.route("/", confirmCodeRoute);
