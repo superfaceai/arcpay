@@ -2,13 +2,16 @@ import { FC } from "hono/jsx";
 import { Layout } from "@/web/components/Layout";
 import { Header } from "@/web/components/Header";
 import { Footer } from "@/web/components/Footer";
-import { getPathToSchema, getSchemaFilename } from "@/ucp/services";
+import {
+  getPathToSchema,
+  getSchemaFilename,
+} from "@/ucp-payment-handler/services";
 import {
   UcpConfigId,
   UcpHandler,
   UcpMandateTokenCredentialId,
   UcpWalletPaymentInstrumentId,
-} from "@/ucp/values";
+} from "@/ucp-payment-handler/values";
 
 interface UcpMerchantGuideProps {
   host: string;

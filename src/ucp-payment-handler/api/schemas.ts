@@ -9,7 +9,7 @@ const getSchemaUrl = (c: Context, path: string) => {
   return new URL(path, c.req.url).toString();
 };
 
-export const ucpSchemasApi = createApi().get(
+export const ucpPaymentSchemasApi = createApi().get(
   getPathToSchema(":schemaId"),
   (c) => {
     const schemaFilename = c.req.param("schemaId");

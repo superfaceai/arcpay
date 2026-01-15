@@ -19,7 +19,7 @@ import {
 } from "@/payments/api";
 import { notificationsApi } from "@/notifications/api";
 import { acpDelegatedPaymentsApi } from "@/acp/api/delegated-payments";
-import { ucpSchemasApi } from "@/ucp/api";
+import { ucpPaymentSchemasApi } from "@/ucp-payment-handler/api";
 
 import { walletMcp } from "@/wallet/mcp";
 import { acpCheckoutsMcp } from "@/acp-checkouts/mcp";
@@ -56,14 +56,14 @@ const app = createApplicationApi((app) => {
   app.route("/", notificationsApi);
 
   app.route("/", acpDelegatedPaymentsApi);
-  app.route("/", ucpSchemasApi);
+  app.route("/", ucpPaymentSchemasApi);
   app.route("/", acpCheckoutsMcp);
   app.route("/", walletMcp);
 
   const resources = listResources(app, [
     "/wallet",
     "/acp_checkouts",
-    ucpSchemasApi.routes[0].path,
+    ucpPaymentSchemasApi.routes[0].path,
   ]);
 
   const webApp = createWebApplication((web) => {
