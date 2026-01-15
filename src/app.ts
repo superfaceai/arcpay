@@ -20,6 +20,7 @@ import {
 import { notificationsApi } from "@/notifications/api";
 import { acpDelegatedPaymentsApi } from "@/acp/api/delegated-payments";
 import { ucpPaymentSchemasApi } from "@/ucp-payment-handler/api";
+import { facilitatorApi } from "@/arc-facilitator/api";
 
 import { walletMcp } from "@/wallet/mcp";
 import { acpCheckoutsMcp } from "@/acp-checkouts/mcp";
@@ -56,11 +57,12 @@ const app = createApplicationApi((app) => {
 
   app.route("/", notificationsApi);
 
-  app.route("/", acpDelegatedPaymentsApi);
-  app.route("/", ucpPaymentSchemasApi);
-  app.route("/", ucpCheckoutsProfileApi);
   app.route("/", acpCheckoutsMcp);
+  app.route("/", acpDelegatedPaymentsApi);
+  app.route("/", facilitatorApi);
   app.route("/", ucpCheckoutsMcp);
+  app.route("/", ucpCheckoutsProfileApi);
+  app.route("/", ucpPaymentSchemasApi);
   app.route("/", walletMcp);
 
   const documentedResourcesList = listResources(app, [
