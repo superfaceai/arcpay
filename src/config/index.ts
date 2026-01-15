@@ -42,6 +42,11 @@ const ConfigSchema = z.object({
   GUIDE_OPENAI_BUILDER_WALLET_MCP_VIDEO_URL: z.string().optional(),
   GUIDE_OPENAI_BUILDER_SHOPPING_MCP_VIDEO_URL: z.string().optional(),
   GUIDE_OPENAI_BUILDER_INSTRUCTIONS_VIDEO_URL: z.string().optional(),
+
+  ARC_FACILITATOR_WALLET_PRIVATE_KEY: z
+    .string()
+    .startsWith("0x")
+    .transform((val) => val as `0x${string}`),
 });
 
 const parsedConfig = ConfigSchema.safeParse(process.env);
