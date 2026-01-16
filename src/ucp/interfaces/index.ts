@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { UcpMandateTokenCredential } from "@/ucp-payment-handler/values";
 
 /**
  * Generated from the UCP Reference.
@@ -41,6 +42,15 @@ export const CheckoutUpdateRequest = z
   .strict();
 export type CheckoutUpdateRequest = z.infer<typeof CheckoutUpdateRequest>;
 
+// Checkout Complete Request
+export const CheckoutCompleteRequest = z
+  .object({
+    id: z.string(),
+    payment_data: z.lazy(() => PaymentInstrument),
+  })
+  .strict();
+export type CheckoutCompleteRequest = z.infer<typeof CheckoutCompleteRequest>;
+
 // Checkout Response
 export const CheckoutResponse = z
   .object({
@@ -64,6 +74,7 @@ export const CheckoutResponse = z
     continue_url: z.string().optional(),
     payment: z.lazy(() => PaymentResponse),
     order: z.lazy(() => OrderConfirmation).optional(),
+    fulfillment: z.lazy(() => FulfillmentResponse).optional(),
   })
   .strict();
 export type CheckoutResponse = z.infer<typeof CheckoutResponse>;
@@ -135,7 +146,7 @@ export const Adjustment = z
     occurred_at: z.string(),
     status: z.enum(["pending", "completed", "failed"]),
     line_items: z.array(z.record(z.string(), z.any())).optional(),
-    amount: z.number().int().optional(),
+    amount: z.number().optional(),
     description: z.string().optional(),
   })
   .strict();
@@ -168,8 +179,8 @@ export const CardCredential = z
     type: z.literal("card"),
     card_number_type: z.enum(["fpan", "network_token", "dpan"]),
     number: z.string().optional(),
-    expiry_month: z.number().int().optional(),
-    expiry_year: z.number().int().optional(),
+    expiry_month: z.number().optional(),
+    expiry_year: z.number().optional(),
     name: z.string().optional(),
     cvc: z.string().optional(),
     cryptogram: z.string().optional(),
@@ -178,23 +189,45 @@ export const CardCredential = z
   .strict();
 export type CardCredential = z.infer<typeof CardCredential>;
 
-// Card Payment Instrument
-export const CardPaymentInstrument = z
+// ArcPay Mandate Token Credential
+export const ArcPayMandateTokenCredential = UcpMandateTokenCredential;
+export type ArcPayMandateTokenCredential = z.infer<
+  typeof ArcPayMandateTokenCredential
+>;
+
+// Payment Instrument Base
+export const PaymentInstrumentBase = z
   .object({
     id: z.string(),
     handler_id: z.string(),
+    type: z.string(),
     billing_address: z.lazy(() => PostalAddress).optional(),
     credential: z.lazy(() => PaymentCredential).optional(),
-    type: z.literal("card"),
-    brand: z.string(),
-    last_digits: z.string(),
-    expiry_month: z.number().int().optional(),
-    expiry_year: z.number().int().optional(),
-    rich_text_description: z.string().optional(),
-    rich_card_art: z.string().optional(),
   })
   .strict();
+export type PaymentInstrumentBase = z.infer<typeof PaymentInstrumentBase>;
+
+// Card Payment Instrument
+export const CardPaymentInstrument = PaymentInstrumentBase.extend({
+  type: z.literal("card"),
+  brand: z.string(),
+  last_digits: z.string(),
+  expiry_month: z.number().optional(),
+  expiry_year: z.number().optional(),
+  rich_text_description: z.string().optional(),
+  rich_card_art: z.string().optional(),
+});
 export type CardPaymentInstrument = z.infer<typeof CardPaymentInstrument>;
+
+// Wallet Payment Instrument
+export const ArcPayWalletPaymentInstrument = PaymentInstrumentBase.extend({
+  type: z.literal("wallet"),
+  credential: ArcPayMandateTokenCredential.optional(),
+  rich_text_description: z.string().optional(),
+});
+export type ArcPayWalletPaymentInstrument = z.infer<
+  typeof ArcPayWalletPaymentInstrument
+>;
 
 // Expectation
 export const Expectation = z
@@ -392,7 +425,7 @@ export const ItemResponse = z
   .object({
     id: z.string(),
     title: z.string(),
-    price: z.number().int(),
+    price: z.number(),
     image_url: z.string().optional(),
   })
   .strict();
@@ -402,7 +435,7 @@ export type ItemResponse = z.infer<typeof ItemResponse>;
 export const LineItemCreateRequest = z
   .object({
     item: z.lazy(() => ItemCreateRequest),
-    quantity: z.number().int(),
+    quantity: z.number(),
   })
   .strict();
 export type LineItemCreateRequest = z.infer<typeof LineItemCreateRequest>;
@@ -412,7 +445,7 @@ export const LineItemUpdateRequest = z
   .object({
     id: z.string().optional(),
     item: z.lazy(() => ItemUpdateRequest),
-    quantity: z.number().int(),
+    quantity: z.number(),
     parent_id: z.string().optional(),
   })
   .strict();
@@ -423,7 +456,7 @@ export const LineItemResponse = z
   .object({
     id: z.string(),
     item: z.lazy(() => ItemResponse),
-    quantity: z.number().int(),
+    quantity: z.number(),
     totals: z.array(z.lazy(() => TotalResponse)),
     parent_id: z.string().optional(),
   })
@@ -524,6 +557,7 @@ export type OrderLineItem = z.infer<typeof OrderLineItem>;
 
 // Payment Credential
 export const PaymentCredential = z.union([
+  ArcPayMandateTokenCredential,
   z.lazy(() => TokenCredentialResponse),
   z.lazy(() => CardCredential),
 ]);
@@ -552,20 +586,11 @@ export const PaymentIdentity = z
 export type PaymentIdentity = z.infer<typeof PaymentIdentity>;
 
 // Payment Instrument
-export const PaymentInstrument = z.union([z.lazy(() => CardPaymentInstrument)]);
+export const PaymentInstrument = z.union([
+  ArcPayWalletPaymentInstrument,
+  CardPaymentInstrument,
+]);
 export type PaymentInstrument = z.infer<typeof PaymentInstrument>;
-
-// Payment Instrument Base
-export const PaymentInstrumentBase = z
-  .object({
-    id: z.string(),
-    handler_id: z.string(),
-    type: z.string(),
-    billing_address: z.lazy(() => PostalAddress).optional(),
-    credential: z.lazy(() => PaymentCredential).optional(),
-  })
-  .strict();
-export type PaymentInstrumentBase = z.infer<typeof PaymentInstrumentBase>;
 
 // Platform Fulfillment Config
 export const PlatformFulfillmentConfig = z
@@ -697,7 +722,7 @@ export const TotalResponse = z
       "total",
     ]),
     display_text: z.string().optional(),
-    amount: z.number().int(),
+    amount: z.number(),
   })
   .strict();
 export type TotalResponse = z.infer<typeof TotalResponse>;
@@ -900,7 +925,7 @@ export type CheckoutWithBuyerConsentResponse = z.infer<
 export const Allocation = z
   .object({
     path: z.string(),
-    amount: z.number().int(),
+    amount: z.number(),
   })
   .strict();
 export type Allocation = z.infer<typeof Allocation>;
@@ -910,10 +935,10 @@ export const AppliedDiscount = z
   .object({
     code: z.string().optional(),
     title: z.string(),
-    amount: z.number().int(),
+    amount: z.number(),
     automatic: z.boolean().optional(),
     method: z.enum(["each", "across"]).optional(),
-    priority: z.number().int().optional(),
+    priority: z.number().optional(),
     allocations: z.array(z.lazy(() => Allocation)).optional(),
   })
   .strict();
