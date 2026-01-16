@@ -51,7 +51,7 @@ export const preauthorizePaymentTool = createMcpTool(
   "preauthorize-payment",
   {
     title: "Preauthorize Payment",
-    description: "Preauthorize a payment for the current account",
+    description: "Preauthorize a payment for the exact amount. Call just before you want to pay.",
     inputSchema,
     outputSchema,
   },
