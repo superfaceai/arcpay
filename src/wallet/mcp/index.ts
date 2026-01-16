@@ -14,6 +14,7 @@ export const walletMcpUrl = (baseUrl: string) =>
 export const walletMcp = createApi().all("/wallet", withAuth(), async (c) => {
   const accountId = c.get("accountId");
   const live = c.get("isLive");
+  const hostUrl = new URL(c.req.url).origin;
 
   const mcpServer = createMcpServer({
     name: "wallet",
@@ -26,7 +27,7 @@ export const walletMcp = createApi().all("/wallet", withAuth(), async (c) => {
         tool.name,
         // @ts-ignore
         tool.config,
-        tool.createCb({ accountId, live })
+        tool.createCb({ hostUrl, accountId, live })
       )
   );
 

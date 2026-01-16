@@ -19,6 +19,7 @@ export const acpCheckoutsMcp = createApi().all(
   async (c) => {
     const accountId = c.get("accountId");
     const live = c.get("isLive");
+    const hostUrl = new URL(c.req.url).origin;
 
     const mcpServer = createMcpServer({
       name: "acp-checkouts",
@@ -36,7 +37,7 @@ export const acpCheckoutsMcp = createApi().all(
         tool.name,
         // @ts-ignore
         tool.config,
-        tool.createCb({ accountId, live })
+        tool.createCb({ hostUrl, accountId, live })
       )
     );
 
