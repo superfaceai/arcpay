@@ -33,6 +33,7 @@ const inputSchema = {
 };
 
 const outputSchema = {
+  id: z.string().describe("The ID of the payment mandate"),
   paymentMandateSecretToken: z
     .string()
     .describe("The secret token of the payment mandate"),
@@ -125,6 +126,7 @@ export const preauthorizePaymentTool = createMcpTool(
 
         return toolResponse({
           structuredContent: {
+            id: delegatePaymentResult.value.id,
             paymentMandateSecretToken: delegatePaymentResult.value.secret,
             paymentProvider: "arcpay",
             expirationInMinutes: EXPIRE_AFTER_MINUTES,
