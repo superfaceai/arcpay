@@ -147,9 +147,13 @@ export const updateCheckoutTool = createMcpTool(
           return toolResponse({ error: publicCheckoutResult.error });
         }
 
+        const { id, ...checkoutWithoutId } = publicCheckoutResult.checkout;
         return toolResponse({
           structuredContent: {
-            checkout: publicCheckoutResult.checkout,
+            checkout: {
+              ...checkoutWithoutId,
+              checkoutId: id,
+            },
           },
         });
       } catch (e) {
