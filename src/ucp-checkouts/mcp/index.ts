@@ -8,13 +8,13 @@ import {
   updateCheckoutTool,
   cancelCheckoutTool,
   confirmOrderAndPayTool,
-} from "@/acp-checkouts/mcp-tools";
+} from "@/ucp-checkouts/mcp-tools";
 
-export const acpCheckoutsMcpUrl = (baseUrl: string) =>
-  new URL("/acp_checkouts", baseUrl).toString();
+export const ucpCheckoutsMcpUrl = (baseUrl: string) =>
+  new URL("/ucp_checkouts", baseUrl).toString();
 
-export const acpCheckoutsMcp = createApi().all(
-  "/acp_checkouts",
+export const ucpCheckoutsMcp = createApi().all(
+  "/ucp_checkouts",
   withAuth(),
   async (c) => {
     const accountId = c.get("accountId");
@@ -22,8 +22,8 @@ export const acpCheckoutsMcp = createApi().all(
     const hostUrl = new URL(c.req.url).origin;
 
     const mcpServer = createMcpServer({
-      name: "acp-checkouts",
-      title: "ACP Checkouts",
+      name: "ucp-checkouts",
+      title: "UCP Checkouts",
     });
 
     [

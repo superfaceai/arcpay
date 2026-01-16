@@ -8,7 +8,7 @@ Arc Pay supports the following payment methods:
 
 ## How to use (docs)
 
-- See server root path ([GET /](https://dev.arcpay.ai/))
+- See [reference](https://arcpay.ai/docs/api)
 - Use included [Postman collection](./docs/ArcPay.postman_collection.json)
 - Use `npm run mcp:inspect` to interact with MCP server
 

@@ -4,6 +4,8 @@ import { Header } from "@/web/components/Header";
 import { Footer } from "@/web/components/Footer";
 import {
   getPathToSchema,
+  getPaymentHandlerObject,
+  getPaymentHandlerSpecPath,
   getSchemaFilename,
 } from "@/ucp-payment-handler/services";
 import {
@@ -15,16 +17,16 @@ import {
 
 interface UcpMerchantGuideProps {
   host: string;
-  thisPageUrl: string;
   isLoggedIn: boolean;
 }
 
 export const UcpMerchantGuide: FC<UcpMerchantGuideProps> = (
   props: UcpMerchantGuideProps
 ) => {
-  const specUrl = props.thisPageUrl;
   const handlerName = UcpHandler.name;
   const handlerVersion = UcpHandler.version;
+
+  const specUrl = new URL(getPaymentHandlerSpecPath(), props.host).toString();
   const configSchemaUrl = new URL(
     getPathToSchema(getSchemaFilename(UcpConfigId)),
     props.host
@@ -38,23 +40,19 @@ export const UcpMerchantGuide: FC<UcpMerchantGuideProps> = (
     props.host
   ).toString();
 
-  const paymentHandlerExample = {
-    id: "arcpay",
-    name: handlerName,
-    version: handlerVersion,
-    spec: specUrl,
-    config_schema: configSchemaUrl,
-    instrument_schemas: [paymentInstrumentSchemaUrl],
+  const paymentHandlerExample = getPaymentHandlerObject({
+    hostUrl: props.host,
+    handlerId: "arcpay",
     config: {
       environment: "sandbox",
       merchant_id: "{{ your_merchant_id }}",
     },
-  };
+  });
 
   const checkoutSessionCompleteExample = {
     id: "checkout_session_123",
     payment_data: {
-      id: "pi_arcpay_001",
+      id: "client_pi_identifier_001",
       handler_id: "arcpay",
       type: "wallet",
       credential: {
