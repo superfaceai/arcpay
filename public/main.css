@@ -1426,7 +1426,6 @@ h2 {
     & .merchant-type-option:hover:not(:has(input[type="radio"]:disabled)) {
       border-color: var(--color-primary);
       box-shadow: 0 0 0 1px var(--color-primary-lighter);
-      transform: translateY(-1px);
     }
 
     & .merchant-type-main {
@@ -1440,19 +1439,20 @@ h2 {
     & .merchant-type-icon {
       width: 2.1rem;
       height: 2.1rem;
-      border-radius: 0.9rem;
+      border-radius: 0.8rem;
       background-color: var(--color-card);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--color-primary-foreground);
-    }
+      overflow: hidden;
+      flex-shrink: 0;
 
-    & .merchant-type-icon.dashed {
-      border: 2px dashed var(--color-card-dark);
-      background-color: #f5f8ff;
+      & img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
     }
 
     & .merchant-type-text {
@@ -1490,20 +1490,20 @@ h2 {
     }
 
     & .merchant-type-option:has(input[type="radio"]:checked) {
-      background-color: #e5f0ff;
-      border-color: #2f6cf7;
+      background-color: var(--color-primary-lighter);
+      border-color: var(--color-primary);
       box-shadow:
-        0 0 0 1px #2f6cf7,
+        0 0 0 1px var(--color-primary),
         0 8px 18px rgba(0, 0, 0, 0.06);
     }
 
     & .merchant-type-option:has(input[type="radio"]:checked) .merchant-type-radio {
-      border-color: #2f6cf7;
-      background-color: #e5f0ff;
+      border-color: var(--color-primary-foreground);
+      background-color: var(--color-primary-lighter);
     }
 
     & .merchant-type-option:has(input[type="radio"]:checked) .merchant-type-radio-inner {
-      background-color: #2f6cf7;
+      background-color: var(--color-primary-foreground);
     }
 
     & .merchant-type-option:has(input[type="radio"]:disabled) {

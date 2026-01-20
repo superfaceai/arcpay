@@ -84,7 +84,9 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
               <div className="merchant-type-selector">
                 <label className="merchant-type-option">
                   <div className="merchant-type-main">
-                    <div className="merchant-type-icon">A</div>
+                    <div className="merchant-type-icon">
+                      <img src="/protocols/acp.png" alt="ACP" />
+                    </div>
                     <div className="merchant-type-text">
                       <div className="merchant-type-title">ACP</div>
                     </div>
@@ -102,7 +104,9 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
 
                 <label className="merchant-type-option">
                   <div className="merchant-type-main">
-                    <div className="merchant-type-icon">U</div>
+                    <div className="merchant-type-icon">
+                      <img src="/protocols/ucp.png" alt="UCP" />
+                    </div>
                     <div className="merchant-type-text">
                       <div className="merchant-type-title">UCP</div>
                     </div>
@@ -119,9 +123,11 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
                   />
                 </label>
 
-                <label className="merchant-type-option selected">
+                <label className="merchant-type-option">
                   <div className="merchant-type-main">
-                    <div className="merchant-type-icon">X</div>
+                    <div className="merchant-type-icon">
+                      <img src="/protocols/x402.png" alt="x402" />
+                    </div>
                     <div className="merchant-type-text">
                       <div className="merchant-type-title">x402 (soon)</div>
                     </div>
