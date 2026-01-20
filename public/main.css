@@ -1325,6 +1325,10 @@ h2 {
     box-sizing: border-box;
     counter-reset: h3;
 
+    &.reset {
+      counter-reset: h3 2;
+    }
+
     & .step {
       display: flex;
       flex-direction: column;

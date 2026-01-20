@@ -54,6 +54,7 @@ export const connectRoute = createWebRoute().get(
           agent={agent}
           isTestMode={!isLive}
           walletMcpUrl={walletMcpUrl(baseUrl)}
+          acpMcpUrl={acpCheckoutsMcpUrl(baseUrl)}
           ucpMcpUrl={ucpCheckoutsMcpUrl(baseUrl)}
           apiKey={apiKeys[0]}
         />
