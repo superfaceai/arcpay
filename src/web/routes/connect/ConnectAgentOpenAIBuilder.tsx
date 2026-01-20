@@ -13,7 +13,7 @@ type ConnectAgentOpenAIBuilderProps = {
   account: Account;
   agent: Agent;
   walletMcpUrl: string;
-  acpMcpUrl: string;
+  ucpMcpUrl: string;
   apiKey: ApiKey;
 };
 
@@ -75,6 +75,74 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
             <div class="separator long" />
 
             <div className="step">
+              <h3>Choose shopping protocol</h3>
+
+              <p>
+                Pick the shopping protocol your merchant supports to navigate the checkout process.
+              </p>
+
+              <div className="merchant-type-selector">
+                <label className="merchant-type-option">
+                  <div className="merchant-type-main">
+                    <div className="merchant-type-icon">A</div>
+                    <div className="merchant-type-text">
+                      <div className="merchant-type-title">ACP</div>
+                    </div>
+                  </div>
+                  <div className="merchant-type-radio">
+                    <span className="merchant-type-radio-inner" />
+                  </div>
+                  <input
+                    type="radio"
+                    name="merchantType"
+                    value="acp"
+                    aria-label="ACP"
+                  />
+                </label>
+
+                <label className="merchant-type-option">
+                  <div className="merchant-type-main">
+                    <div className="merchant-type-icon">U</div>
+                    <div className="merchant-type-text">
+                      <div className="merchant-type-title">UCP</div>
+                    </div>
+                  </div>
+                  <div className="merchant-type-radio">
+                    <span className="merchant-type-radio-inner" />
+                  </div>
+                  <input
+                    type="radio"
+                    name="merchantType"
+                    value="ucp"
+                    aria-label="UCP"
+                    checked={true}
+                  />
+                </label>
+
+                <label className="merchant-type-option selected">
+                  <div className="merchant-type-main">
+                    <div className="merchant-type-icon">X</div>
+                    <div className="merchant-type-text">
+                      <div className="merchant-type-title">x402 (soon)</div>
+                    </div>
+                  </div>
+                  <div className="merchant-type-radio">
+                    <span className="merchant-type-radio-inner" />
+                  </div>
+                  <input
+                    type="radio"
+                    name="merchantType"
+                    value="x402"
+                    aria-label="x402"
+                    disabled
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div class="separator long" />
+
+            <div className="step">
               <h3>Connect Shopping MCP</h3>
 
               {Config.GUIDE_OPENAI_BUILDER_SHOPPING_MCP_VIDEO_URL && (
@@ -93,14 +161,14 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
               <p>
                 To help your agent navigate shopping carts & checkouts, connect
                 the{" "}
-                <a href="https://www.agenticcommerce.dev" target="_blank">
-                  ACP
+                <a href="https://ucp.dev" target="_blank">
+                  UCP
                 </a>{" "}
                 shopping MCP server.
               </p>
 
               <Snippet
-                content={props.acpMcpUrl}
+                content={props.ucpMcpUrl}
                 copyText="Shopping MCP"
                 copyPrimary
               />
@@ -143,7 +211,7 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
                 <a href="https://merchant-demo.arcpay.ai" target="_blank">
                   demo merchant store
                 </a>{" "}
-                to try out Arc Pay wallet with agentic commerce protocol (ACP).
+                to try out Arc Pay wallet with Universal Commerce Protocol (UCP).
               </p>
 
               <p>
@@ -161,7 +229,7 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
 
 Merchant:
 - products in JSON: https://merchant-demo.arcpay.ai/api/products
-- ACP base url: https://merchant-demo.arcpay.ai/api/acp
+- UCP base url: https://merchant-demo.arcpay.ai/api/ucp
 `}
               />
             </div>

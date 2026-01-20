@@ -10,6 +10,7 @@ import {
 } from "@/identity/entities";
 
 import { acpCheckoutsMcpUrl } from "@/acp-checkouts/mcp";
+import { ucpCheckoutsMcpUrl } from "@/ucp-checkouts/mcp";
 import { walletMcpUrl } from "@/wallet/mcp";
 
 export const connectRoute = createWebRoute().get(
@@ -53,7 +54,7 @@ export const connectRoute = createWebRoute().get(
           agent={agent}
           isTestMode={!isLive}
           walletMcpUrl={walletMcpUrl(baseUrl)}
-          acpMcpUrl={acpCheckoutsMcpUrl(baseUrl)}
+          ucpMcpUrl={ucpCheckoutsMcpUrl(baseUrl)}
           apiKey={apiKeys[0]}
         />
       );
