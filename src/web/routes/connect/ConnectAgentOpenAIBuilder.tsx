@@ -13,7 +13,7 @@ type ConnectAgentOpenAIBuilderProps = {
   account: Account;
   agent: Agent;
   walletMcpUrl: string;
-  acpMcpUrl: string;
+  ucpMcpUrl: string;
   apiKey: ApiKey;
 };
 
@@ -161,14 +161,14 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
               <p>
                 To help your agent navigate shopping carts & checkouts, connect
                 the{" "}
-                <a href="https://www.agenticcommerce.dev" target="_blank">
-                  ACP
+                <a href="https://ucp.dev" target="_blank">
+                  UCP
                 </a>{" "}
                 shopping MCP server.
               </p>
 
               <Snippet
-                content={props.acpMcpUrl}
+                content={props.ucpMcpUrl}
                 copyText="Shopping MCP"
                 copyPrimary
               />
@@ -211,7 +211,7 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
                 <a href="https://merchant-demo.arcpay.ai" target="_blank">
                   demo merchant store
                 </a>{" "}
-                to try out Arc Pay wallet with agentic commerce protocol (ACP).
+                to try out Arc Pay wallet with Universal Commerce Protocol (UCP).
               </p>
 
               <p>
@@ -229,7 +229,7 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
 
 Merchant:
 - products in JSON: https://merchant-demo.arcpay.ai/api/products
-- ACP base url: https://merchant-demo.arcpay.ai/api/acp
+- UCP base url: https://merchant-demo.arcpay.ai/api/ucp
 `}
               />
             </div>
