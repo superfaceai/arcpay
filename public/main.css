@@ -1394,6 +1394,142 @@ h2 {
       }
     }
 
+    /* Merchant type selector */
+    & .merchant-type-selector {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 0.75rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    & .merchant-type-option {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.9rem;
+      background-color: var(--color-background);
+      border: 1px solid var(--color-card-dark);
+      cursor: pointer;
+      transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background-color 0.15s ease,
+        transform 0.1s ease;
+      flex: 1 1 calc(33.333% - 0.75rem);
+      min-width: 0;
+    }
+
+    & .merchant-type-option:hover:not(:has(input[type="radio"]:disabled)) {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 1px var(--color-primary-lighter);
+      transform: translateY(-1px);
+    }
+
+    & .merchant-type-main {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    & .merchant-type-icon {
+      width: 2.1rem;
+      height: 2.1rem;
+      border-radius: 0.9rem;
+      background-color: var(--color-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--color-primary-foreground);
+    }
+
+    & .merchant-type-icon.dashed {
+      border: 2px dashed var(--color-card-dark);
+      background-color: #f5f8ff;
+    }
+
+    & .merchant-type-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      min-width: 0;
+    }
+
+    & .merchant-type-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--color-foreground);
+    }
+
+    & .merchant-type-radio {
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 999rem;
+      border: 2px solid var(--color-card-dark);
+      background-color: var(--color-background);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+
+    & .merchant-type-radio-inner {
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 999rem;
+      background-color: transparent;
+      display: block;
+    }
+
+    & .merchant-type-option:has(input[type="radio"]:checked) {
+      background-color: #e5f0ff;
+      border-color: #2f6cf7;
+      box-shadow:
+        0 0 0 1px #2f6cf7,
+        0 8px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    & .merchant-type-option:has(input[type="radio"]:checked) .merchant-type-radio {
+      border-color: #2f6cf7;
+      background-color: #e5f0ff;
+    }
+
+    & .merchant-type-option:has(input[type="radio"]:checked) .merchant-type-radio-inner {
+      background-color: #2f6cf7;
+    }
+
+    & .merchant-type-option:has(input[type="radio"]:disabled) {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+      border-color: var(--color-card-dark);
+      background-color: var(--color-card-light);
+    }
+
+    & .merchant-type-option:has(input[type="radio"]:disabled) .merchant-type-radio {
+      border-color: var(--color-card-dark);
+      background-color: var(--color-card);
+    }
+
+    & .merchant-type-option:has(input[type="radio"]:disabled) .merchant-type-radio-inner {
+      background-color: transparent;
+    }
+
+    & .merchant-type-option input[type="radio"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
     & .separator {
       width: 1px;
       height: 1.5rem;

@@ -75,6 +75,74 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
             <div class="separator long" />
 
             <div className="step">
+              <h3>Choose shopping protocol</h3>
+
+              <p>
+                Pick the shopping protocol your merchant supports to navigate the checkout process.
+              </p>
+
+              <div className="merchant-type-selector">
+                <label className="merchant-type-option">
+                  <div className="merchant-type-main">
+                    <div className="merchant-type-icon">A</div>
+                    <div className="merchant-type-text">
+                      <div className="merchant-type-title">ACP</div>
+                    </div>
+                  </div>
+                  <div className="merchant-type-radio">
+                    <span className="merchant-type-radio-inner" />
+                  </div>
+                  <input
+                    type="radio"
+                    name="merchantType"
+                    value="acp"
+                    aria-label="ACP"
+                  />
+                </label>
+
+                <label className="merchant-type-option">
+                  <div className="merchant-type-main">
+                    <div className="merchant-type-icon">U</div>
+                    <div className="merchant-type-text">
+                      <div className="merchant-type-title">UCP</div>
+                    </div>
+                  </div>
+                  <div className="merchant-type-radio">
+                    <span className="merchant-type-radio-inner" />
+                  </div>
+                  <input
+                    type="radio"
+                    name="merchantType"
+                    value="ucp"
+                    aria-label="UCP"
+                    checked={true}
+                  />
+                </label>
+
+                <label className="merchant-type-option selected">
+                  <div className="merchant-type-main">
+                    <div className="merchant-type-icon">X</div>
+                    <div className="merchant-type-text">
+                      <div className="merchant-type-title">x402 (soon)</div>
+                    </div>
+                  </div>
+                  <div className="merchant-type-radio">
+                    <span className="merchant-type-radio-inner" />
+                  </div>
+                  <input
+                    type="radio"
+                    name="merchantType"
+                    value="x402"
+                    aria-label="x402"
+                    disabled
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div class="separator long" />
+
+            <div className="step">
               <h3>Connect Shopping MCP</h3>
 
               {Config.GUIDE_OPENAI_BUILDER_SHOPPING_MCP_VIDEO_URL && (
