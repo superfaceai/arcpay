@@ -4,8 +4,8 @@ import {
   SendTransactionalSMS,
   SendTransactionalEmail,
 } from "@/communications/interfaces";
-import { sendTransactionalSMS } from "@/communications/twilio/adapters";
-import { sendTransactionalEmail } from "@/communications/sendgrid/adapters";
+import { sendTransactionalSMS } from "@/communications/adapters";
+import { sendTransactionalEmail } from "@/communications/adapters";
 
 export const deliverNotification = async ({
   accountId,

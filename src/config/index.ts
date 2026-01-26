@@ -17,6 +17,7 @@ const ConfigSchema = z.object({
   TWILIO_PHONE_NUMBER: z.string().optional(),
   SENDGRID_API_KEY: z.string().optional(),
   SENDGRID_FROM_EMAIL: z.string().optional(),
+  UNOSEND_API_KEY: z.string().optional(),
 
   FEATURE_INITIAL_FUNDING_ENABLED: z
     .preprocess((env) => env === "true", z.boolean())

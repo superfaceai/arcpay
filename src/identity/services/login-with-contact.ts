@@ -12,8 +12,8 @@ import {
   SendTransactionalEmail,
   SendTransactionalSMS,
 } from "@/communications/interfaces";
-import { sendTransactionalSMS } from "@/communications/twilio/adapters";
-import { sendTransactionalEmail } from "@/communications/sendgrid/adapters";
+import { sendTransactionalSMS } from "@/communications/adapters";
+import { sendTransactionalEmail } from "@/communications/adapters";
 
 const LoginWithPhone = z.object({
   phone: PhoneNumber,
