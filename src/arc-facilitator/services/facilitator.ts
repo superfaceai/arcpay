@@ -12,6 +12,8 @@ import { ExactEvmScheme } from "@x402/evm/exact/facilitator";
 import { createWalletClient, http, publicActions } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
+// TODO: Update for mainnet when available
+
 export const RPC_URL = "https://rpc.testnet.arc.network";
 
 export const arcTestnet = defineChain({

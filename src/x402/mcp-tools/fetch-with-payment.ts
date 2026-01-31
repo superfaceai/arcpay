@@ -132,10 +132,10 @@ export const fetchWithPaymentTool = createMcpTool(
           },
         });
       } catch (error) {
-        console.error(error);
+        console.error("fetch-with-payment error", error);
+
         return toolResponse({
-          error:
-            error instanceof Error ? error.message : "Unknown error occurred",
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     },

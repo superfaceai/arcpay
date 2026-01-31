@@ -1,9 +1,4 @@
-import {
-  createWalletClient,
-  http,
-  defineChain,
-  parseEther,
-} from "viem";
+import { createWalletClient, http, defineChain, parseEther } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
 import { err, ok, Result } from "@/lib";

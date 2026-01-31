@@ -22,7 +22,7 @@ export const facilitatorApi = createApi()
         c,
         500,
         "Internal Server Error",
-        error instanceof Error ? error.message : "Unknown error"
+        error instanceof Error ? error.message : "Unknown error",
       );
     }
   })
@@ -36,7 +36,7 @@ export const facilitatorApi = createApi()
 
         const response = await verify(
           paymentPayload as Parameters<typeof verify>[0],
-          paymentRequirements as Parameters<typeof verify>[1]
+          paymentRequirements as Parameters<typeof verify>[1],
         );
 
         return c.json(response);
@@ -46,10 +46,10 @@ export const facilitatorApi = createApi()
           c,
           500,
           "Internal Server Error",
-          error instanceof Error ? error.message : "Unknown error"
+          error instanceof Error ? error.message : "Unknown error",
         );
       }
-    }
+    },
   )
   .post(
     "/facilitator/settle",
@@ -61,31 +61,27 @@ export const facilitatorApi = createApi()
       try {
         const response = await settle(
           paymentPayload as Parameters<typeof settle>[0],
-          paymentRequirements as Parameters<typeof settle>[1]
+          paymentRequirements as Parameters<typeof settle>[1],
         );
 
         return c.json(response);
       } catch (error) {
         console.error("[arc-facilitator] Settle error:", error);
 
-        if (
+        const errorReason =
           error instanceof Error &&
           error.message.includes("Settlement aborted:")
-        ) {
-          return c.json({
-            success: false,
-            errorReason: error.message.replace("Settlement aborted: ", ""),
-            network:
-              (paymentPayload as Record<string, unknown>)?.network || "unknown",
-          });
-        }
+            ? error.message.replace("Settlement aborted: ", "")
+            : error instanceof Error
+              ? error.message
+              : "Unknown error";
 
-        return ProblemJson(
-          c,
-          500,
-          "Internal Server Error",
-          error instanceof Error ? error.message : "Unknown error"
-        );
+        return c.json({
+          success: false,
+          errorReason,
+          network:
+            (paymentPayload as Record<string, unknown>)?.network || "unknown",
+        });
       }
-    }
+    },
   );

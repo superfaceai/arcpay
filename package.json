@@ -7,8 +7,7 @@
     "dev": "tsx watch development.ts",
     "build": "tsc && tsc-alias -f",
     "mcp:inspect": "npx @modelcontextprotocol/inspector --config mcp.json",
-    "arc:send-money": "tsx scripts/send-money.ts",
-    "arc:x402:pay": "tsx scripts/x402-pay.ts"
+    "arc:send-money": "tsx scripts/send-money.ts"
   },
   "dependencies": {
     "@circle-fin/adapter-circle-wallets": "^1.0.1",
