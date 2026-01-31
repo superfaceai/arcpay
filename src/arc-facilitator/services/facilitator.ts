@@ -1,5 +1,4 @@
 import Config from "@/config";
-import { defineChain } from "viem";
 import { x402Facilitator } from "@x402/core/facilitator";
 import type {
   PaymentPayload,
@@ -12,25 +11,9 @@ import { ExactEvmScheme } from "@x402/evm/exact/facilitator";
 import { createWalletClient, http, publicActions } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
+import { arcTestnet } from "@/arc/chain";
+
 // TODO: Update for mainnet when available
-
-export const RPC_URL = "https://rpc.testnet.arc.network";
-
-export const arcTestnet = defineChain({
-  id: 5042002,
-  name: "ARC Testnet",
-  nativeCurrency: {
-    decimals: 6,
-    name: "USDC",
-    symbol: "USDC",
-  },
-  rpcUrls: {
-    default: {
-      http: [RPC_URL],
-    },
-  },
-  testnet: true,
-});
 
 const evmAccount = privateKeyToAccount(
   Config.ARC_FACILITATOR_WALLET_PRIVATE_KEY,
@@ -39,7 +22,7 @@ const evmAccount = privateKeyToAccount(
 const viemClient = createWalletClient({
   account: evmAccount,
   chain: arcTestnet,
-  transport: http(RPC_URL),
+  transport: http(arcTestnet.rpcUrls.default.http[0]),
 }).extend(publicActions);
 
 const evmSigner = toFacilitatorEvmSigner({
