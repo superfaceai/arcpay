@@ -5,17 +5,15 @@ import { getCircleWalletIds } from "@/circle/services/get-circle-wallet-ids";
 export const getAccountArcWallet = async ({
   accountId,
   live,
-  currency,
 }: {
   accountId: string;
   live: boolean;
-  currency: Currency;
 }) => {
   const locationResult = await ensureLocation({
     accountId,
     live,
-    currency,
-    preferredBlockchains: ["arc"],
+    currency: "USDC", // TODO add multiple currencies support to ensureLocation
+    preferredBlockchains: ["arc"], // Arc is the only supported blockchain for X402 at the moment
   });
 
   if (!locationResult.ok) {
@@ -27,6 +25,9 @@ export const getAccountArcWallet = async ({
   }
 
   const location = locationResult.value;
+  const supportedCurrencies: Currency[] = location.assets.map(
+    (asset) => asset.currency,
+  );
 
   const { circleWalletIds } = await getCircleWalletIds({
     wallets: [
@@ -47,6 +48,7 @@ export const getAccountArcWallet = async ({
 
   return {
     circleWalletId,
+    supportedCurrencies,
     location,
   };
 };

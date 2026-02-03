@@ -23,10 +23,6 @@ const inputSchema = {
     .describe("HTTP method"),
   headers: z.record(z.string()).optional().describe("Optional HTTP headers"),
   body: z.string().optional().describe("Optional request body"),
-  currency: z
-    .enum(["USDC", "EURC"])
-    .optional()
-    .describe("Currency to use for payment"),
 };
 
 const outputSchema = {
@@ -50,57 +46,19 @@ export const fetchWithPaymentTool = createMcpTool(
     outputSchema,
   },
   (context) =>
-    async ({ url, method, headers, body, currency = "USDC" }) => {
+    async ({ url, method, headers, body }) => {
       try {
         const network = context.live
           ? ARC_MAINNET_NETWORK
           : ARC_TESTNET_NETWORK;
 
-        const stablecoin = StablecoinToken.parse(currency);
-        const asset = getStablecoinTokenAddress({
-          blockchain: "arc",
-          token: stablecoin,
-          live: context.live,
-        });
-
-        if (!asset) {
-          return toolResponse({
-            error: `The currency '${currency}' is not supported on arc`,
-          });
-        }
-
         const { circleWalletId } = await getAccountArcWallet({
           accountId: context.accountId,
           live: context.live,
-          currency: stablecoin,
         });
 
         const signer = await createArcClientSigner(circleWalletId);
         const scheme = new ExactEvmScheme(signer);
-
-        const paymentRequirementsSelector: SelectPaymentRequirements = (
-          _version,
-          accepts,
-        ) => {
-          if (!accepts || accepts.length === 0) {
-            throw new Error("No payment requirements available");
-          }
-
-          const matching = accepts.filter((req) => {
-            if (req.scheme !== "exact") return false;
-            if (req.network !== network) return false;
-            if (!req.asset) return false;
-            return req.asset.toLowerCase() === asset.toLowerCase();
-          });
-
-          if (matching.length === 0) {
-            throw new Error(
-              `No payment option matches ${currency} on ${network}`,
-            );
-          }
-
-          return matching[0];
-        };
 
         const fetchWithPayment = wrapFetchWithPaymentFromConfig(fetch, {
           schemes: [
@@ -109,7 +67,6 @@ export const fetchWithPaymentTool = createMcpTool(
               client: scheme,
             },
           ],
-          paymentRequirementsSelector,
         });
 
         const response = await fetchWithPayment(url, {
