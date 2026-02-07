@@ -26,10 +26,12 @@ const inputSchema = {
     .describe("HTTP method"),
   headers: z.record(z.string()).optional().describe("Optional HTTP headers"),
   body: z.string().optional().describe("Optional request body"),
-  mandateSecret: z
-    .string()
-    .optional()
-    .describe("Optional Arc Pay payment mandate secret token"),
+  preauthorizedPayment: z
+    .object({
+      token: z.string().describe("The token of the payment mandate"),
+      provider: z.enum(["arcpay"]).describe("The payment provider"),
+    })
+    .describe("Preauthorized payment details"),
 };
 
 const outputSchema = {
@@ -61,7 +63,7 @@ export const fetchWithPaymentTool = createMcpTool(
     outputSchema,
   },
   (context) =>
-    async ({ url, method, headers, body, mandateSecret }) => {
+    async ({ url, method, headers, body, preauthorizedPayment }) => {
       try {
         const network = context.live
           ? ARC_MAINNET_NETWORK
@@ -165,25 +167,21 @@ export const fetchWithPaymentTool = createMcpTool(
             live: context.live,
             paymentPayload,
             settlement: paymentDetails,
-            mandateSecret,
+            mandateSecret: preauthorizedPayment.token,
           });
 
           if (!recordResult.ok) {
-            if (mandateSecret) {
-              return toolResponse({ error: recordResult.error.message });
-            }
-
-            console.error("x402 payment record failed", recordResult.error);
-          } else {
-            arcPayDetails = {
-              paymentId: recordResult.value.payment.id,
-              transactionId: recordResult.value.transaction.id,
-              transactionHash: recordResult.value.transaction.blockchain.hash,
-              ...(recordResult.value.mandate
-                ? { mandateId: recordResult.value.mandate.id }
-                : {}),
-            };
+            return toolResponse({ error: recordResult.error.message });
           }
+
+          arcPayDetails = {
+            paymentId: recordResult.value.payment.id,
+            transactionId: recordResult.value.transaction.id,
+            transactionHash: recordResult.value.transaction.blockchain.hash,
+            ...(recordResult.value.mandate
+              ? { mandateId: recordResult.value.mandate.id }
+              : {}),
+          };
         }
 
         return toolResponse({
