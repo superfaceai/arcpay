@@ -184,7 +184,7 @@ export const Transaction: FC<TransactionProps> = ({
 
             <div className="transaction-box-list">
               {feeTransactions.map((feeTransaction) => (
-                <div className="item">
+                <div className="item" key={feeTransaction.id}>
                   <div className="label">
                     {feeTransaction.fee_type === "network"
                       ? "Network Fee"
