@@ -11,15 +11,35 @@ const storageKey = ({
   id: string;
 }) => `loc:${accountId}:${live ? "live" : "test"}:${id}`;
 
+const storageKeyByAddress = ({
+  live,
+  blockchain,
+  address,
+}: {
+  live: boolean;
+  blockchain: string;
+  address: string;
+}) =>
+  `loc:address:${live ? "live" : "test"}:${blockchain}:${address.toLowerCase()}`;
+
 export const saveLocation = async (location: Location) => {
-  await db.hset(
-    storageKey({
-      accountId: location.owner,
+  const locationKey = storageKey({
+    accountId: location.owner,
+    live: location.live,
+    id: location.id,
+  });
+
+  const pipeline = db.multi();
+  pipeline.hset(locationKey, location);
+  pipeline.set(
+    storageKeyByAddress({
       live: location.live,
-      id: location.id,
+      blockchain: location.blockchain,
+      address: location.address,
     }),
-    location
+    locationKey
   );
+  await pipeline.exec();
 };
 
 export const saveLocationViaPipeline = ({
@@ -36,6 +56,18 @@ export const saveLocationViaPipeline = ({
       id: location.id,
     }),
     location
+  );
+  pipeline.set(
+    storageKeyByAddress({
+      live: location.live,
+      blockchain: location.blockchain,
+      address: location.address,
+    }),
+    storageKey({
+      accountId: location.owner,
+      live: location.live,
+      id: location.id,
+    })
   );
 
   return pipeline;
@@ -131,6 +163,40 @@ export const loadLocationsByAccount = async ({
     .map((location) => Location.parse(location));
 };
 
+export const loadLocationByAddress = async ({
+  address,
+  blockchain,
+  live,
+}: {
+  address: string;
+  blockchain: string;
+  live: boolean;
+}): Promise<Location | null> => {
+  const locationKey = await db.get<string>(
+    storageKeyByAddress({
+      live,
+      blockchain,
+      address,
+    })
+  );
+
+  if (!locationKey) return null;
+
+  const location = await db.hgetall<Location>(locationKey);
+  if (!location) return null;
+
+  const parsedLocation = Location.parse(location);
+  if (
+    parsedLocation.live !== live ||
+    parsedLocation.blockchain !== blockchain ||
+    parsedLocation.address.toLowerCase() !== address.toLowerCase()
+  ) {
+    return null;
+  }
+
+  return parsedLocation;
+};
+
 export const eraseLocationsForAccount = async ({
   accountId,
 }: {
@@ -150,7 +216,26 @@ export const eraseLocationsForAccount = async ({
       cursor = nextCursor;
 
       if (keys.length) {
+        const locationsPipeline = db.pipeline();
+        for (const key of keys) {
+          locationsPipeline.hgetall<Location>(key);
+        }
+        const locationsRaw = await locationsPipeline.exec<Location[]>();
+
+        const addressIndexKeys = locationsRaw
+          .filter((location) => !!location)
+          .map((location) =>
+            storageKeyByAddress({
+              live,
+              blockchain: location.blockchain,
+              address: location.address,
+            })
+          );
+
         const delCount = await db.del(...keys);
+        if (addressIndexKeys.length > 0) {
+          await db.del(...addressIndexKeys);
+        }
         deletedCount += delCount;
       }
     } while (cursor !== "0");

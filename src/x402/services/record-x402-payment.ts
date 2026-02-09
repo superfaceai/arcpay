@@ -9,6 +9,8 @@ import {
 } from "@/balances/values";
 import {
   Payment,
+  PaymentCapture,
+  paymentCaptureId,
   paymentId,
   PaymentMandate,
   PaymentTransaction,
@@ -19,6 +21,7 @@ import { savePaymentsWithTransactionsAndCaptures } from "@/payments/repositories
 import { getPaymentMandate } from "@/payments/services";
 import { useValidPaymentMandate } from "@/payments/services/use-payment-mandate";
 import type { PaymentPayload, SettleResponse } from "@x402/core/types";
+import { loadLocationByAddress } from "@/balances/entities";
 
 type RecordX402PaymentError = {
   type: "X402PaymentRecordError";
@@ -29,6 +32,7 @@ type RecordX402PaymentResult = {
   payment: Payment;
   transaction: PaymentTransaction;
   mandate?: PaymentMandate;
+  capture?: PaymentCapture;
 };
 
 const ARC_NETWORK = "eip155:5042002";
@@ -198,7 +202,7 @@ export const recordX402Payment = async ({
     },
     fees: [],
     status: "succeeded",
-    trigger: { method: "user" },
+    trigger: mandate ? { method: "capture" } : { method: "user" },
     authorization: mandate
       ? { method: "mandate", mandate: mandate.id }
       : { method: "user" },
@@ -228,6 +232,54 @@ export const recordX402Payment = async ({
     finished_at: new Date(),
   };
 
+  const receiverLocation = await loadLocationByAddress({
+    address: accepted.payTo,
+    blockchain: ARC_BLOCKCHAIN,
+    live,
+  });
+
+  const receiverCapture: PaymentCapture | undefined =
+    receiverLocation && receiverLocation.owner !== accountId
+      ? {
+          id: paymentCaptureId(),
+          live,
+          amount,
+          currency,
+          method: "crypto",
+          status: "succeeded",
+          authorization: mandateSecret
+            ? {
+                method: "mandate" as const,
+                granted_mandate_secret: mandateSecret,
+              }
+            : { method: "sender" as const },
+          created_at: new Date(),
+          finished_at: new Date(),
+          metadata,
+        }
+      : undefined;
+
+  const receiverTransaction: PaymentTransaction | undefined =
+    receiverLocation && receiverCapture
+      ? {
+          id: transactionId(),
+          status: "completed",
+          live,
+          amount,
+          currency,
+          type: "payment",
+          network: "blockchain",
+          location: receiverLocation.id,
+          capture: receiverCapture.id,
+          blockchain: {
+            hash: settlement.transaction,
+            counterparty: locationResult.value.address,
+          },
+          created_at: new Date(),
+          finished_at: new Date(),
+        }
+      : undefined;
+
   await savePaymentsWithTransactionsAndCaptures([
     {
       accountId,
@@ -236,7 +288,18 @@ export const recordX402Payment = async ({
       paymentCaptures: [],
       mandates: mandate ? [mandate] : [],
     },
+    ...(receiverLocation && receiverCapture && receiverTransaction
+      ? [
+          {
+            accountId: receiverLocation.owner,
+            payments: [],
+            transactions: [receiverTransaction],
+            paymentCaptures: [receiverCapture],
+            mandates: [],
+          },
+        ]
+      : []),
   ]);
 
-  return ok({ payment, transaction, mandate });
+  return ok({ payment, transaction, mandate, capture: receiverCapture });
 };
