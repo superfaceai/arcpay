@@ -18,7 +18,16 @@ const storageKeyByAccount = ({
   live: boolean;
 }) => `txns:${accountId}:${live ? "live" : "test"}`;
 
-export const saveTransaction = async ({
+const storageKeyFeeIdempotency = ({
+  accountId,
+  transaction,
+}: {
+  accountId: string;
+  transaction: Extract<Transaction, { type: "fee" }>;
+}) =>
+  `txnidx:fee:${accountId}:${transaction.live ? "live" : "test"}:${transaction.location}:${transaction.fee_type}:${transaction.purpose}:${transaction.blockchain.hash.toLowerCase()}`;
+
+const persistTransaction = async ({
   transaction,
   accountId,
 }: {
@@ -28,6 +37,27 @@ export const saveTransaction = async ({
   const pipeline = db.multi();
   saveTransactionViaPipeline({ transaction, accountId, pipeline });
   await pipeline.exec();
+};
+
+export const saveTransaction = async ({
+  transaction,
+  accountId,
+}: {
+  transaction: Transaction;
+  accountId: string;
+}) => {
+  if (transaction.type === "fee") {
+    const claimed = await db.set(
+      storageKeyFeeIdempotency({ accountId, transaction }),
+      transaction.id,
+      { nx: true }
+    );
+    if (!claimed) {
+      return transaction;
+    }
+  }
+
+  await persistTransaction({ transaction, accountId });
 
   return transaction;
 };
@@ -61,12 +91,19 @@ export const saveManyTransactions = async ({
   transactions: Transaction[];
   accountId: string;
 }) => {
-  const pipeline = db.multi();
-  for (const transaction of transactions) {
-    saveTransactionViaPipeline({ transaction, accountId, pipeline });
+  const nonFeeTransactions = transactions.filter((tx) => tx.type !== "fee");
+  if (nonFeeTransactions.length > 0) {
+    const pipeline = db.multi();
+    for (const transaction of nonFeeTransactions) {
+      saveTransactionViaPipeline({ transaction, accountId, pipeline });
+    }
+    await pipeline.exec();
   }
 
-  await pipeline.exec();
+  const feeTransactions = transactions.filter((tx) => tx.type === "fee");
+  for (const transaction of feeTransactions) {
+    await saveTransaction({ transaction, accountId });
+  }
 };
 
 export const loadTransactionById = async ({
@@ -131,13 +168,27 @@ export const eraseTransactionsForAccount = async ({
       0,
       -1
     );
+    const transactions = await Promise.all(
+      transactionIds.map((transactionId) =>
+        loadTransactionById({ accountId, transactionId, live })
+      )
+    );
 
     const pipeline = db.pipeline();
 
-    for (const transactionId of transactionIds) {
-      pipeline.del(storageKeyById({ id: transactionId, accountId, live }));
+    for (const transaction of transactions) {
+      if (!transaction) {
+        continue;
+      }
+
+      pipeline.del(
+        storageKeyById({ id: transaction.id, accountId, live: transaction.live })
+      );
+      if (transaction.type === "fee") {
+        pipeline.del(storageKeyFeeIdempotency({ accountId, transaction }));
+      }
       console.debug(
-        `Removing Transaction '${transactionId}' for Account '${accountId}' (Live: ${live})`
+        `Removing Transaction '${transaction.id}' for Account '${accountId}' (Live: ${live})`
       );
     }
     pipeline.del(storageKeyByAccount({ accountId, live }));
