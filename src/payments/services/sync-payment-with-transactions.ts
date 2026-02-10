@@ -24,6 +24,7 @@ export const syncPaymentWithTransactions = ({
 
   let changed = false;
   let newPayment: Payment = { ...payment };
+  const isX402Payment = payment.metadata?.protocol === "x402";
 
   const paymentTransaction = transactions.find(
     (transaction) => transaction.type === "payment"
@@ -41,7 +42,7 @@ export const syncPaymentWithTransactions = ({
   const feeTransaction = transactions.find(
     (transaction) => transaction.type === "fee"
   );
-  if (feeTransaction) {
+  if (feeTransaction && !isX402Payment) {
     // only 1 fee for now
     const fee = mapFeeTxToFee(feeTransaction);
     const feeExists = newPayment.fees.find(
