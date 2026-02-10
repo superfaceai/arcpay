@@ -30,14 +30,14 @@ export const Transaction: FC<TransactionProps> = ({
   capture,
 }: TransactionProps) => {
   const paymentTransaction: PaymentTransaction = transactions.find(
-    (t) => t.type === "payment"
+    (t) => t.type === "payment",
   )!;
   const feeTransactions = transactions.filter(
-    (transaction) => transaction.type === "fee"
+    (transaction) => transaction.type === "fee",
   );
 
   const paymentLocation = locations.find(
-    (location) => location.id === paymentTransaction.location
+    (location) => location.id === paymentTransaction.location,
   )!;
 
   const name = formatName({ transaction: paymentTransaction!, payment });
@@ -46,8 +46,8 @@ export const Transaction: FC<TransactionProps> = ({
     Object.keys(payment?.metadata || {}).length > 0
       ? payment?.metadata!
       : Object.keys(capture?.metadata || {}).length > 0
-      ? capture?.metadata!
-      : {};
+        ? capture?.metadata!
+        : {};
 
   return (
     <div className="transaction-details">
@@ -119,14 +119,14 @@ export const Transaction: FC<TransactionProps> = ({
                   >
                     {formatBlockchainAddress(
                       paymentTransaction.blockchain.hash,
-                      true
+                      true,
                     )}
                   </a>
                 ) : (
                   <span>
                     {formatBlockchainAddress(
                       paymentTransaction.blockchain.hash,
-                      true
+                      true,
                     )}
                   </span>
                 )}
@@ -142,7 +142,7 @@ export const Transaction: FC<TransactionProps> = ({
                 title={paymentTransaction.blockchain.counterparty}
               >
                 {formatBlockchainAddress(
-                  paymentTransaction.blockchain.counterparty
+                  paymentTransaction.blockchain.counterparty,
                 )}
               </div>
             </div>

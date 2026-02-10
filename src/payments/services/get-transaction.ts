@@ -52,7 +52,7 @@ export const getTransaction = async (params: {
   );
   if (!baseTx) return ok(null);
 
-  const transactions = allTransactions.value.filter(
+  let transactions = allTransactions.value.filter(
     (transaction) => transaction.blockchain.hash === baseTx.blockchain.hash
   );
 
@@ -73,6 +73,12 @@ export const getTransaction = async (params: {
     });
     if (!payments.ok) return payments;
     payment = payments.value.find((p) => p.id === relatedPaymentId);
+
+    if (payment?.metadata?.protocol === "x402") {
+      transactions = transactions.filter(
+        (transaction) => transaction.type !== "fee"
+      );
+    }
   }
 
   if (payment?.metadata?.protocol === "x402") {

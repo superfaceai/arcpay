@@ -33,18 +33,27 @@ export const TransactionsList: FC<TransactionsListProps> = (
 
   return (
     <ul className="transactions">
-      {paymentTransactions.map((transaction) => (
-        <TransactionLine
-          key={transaction.id}
-          transaction={transaction}
-          fee={feeTransactions.find(
-            (fee) => fee.blockchain.hash === transaction.blockchain.hash
-          )}
-          payment={props.payments.find(
-            (payment) => payment.id === transaction.payment
-          )}
-        />
-      ))}
+      {paymentTransactions.map((transaction) => {
+        const payment = props.payments.find(
+          (item) => item.id === transaction.payment
+        );
+
+        const fee =
+          payment?.metadata?.protocol === "x402"
+            ? undefined
+            : feeTransactions.find(
+                (item) => item.blockchain.hash === transaction.blockchain.hash
+              );
+
+        return (
+          <TransactionLine
+            key={transaction.id}
+            transaction={transaction}
+            fee={fee}
+            payment={payment}
+          />
+        );
+      })}
     </ul>
   );
 };
