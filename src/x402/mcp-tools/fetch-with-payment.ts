@@ -13,6 +13,7 @@ import {
   createArcClientSigner,
   getAccountArcWallet,
   recordX402Payment,
+  saveX402Response,
 } from "@/x402/services";
 
 const ARC_TESTNET_NETWORK = "eip155:5042002";
@@ -144,6 +145,7 @@ export const fetchWithPaymentTool = createMcpTool(
         );
 
         const paidResponse = await fetch(paidRequest);
+        const paidResponseBody = await paidResponse.text();
 
         const paymentResponseHeader =
           paidResponse.headers.get("PAYMENT-RESPONSE") ??
@@ -182,13 +184,26 @@ export const fetchWithPaymentTool = createMcpTool(
               ? { mandateId: recordResult.value.mandate.id }
               : {}),
           };
+
+          try {
+            await saveX402Response({
+              accountId: context.accountId,
+              paymentId: recordResult.value.payment.id,
+              live: context.live,
+              status: paidResponse.status,
+              headers: paidResponse.headers,
+              body: paidResponseBody,
+            });
+          } catch (error) {
+            console.error("Failed to persist x402 response", error);
+          }
         }
 
         return toolResponse({
           structuredContent: {
             status: paidResponse.status,
             headers: Object.fromEntries(paidResponse.headers.entries()),
-            body: await paidResponse.text(),
+            body: paidResponseBody,
             ...(paymentDetails ? { paymentDetails } : {}),
             ...(arcPayDetails ? { arcPay: arcPayDetails } : {}),
           },

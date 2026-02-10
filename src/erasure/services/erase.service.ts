@@ -27,6 +27,7 @@ import {
 import { ReturnFundsOnErasureFeature } from "@/features/return-funds-on-erasure";
 import { hasBalanceInSingleLocation } from "@/balances/services";
 import { pay } from "@/payments/services";
+import { eraseX402ResponsesForAccount } from "@/x402/entities";
 
 export const erase = async ({
   accountId,
@@ -106,6 +107,7 @@ export const erase = async ({
   await erasePaymentCapturesForAccount({ accountId });
   await eraseTransactionsForAccount({ accountId });
   await eraseBridgeTransfersForAccount({ accountId });
+  await eraseX402ResponsesForAccount({ accountId });
   await eraseCallsForAccount({ accountId });
   await eraseInitialFundingsForAccount({ accountId });
   await eraseLocationsForAccount({ accountId });

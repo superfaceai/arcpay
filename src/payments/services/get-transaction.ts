@@ -6,6 +6,7 @@ import {
   Transaction,
 } from "@/payments/entities";
 import { BlockchainPaymentActionError } from "@/payments/errors";
+import { loadX402ResponseByPaymentId } from "@/x402/entities";
 
 import { listTransactions } from "./list-transactions";
 import { listPayments } from "./list-payments";
@@ -72,6 +73,29 @@ export const getTransaction = async (params: {
     });
     if (!payments.ok) return payments;
     payment = payments.value.find((p) => p.id === relatedPaymentId);
+  }
+
+  if (payment?.metadata?.protocol === "x402") {
+    const x402Response = await loadX402ResponseByPaymentId({
+      accountId: params.accountId,
+      live: params.live,
+      paymentId: payment.id,
+    });
+
+    if (x402Response) {
+      payment = {
+        ...payment,
+        metadata: {
+          ...(payment.metadata ?? {}),
+          x402_response_status: String(x402Response.status),
+          x402_response_body_preview: x402Response.body_preview,
+          x402_response_truncated: String(x402Response.body_truncated),
+          ...(x402Response.content_type
+            ? { x402_response_content_type: x402Response.content_type }
+            : {}),
+        },
+      };
+    }
   }
 
   if (relatedCaptureId) {
