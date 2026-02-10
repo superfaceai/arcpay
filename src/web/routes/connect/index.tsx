@@ -12,6 +12,7 @@ import {
 import { acpCheckoutsMcpUrl } from "@/acp-checkouts/mcp";
 import { ucpCheckoutsMcpUrl } from "@/ucp-checkouts/mcp";
 import { walletMcpUrl } from "@/wallet/mcp";
+import { x402McpUrl } from "@/x402/mcp";
 
 export const connectRoute = createWebRoute().get(
   "/connect",
@@ -56,6 +57,7 @@ export const connectRoute = createWebRoute().get(
           walletMcpUrl={walletMcpUrl(baseUrl)}
           acpMcpUrl={acpCheckoutsMcpUrl(baseUrl)}
           ucpMcpUrl={ucpCheckoutsMcpUrl(baseUrl)}
+          x402McpUrl={x402McpUrl(baseUrl)}
           apiKey={apiKeys[0]}
         />
       );
@@ -68,6 +70,7 @@ export const connectRoute = createWebRoute().get(
         isTestMode={!isLive}
         walletMcpUrl={walletMcpUrl(baseUrl)}
         acpMcpUrl={acpCheckoutsMcpUrl(baseUrl)}
+        x402McpUrl={x402McpUrl(baseUrl)}
         apiKey={apiKeys[0]}
       />
     );

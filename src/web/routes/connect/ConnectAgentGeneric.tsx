@@ -12,6 +12,7 @@ type ConnectAgentProps = {
   agent: Agent;
   walletMcpUrl: string;
   acpMcpUrl: string;
+  x402McpUrl: string;
   apiKey: ApiKey;
 };
 
@@ -52,6 +53,18 @@ export const ConnectAgentGeneric: FC<ConnectAgentProps> = (
               </p>
 
               <Snippet content={props.acpMcpUrl} copyText="Shopping MCP" />
+
+              <p>
+                For paywalled HTTP resources (x402), connect Arc Pay x402 MCP
+                server as a separate tool:
+              </p>
+
+              <Snippet content={props.x402McpUrl} copyText="x402 MCP" />
+
+              <p>
+                Protocol guidance: use ACP/UCP for checkout flows and x402 for
+                paid HTTP fetch flows.
+              </p>
             </div>
 
             <div class="separator" />
@@ -94,7 +107,9 @@ export const ConnectAgentGeneric: FC<ConnectAgentProps> = (
 - When asked to purchase goods, find the available products
 - Reason about the product's choices, quantities, and prices
 - Select the best product(s) for the user
-- Addresses are available via wallet`}
+- Addresses are available via wallet
+- For paywalled URLs, use fetch-with-payment via x402 MCP
+- Always include preauthorizedPayment.provider as "arcpay"`}
               />
             </div>
 
