@@ -20,10 +20,13 @@ import {
 import { notificationsApi } from "@/notifications/api";
 import { acpDelegatedPaymentsApi } from "@/acp/api/delegated-payments";
 import { ucpPaymentSchemasApi } from "@/ucp-payment-handler/api";
+import { facilitatorApi } from "@/arc-facilitator/api";
 
 import { walletMcp } from "@/wallet/mcp";
 import { acpCheckoutsMcp } from "@/acp-checkouts/mcp";
 import { ucpCheckoutsMcp } from "@/ucp-checkouts/mcp";
+import { x402Mcp } from "@/x402/mcp";
+
 import { apiDocsRoute } from "@/web/routes/api-docs/index";
 import { loginRoute } from "@/web/routes/login";
 import { confirmCodeRoute } from "@/web/routes/confirm-code";
@@ -56,17 +59,20 @@ const app = createApplicationApi((app) => {
 
   app.route("/", notificationsApi);
 
-  app.route("/", acpDelegatedPaymentsApi);
-  app.route("/", ucpPaymentSchemasApi);
-  app.route("/", ucpCheckoutsProfileApi);
   app.route("/", acpCheckoutsMcp);
+  app.route("/", acpDelegatedPaymentsApi);
+  app.route("/", facilitatorApi);
   app.route("/", ucpCheckoutsMcp);
+  app.route("/", ucpCheckoutsProfileApi);
+  app.route("/", ucpPaymentSchemasApi);
   app.route("/", walletMcp);
+  app.route("/", x402Mcp);
 
   const documentedResourcesList = listResources(app, [
     "/wallet",
     "/acp_checkouts",
     "/ucp_checkouts",
+    "/x402",
     ucpPaymentSchemasApi.routes[0].path,
     ucpCheckoutsProfileApi.routes[0].path,
   ]);

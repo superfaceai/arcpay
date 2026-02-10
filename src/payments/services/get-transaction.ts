@@ -46,11 +46,13 @@ export const getTransaction = async (params: {
 
   if (!allTransactions.ok) return allTransactions;
 
-  const baseTx = allTransactions.value.find((tx) => tx.id === tx.id);
+  const baseTx = allTransactions.value.find(
+    (transaction) => transaction.id === tx.id
+  );
   if (!baseTx) return ok(null);
 
   const transactions = allTransactions.value.filter(
-    (tx) => tx.blockchain.hash === baseTx.blockchain.hash
+    (transaction) => transaction.blockchain.hash === baseTx.blockchain.hash
   );
 
   let payment: Payment | undefined = undefined;

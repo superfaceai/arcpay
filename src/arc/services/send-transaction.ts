@@ -1,26 +1,11 @@
-import {
-  createWalletClient,
-  http,
-  defineChain,
-  parseEther,
-} from "viem";
+import { createWalletClient, http, parseEther } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
 import { err, ok, Result } from "@/lib";
 
 import { Amount } from "@/balances/values";
+import { arcTestnet } from "../chain";
 import { ArcChainError } from "../errors";
-
-const RPC_URL = "https://rpc.testnet.arc.network";
-const arcTestnet = defineChain({
-  id: 5042002,
-  name: "Arc Testnet",
-  nativeCurrency: { name: "USDC", symbol: "USDC", decimals: 18 },
-  rpcUrls: {
-    default: { http: [RPC_URL] },
-    public: { http: [RPC_URL] },
-  },
-});
 
 export const sendTransactionOnArcTestnet = async ({
   fromWalletPrivateKey,
@@ -37,7 +22,7 @@ export const sendTransactionOnArcTestnet = async ({
     const client = createWalletClient({
       account,
       chain: arcTestnet,
-      transport: http(RPC_URL),
+      transport: http(arcTestnet.rpcUrls.default.http[0]),
     });
 
     const txHash = await client.sendTransaction({
