@@ -139,6 +139,32 @@ export const ApiDocs: FC<ApiDocsProps> = (props: ApiDocsProps) => {
           Agentic Wallet MCP accepts <em>streamable HTTP</em> connections.
         </p>
 
+        <h2>x402 Payments (MCP)</h2>
+
+        <p>
+          Arc Pay x402 MCP lets your agent access paywalled HTTP resources that
+          require payment through a 402 challenge.
+        </p>
+
+        <pre>{props.host}/x402</pre>
+
+        <p>
+          Use the same <a href="#authentication">authentication</a> method as
+          the API and wallet MCP.
+        </p>
+
+        <p>
+          x402 MCP accepts <em>streamable HTTP</em> connections.
+        </p>
+
+        <p>
+          For more information, see the{" "}
+          <a href="https://www.x402.org" target="_blank">
+            x402 specification
+          </a>
+          .
+        </p>
+
         <h2>Universal Commerce Protocol (UCP) for merchants</h2>
 
         <p>

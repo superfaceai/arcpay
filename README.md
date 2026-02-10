@@ -9,8 +9,9 @@ Arc Pay supports the following payment methods:
 ## How to use (docs)
 
 - See [reference](https://arcpay.ai/docs/api)
+- x402 MCP docs are included in the API reference (`/docs/api`, section "x402 Payments (MCP)")
 - Use included [Postman collection](./docs/ArcPay.postman_collection.json)
-- Use `npm run mcp:inspect` to interact with MCP server
+- Use `npm run mcp:inspect` to interact with MCP servers (for x402, target `/x402`)
 
 ## Development
 

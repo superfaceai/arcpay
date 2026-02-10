@@ -1514,6 +1514,95 @@
       ]
     },
     {
+      "name": "x402 Payments (MCP)",
+      "item": [
+        {
+          "name": "[MCP] List tools",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{SECRET_KEY}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json,text/event-stream",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/list\",\n  \"params\": { }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/x402",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "x402"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fetch with payment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{SECRET_KEY}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json,text/event-stream",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 2,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"fetch-with-payment\",\n    \"arguments\": {\n      \"url\": \"https://merchant-demo.arcpay.ai/paywall/demo\",\n      \"method\": \"GET\",\n      \"preauthorizedPayment\": {\n        \"token\": \"paym_XXX_secret_YYY\",\n        \"provider\": \"arcpay\"\n      }\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/x402",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "x402"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "ACP Shopping Client (MCP)",
       "item": [
         {

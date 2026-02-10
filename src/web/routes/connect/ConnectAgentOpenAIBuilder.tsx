@@ -15,14 +15,16 @@ type ConnectAgentOpenAIBuilderProps = {
   walletMcpUrl: string;
   acpMcpUrl: string;
   ucpMcpUrl: string;
+  x402McpUrl: string;
   apiKey: ApiKey;
 };
 
 export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
   props: ConnectAgentOpenAIBuilderProps
 ) => {
-  const UCP_ID = 'ucp-shopping';
-  const ACP_ID = 'acp-shopping';
+  const UCP_ID = "ucp-shopping";
+  const ACP_ID = "acp-shopping";
+  const X402_ID = "x402-payment";
 
   return (
     <Layout isTestMode={props.isTestMode}>
@@ -79,10 +81,11 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
             <div class="separator long" />
 
             <div className="step">
-              <h3>Choose shopping protocol</h3>
+              <h3>Choose protocol</h3>
 
               <p>
-                Pick the shopping protocol your merchant supports to navigate the checkout process.
+                Pick the protocol your merchant supports. Use UCP/ACP for
+                checkout flows and x402 for paywalled HTTP resources.
               </p>
 
               <div className="merchant-type-selector">
@@ -135,7 +138,7 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
                       <img src="/protocols/x402.png" alt="x402" />
                     </div>
                     <div className="merchant-type-text">
-                      <div className="merchant-type-title">x402 (soon)</div>
+                      <div className="merchant-type-title">x402</div>
                     </div>
                   </div>
                   <div className="merchant-type-radio">
@@ -146,7 +149,7 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
                     name="merchantType"
                     value="x402"
                     aria-label="x402"
-                    disabled
+                    data-on:click={`$openProtocol = '${X402_ID}'`}
                   />
                 </label>
               </div>
@@ -157,12 +160,17 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
             <ShoppingMcpSteps
               id={UCP_ID}
               apiKey={props.apiKey}
-              protocol={{ kind: 'ucp', mcpUrl: props.ucpMcpUrl }}
+              protocol={{ kind: "ucp", mcpUrl: props.ucpMcpUrl }}
             />
             <ShoppingMcpSteps
               id={ACP_ID}
               apiKey={props.apiKey}
-              protocol={{ kind: 'acp', mcpUrl: props.acpMcpUrl }}
+              protocol={{ kind: "acp", mcpUrl: props.acpMcpUrl }}
+            />
+            <X402McpSteps
+              id={X402_ID}
+              apiKey={props.apiKey}
+              mcpUrl={props.x402McpUrl}
             />
           </div>
         </div>
@@ -173,12 +181,12 @@ export const ConnectAgentOpenAIBuilder: FC<ConnectAgentOpenAIBuilderProps> = (
 
 function ShoppingMcpSteps(props: {
   apiKey: ApiKey;
-  protocol: { kind: 'ucp', mcpUrl: string } | { kind: 'acp', mcpUrl: string };
+  protocol: { kind: "ucp"; mcpUrl: string } | { kind: "acp"; mcpUrl: string };
   id: string;
 }) {
   const mcpUrl = props.protocol.mcpUrl;
 
-  const shoppingMcpParagraph = props.protocol.kind === 'ucp'
+  const shoppingMcpParagraph = props.protocol.kind === "ucp"
     ? <>To help your agent navigate shopping carts & checkouts, connect
       the{" "}
       <a href="https://ucp.dev" target="_blank">
@@ -192,7 +200,7 @@ function ShoppingMcpSteps(props: {
       </a>{" "}
       shopping MCP server.</>;
 
-  const instructionsParagraph = props.protocol.kind === 'ucp'
+  const instructionsParagraph = props.protocol.kind === "ucp"
     ? <>
       Use our{" "}
       <a href="https://merchant-demo.arcpay.ai" target="_blank">
@@ -216,14 +224,14 @@ function ShoppingMcpSteps(props: {
 
 Merchant:
 - products in JSON: https://merchant-demo.arcpay.ai/api/products
-- ${props.protocol.kind === 'ucp'
-      ? 'UCP base url: https://merchant-demo.arcpay.ai/api/ucp'
-      : 'ACP base url: https://merchant-demo.arcpay.ai/api/acp'}
+- ${props.protocol.kind === "ucp"
+      ? "UCP base url: https://merchant-demo.arcpay.ai/api/ucp"
+      : "ACP base url: https://merchant-demo.arcpay.ai/api/acp"}
 `
 
   return (<div class="steps-list reset" data-show={`$openProtocol === '${props.id}'`}>
     <div className="step">
-      <h3>Connect shopping client {props.protocol.kind === 'ucp' ? 'for UCP' : 'for ACP'}</h3>
+      <h3>Connect shopping client {props.protocol.kind === "ucp" ? "for UCP" : "for ACP"}</h3>
 
       {Config.GUIDE_OPENAI_BUILDER_SHOPPING_MCP_VIDEO_URL && (
         <video
@@ -317,4 +325,59 @@ Merchant:
       </p>
     </div>
   </div>)
+}
+
+function X402McpSteps(props: {
+  apiKey: ApiKey;
+  mcpUrl: string;
+  id: string;
+}) {
+  return (
+    <div class="steps-list reset" data-show={`$openProtocol === '${props.id}'`}>
+      <div className="step">
+        <h3>Connect x402 MCP</h3>
+
+        <p>
+          Use Arc Pay x402 MCP when your agent needs to access paywalled HTTP
+          resources that return a 402 payment challenge.
+        </p>
+
+        <Snippet
+          content={props.mcpUrl}
+          copyText="x402 MCP"
+          copyPrimary
+        />
+
+        <Snippet content={"x402"} copyText="Copy label" copyPrimary />
+
+        <Snippet
+          content={props.apiKey.key}
+          obfuscatedContent={
+            props.apiKey.key.slice(0, 12) + "••••••••••••••••••••••••••••••••"
+          }
+          copyText="Copy token"
+          copyPrimary
+        />
+      </div>
+
+      <div class="separator long" />
+
+      <div className="step">
+        <h3>Agent instructions for x402</h3>
+
+        <p>
+          Add short instructions so your agent uses the{" "}
+          <code>fetch-with-payment</code> tool when a URL requires payment.
+        </p>
+
+        <Snippet
+          content={`x402 payment actions:
+- Use tool fetch-with-payment for paywalled URLs
+- Start with method GET unless user asks otherwise
+- Pass preauthorizedPayment with provider "arcpay"
+- Return status, response body summary, and Arc Pay transaction details`}
+        />
+      </div>
+    </div>
+  );
 }
