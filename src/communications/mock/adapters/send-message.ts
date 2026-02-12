@@ -4,5 +4,5 @@ import { SendMessage } from "@/communications/interfaces";
 
 export const sendMessage: SendMessage = async ({ channelId, message }) => {
   console.error(`[MESSAGE MOCK] [CHANNEL: ${channelId}] ${message}`);
-  return ok({ status: "failed" });
+  return ok({ status: "sent" });
 };
