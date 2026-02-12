@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { Result, PhoneNumber } from "@/lib";
 import {
+  MessageError,
   TransactionalEmailError,
   TransactionalSMSError,
 } from "@/communications/errors";
@@ -15,3 +16,8 @@ export type SendTransactionalEmail = (input: {
   subject: string;
   plainTextMessage: string;
 }) => Promise<Result<{ status: "sent" | "failed" }, TransactionalEmailError>>;
+
+export type SendMessage = (input: {
+  channelId: string;
+  message: string;
+}) => Promise<Result<{ status: "sent" | "failed" }, MessageError>>;

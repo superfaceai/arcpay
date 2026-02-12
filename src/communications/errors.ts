@@ -7,3 +7,8 @@ export interface TransactionalEmailError {
   readonly type: "TransactionalEmailError";
   readonly message: string;
 }
+
+export interface MessageError {
+  readonly type: "MessageError";
+  readonly message: string;
+}

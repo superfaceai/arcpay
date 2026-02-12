@@ -18,6 +18,7 @@
     "@hono/zod-validator": "^0.7.4",
     "@modelcontextprotocol/sdk": "^1.20.2",
     "@sendgrid/mail": "^8.1.6",
+    "@slack/web-api": "^7.14.0",
     "@upstash/redis": "^1.35.6",
     "@x402/core": "^2.2.0",
     "@x402/evm": "^2.2.0",
