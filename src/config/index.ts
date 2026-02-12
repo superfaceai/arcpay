@@ -18,6 +18,7 @@ const ConfigSchema = z.object({
   SENDGRID_API_KEY: z.string().optional(),
   SENDGRID_FROM_EMAIL: z.string().optional(),
   UNOSEND_API_KEY: z.string().optional(),
+  SLACK_BOT_TOKEN: z.string().optional(),
 
   FEATURE_INITIAL_FUNDING_ENABLED: z
     .preprocess((env) => env === "true", z.boolean())
@@ -39,6 +40,11 @@ const ConfigSchema = z.object({
     .string()
     .min(3)
     .optional(),
+
+  FEATURE_SIGN_UP_SLACK_NOTIFICATION_ENABLED: z
+    .preprocess((env) => env === "true", z.boolean())
+    .default(false),
+  FEATURE_SIGN_UP_SLACK_CHANNEL_ID: z.string().optional(),
 
   GUIDE_OPENAI_BUILDER_WALLET_MCP_VIDEO_URL: z.string().optional(),
   GUIDE_OPENAI_BUILDER_SHOPPING_MCP_VIDEO_URL: z.string().optional(),
