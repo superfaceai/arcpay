@@ -41,6 +41,11 @@ const ConfigSchema = z.object({
     .min(3)
     .optional(),
 
+  FEATURE_SIGN_UP_SLACK_NOTIFICATION_ENABLED: z
+    .preprocess((env) => env === "true", z.boolean())
+    .default(false),
+  FEATURE_SIGN_UP_SLACK_CHANNEL_ID: z.string().optional(),
+
   GUIDE_OPENAI_BUILDER_WALLET_MCP_VIDEO_URL: z.string().optional(),
   GUIDE_OPENAI_BUILDER_SHOPPING_MCP_VIDEO_URL: z.string().optional(),
   GUIDE_OPENAI_BUILDER_INSTRUCTIONS_VIDEO_URL: z.string().optional(),

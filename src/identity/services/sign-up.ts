@@ -22,6 +22,7 @@ import {
   AccountHandleNotAvailableError,
   ContactVerificationError,
 } from "@/identity/errors";
+import { sendSignUpNotification } from "./send-signup-notification";
 
 const SignContactPhone = z.object({
   phone: PhoneNumber,
@@ -40,7 +41,7 @@ export const SignUpDTO = z.object({
 });
 
 export const signUp = async (
-  dto: z.infer<typeof SignUpDTO>
+  dto: z.infer<typeof SignUpDTO>,
 ): Promise<
   Result<ApiKey, AccountHandleNotAvailableError | ContactVerificationError>
 > => {
@@ -120,6 +121,8 @@ export const signUp = async (
   await saveApiKey(apiKey);
   await saveAccount(account);
 
+  await sendSignUpNotification(account);
+
   return ok(apiKey);
 };
 
@@ -165,7 +168,7 @@ const getAccountHandle = async ({
 };
 
 const nameToHandle = (
-  name: string
+  name: string,
 ): Result<AccountHandle, AccountHandleNotAvailableError> => {
   const sanitizedName = name
     .normalize("NFD")
