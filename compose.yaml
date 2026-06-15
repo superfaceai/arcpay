@@ -30,6 +30,9 @@ services:
   app:
     build: .
     image: arcpay:local
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     env_file: .env
     environment:
       NODE_ENV: production
@@ -49,6 +52,9 @@ services:
     profiles:
       - caddy
     image: caddy:2-alpine
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     environment:
       APP_DOMAIN: ${APP_DOMAIN:-localhost}
     ports:
