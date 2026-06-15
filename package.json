@@ -6,6 +6,15 @@
   "scripts": {
     "dev": "tsx watch development.ts",
     "build": "tsc && tsc-alias -f",
+    "start": "node dist/development.js",
+    "compose:dev": "docker compose up -d redis redis_http_proxy",
+    "compose:prod": "npm run compose:prod:up",
+    "compose:prod:up": "docker compose up -d --build",
+    "compose:prod:down": "docker compose down",
+    "compose:prod:recreate": "docker compose up -d --build --force-recreate",
+    "compose:prod:logs": "docker compose logs -f",
+    "compose:down": "npm run compose:prod:down",
+    "compose:logs": "npm run compose:prod:logs",
     "mcp:inspect": "npx @modelcontextprotocol/inspector --config mcp.json",
     "arc:send-money": "tsx scripts/send-money.ts"
   },
@@ -14,6 +23,7 @@
     "@circle-fin/bridge-kit": "^1.2.0",
     "@circle-fin/developer-controlled-wallets": "^9.2.0",
     "@hono/mcp": "^0.1.4",
+    "@hono/node-server": "^1.19.14",
     "@hono/session": "^0.2.0",
     "@hono/zod-validator": "^0.7.4",
     "@modelcontextprotocol/sdk": "^1.20.2",
@@ -36,7 +46,6 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@hono/node-server": "^1.19.5",
     "@modelcontextprotocol/inspector": "^0.17.2",
     "@types/big.js": "^6.2.2",
     "@types/iso-3166-1-alpha-2": "^1.0.2",

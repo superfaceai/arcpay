@@ -18,6 +18,8 @@ export const createApplicationApi = <A extends ReturnType<typeof createApi>>(
   }
   app.use("*", withRequestId());
 
+  app.get("/healthz", (c) => c.json({ status: "ok" }));
+
   registerApis(app as A);
 
   // Serve static files from the public directory
