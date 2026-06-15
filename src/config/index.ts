@@ -5,7 +5,6 @@ import { z } from "zod";
 
 const ConfigSchema = z.object({
   NODE_ENV: z.enum(["development", "production"]),
-  IS_PRODUCTION: z.preprocess((env) => env === "production", z.boolean()),
   SESSION_SECRET: z.string().min(1),
   CIRCLE_API_KEY: z.string().min(1),
   CIRCLE_ENTITY_SECRET: z.string().min(1),
@@ -67,5 +66,8 @@ if (!parsedConfig.success) {
   throw new Error(`Invalid environment variables: ${errors}`);
 }
 
-export const Config = parsedConfig.data;
+export const Config = {
+  ...parsedConfig.data,
+  IS_PRODUCTION: parsedConfig.data.NODE_ENV === "production",
+};
 export default Config;

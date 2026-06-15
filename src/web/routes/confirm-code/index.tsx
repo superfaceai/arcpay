@@ -1,4 +1,5 @@
 import { validator } from "hono/validator";
+import Config from "@/config";
 import {
   createWebRoute,
   getSessionAndRemoveError,
@@ -58,7 +59,7 @@ export const confirmCodeRoute = createWebRoute()
         await updateSession(c, {
           account: {
             accountId: confirmCodeResult.value.account.id,
-            isLive: false,
+            isLive: Config.IS_PRODUCTION,
           },
         });
         await new Promise((resolve) => setTimeout(resolve, 500));

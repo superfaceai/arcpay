@@ -35,8 +35,6 @@ services:
       - 8.8.8.8
     env_file: .env
     environment:
-      NODE_ENV: production
-      IS_PRODUCTION: production
       NODE: "true"
       PORT: 3000
       KV_REST_API_URL: http://redis_http_proxy

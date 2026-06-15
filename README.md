@@ -47,7 +47,7 @@ open http://localhost:3000
 
 ## Self-host with Docker
 
-Copy `.env.example` to `.env` and fill the required secrets. Login emails try SendGrid first (`SENDGRID_API_KEY` + `SENDGRID_FROM_EMAIL`), then fall back to Unosend (`UNOSEND_API_KEY` + verified `UNOSEND_FROM_EMAIL`). If both are unavailable, the app logs the unsent message and fails the send.
+Copy `.env.example` to `.env` and fill the required secrets. `NODE_ENV` is read from `.env`; `development` creates sandbox/test API keys, `production` creates live API keys. Login emails try SendGrid first (`SENDGRID_API_KEY` + `SENDGRID_FROM_EMAIL`), then fall back to Unosend (`UNOSEND_API_KEY` + verified `UNOSEND_FROM_EMAIL`). If both are unavailable, the app logs the unsent message and fails the send.
 
 If the server already has a reverse proxy on ports 80/443, build and start the core stack, then point that proxy at `http://127.0.0.1:3000`:
 
