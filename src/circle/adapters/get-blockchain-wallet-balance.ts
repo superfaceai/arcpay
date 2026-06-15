@@ -1,7 +1,14 @@
 import Big from "big.js";
 
 import { tryAsync } from "@/lib";
-import { isValidToken, tokenToCurrency } from "@/balances/values";
+import {
+  getNativeTokenFor,
+  isStablecoinSupported,
+  isValidToken,
+  STABLECOIN_TOKENS,
+  StablecoinToken,
+  tokenToCurrency,
+} from "@/balances/values";
 import { GetBlockchainWalletBalance } from "@/balances/interfaces";
 
 import { getCircleWalletIds } from "../services/get-circle-wallet-ids";
@@ -36,24 +43,39 @@ export const getBlockchainWalletBalance: GetBlockchainWalletBalance = async ({
         .map((tokenSymbol) => tokenToCurrency(tokenSymbol))
         .filter((currency, index, self) => self.indexOf(currency) === index);
 
-      return walletCurrencies.map((currency) => {
-        let total = Big(0);
-
-        circleTokenBalances.forEach((balance) => {
-          const tokenSymbol = isValidToken(balance.token.symbol)
-            ? balance.token.symbol
-            : undefined;
-
-          if (!tokenSymbol) return;
-
-          if (currency === tokenToCurrency(tokenSymbol)) {
-            total = total.plus(balance.amount);
-          }
+      const nativeCurrency = tokenToCurrency(getNativeTokenFor({ blockchain }));
+      const nativeStablecoinCollision =
+        STABLECOIN_TOKENS.includes(nativeCurrency as StablecoinToken) &&
+        isStablecoinSupported({
+          blockchain,
+          token: nativeCurrency as StablecoinToken,
         });
+
+      return walletCurrencies.map((currency) => {
+        const matchingAmounts = circleTokenBalances
+          .map((balance) => {
+            const tokenSymbol = isValidToken(balance.token.symbol)
+              ? balance.token.symbol
+              : undefined;
+
+            if (!tokenSymbol) return null;
+            if (currency !== tokenToCurrency(tokenSymbol)) return null;
+
+            return Big(balance.amount);
+          })
+          .filter((amount) => amount !== null);
+
+        const amount =
+          nativeStablecoinCollision && currency === nativeCurrency
+            ? matchingAmounts.reduce(
+                (max, amount) => (amount.gt(max) ? amount : max),
+                Big(0)
+              )
+            : matchingAmounts.reduce((total, amount) => total.plus(amount), Big(0));
 
         return {
           currency,
-          amount: total.toString(),
+          amount: amount.toString(),
         };
       });
     },
