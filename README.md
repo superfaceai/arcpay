@@ -47,7 +47,7 @@ open http://localhost:3000
 
 ## Self-host with Docker
 
-Copy `.env.example` to `.env` and fill the required secrets.
+Copy `.env.example` to `.env` and fill the required secrets. For login emails with Unosend, set `UNOSEND_API_KEY` and a verified sender in `UNOSEND_FROM_EMAIL`.
 
 If the server already has a reverse proxy on ports 80/443, build and start the core stack, then point that proxy at `http://127.0.0.1:3000`:
 

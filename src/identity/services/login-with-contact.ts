@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ok, PhoneNumber, Result } from "@/lib";
+import { err, ok, PhoneNumber, Result } from "@/lib";
 
 import {
   ConfirmationCode,
@@ -39,18 +39,28 @@ export const loginWithContact = async (
   await saveConfirmationCode(confirmationCode);
 
   if ("phone" in dto) {
-    await sendTransactionalSMSAdapter({
+    const sendResult = await sendTransactionalSMSAdapter({
       to: dto.phone,
       message: `Your login code to Arc Pay is ${confirmationCode.code}`,
     });
+
+    if (!sendResult.ok) {
+      console.error("Failed to send login SMS", sendResult.error);
+      return err(undefined);
+    }
   }
 
   if ("email" in dto) {
-    await sendTransactionalEmailAdapter({
+    const sendResult = await sendTransactionalEmailAdapter({
       to: dto.email,
       subject: "Your login code to Arc Pay",
       plainTextMessage: `Your login code to Arc Pay is ${confirmationCode.code}`,
     });
+
+    if (!sendResult.ok) {
+      console.error("Failed to send login email", sendResult.error);
+      return err(undefined);
+    }
   }
 
   return ok(confirmationCode);
