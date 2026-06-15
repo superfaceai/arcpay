@@ -2,15 +2,18 @@ import Config from "@/config";
 import { err } from "@/lib";
 import { SendTransactionalEmail } from "@/communications/interfaces";
 
+import { sendTransactionalEmail as mockSendTransactionalEmail } from "@/communications/mock/adapters";
 import { sendTransactionalEmail as sendTransactionalEmailViaSendgrid } from "@/communications/sendgrid/adapters";
 import { sendTransactionalEmail as sendTransactionalEmailViaUnosend } from "@/communications/unosend/adapters";
 
 console.info(
-  `[communications] transactional email providers: sendgrid=${
-    Config.SENDGRID_API_KEY && Config.SENDGRID_FROM_EMAIL
-      ? "configured"
-      : "unconfigured"
-  }, unosend=${Config.UNOSEND_API_KEY ? "configured" : "unconfigured"}`,
+  Config.TRANSACTIONAL_EMAIL_MOCK_OVERRIDE
+    ? "[communications] transactional email provider: mock"
+    : `[communications] transactional email providers: sendgrid=${
+        Config.SENDGRID_API_KEY && Config.SENDGRID_FROM_EMAIL
+          ? "configured"
+          : "unconfigured"
+      }, unosend=${Config.UNOSEND_API_KEY ? "configured" : "unconfigured"}`,
 );
 
 export const sendTransactionalEmail: SendTransactionalEmail = async ({
@@ -18,6 +21,10 @@ export const sendTransactionalEmail: SendTransactionalEmail = async ({
   subject,
   plainTextMessage,
 }) => {
+  if (Config.TRANSACTIONAL_EMAIL_MOCK_OVERRIDE) {
+    return mockSendTransactionalEmail({ to, subject, plainTextMessage });
+  }
+
   const failures: string[] = [];
 
   if (Config.SENDGRID_API_KEY && Config.SENDGRID_FROM_EMAIL) {
@@ -56,9 +63,7 @@ export const sendTransactionalEmail: SendTransactionalEmail = async ({
     failures.push("Unosend: unconfigured");
   }
 
-  console.error(
-    `[EMAIL UNSENT] [${to}] [${subject}] ${plainTextMessage}`,
-  );
+  console.error(`[EMAIL UNSENT] [${to}] [${subject}] ${plainTextMessage}`);
 
   return err({
     type: "TransactionalEmailError",
