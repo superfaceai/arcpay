@@ -21,9 +21,8 @@ export const sendTransactionalEmail: SendTransactionalEmail = async ({
   try {
     const response = await client.post("/emails", {
       from,
-      to: [to],
+      to,
       subject,
-      text: plainTextMessage,
       html: `<p>${escapeHtml(plainTextMessage)}</p>`,
     });
 
