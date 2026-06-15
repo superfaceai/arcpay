@@ -9,12 +9,12 @@ export const sendTransactionalEmail: SendTransactionalEmail = async ({
   subject,
   plainTextMessage,
 }) => {
-  const from = Config.UNOSEND_FROM_EMAIL ?? Config.SENDGRID_FROM_EMAIL;
+  const from = Config.UNOSEND_FROM_EMAIL;
 
   if (!client || !from) {
     return err({
       type: "TransactionalEmailError",
-      message: "Unosend email is not configured",
+      message: "Unosend email is not configured. Set UNOSEND_API_KEY and UNOSEND_FROM_EMAIL to a verified Unosend sender.",
     });
   }
 
@@ -24,18 +24,14 @@ export const sendTransactionalEmail: SendTransactionalEmail = async ({
       to: [to],
       subject,
       text: plainTextMessage,
-      priority: "high",
-      tracking: {
-        open: false,
-        click: false,
-      },
+      html: `<p>${escapeHtml(plainTextMessage)}</p>`,
     });
 
     if (!response.ok) {
       const responseBody = await response.text().catch(() => "");
       return err({
         type: "TransactionalEmailError",
-        message: `Failed to send email via Unosend: ${response.status} ${response.statusText}${
+        message: `Failed to send email via Unosend from ${from}: ${response.status} ${response.statusText}${
           responseBody ? ` - ${responseBody}` : ""
         }`,
       });
@@ -49,3 +45,11 @@ export const sendTransactionalEmail: SendTransactionalEmail = async ({
     });
   }
 };
+
+const escapeHtml = (value: string) =>
+  value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");

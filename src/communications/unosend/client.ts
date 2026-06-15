@@ -1,7 +1,7 @@
 import Config from "@/config";
 
 const makeUnosendClient = (apiKey: string) => {
-  const baseUrl = "https://api.unosend.co/v1";
+  const baseUrl = "https://api.unosend.co";
 
   return {
     post: async (path: string, body: Record<string, any>) => {
