@@ -46,6 +46,8 @@ services:
     restart: unless-stopped
 
   caddy:
+    profiles:
+      - caddy
     image: caddy:2-alpine
     environment:
       APP_DOMAIN: ${APP_DOMAIN:-localhost}

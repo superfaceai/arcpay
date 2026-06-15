@@ -47,40 +47,42 @@ open http://localhost:3000
 
 ## Self-host with Docker
 
-Copy `.env.example` to `.env`, fill the required secrets, and set `APP_DOMAIN` to the public hostname that should serve the app:
+Copy `.env.example` to `.env` and fill the required secrets.
+
+If the server already has a reverse proxy on ports 80/443, build and start the core stack, then point that proxy at `http://127.0.0.1:3000`:
+
+```sh
+npm run prod:app:build
+npm run prod:app:up
+```
+
+If you want the bundled Caddy reverse proxy instead, make sure ports 80/443 are free, set `APP_DOMAIN`, start the core stack, then start the proxy:
 
 ```env
 APP_DOMAIN=arcpay.example.com
 ```
 
-Then build and start the full stack:
-
 ```sh
-npm run compose:prod:deploy
+npm run prod:app:build
+npm run prod:app:up
+npm run prod:proxy:up
 ```
 
-`npm run compose:prod` is also available as a shorter alias for `compose:prod:deploy`.
+This runs the app internally on port 3000, Redis with append-only persistence, and the Upstash-compatible Redis HTTP proxy used by the app. Redis data is stored under `.storage/redis/`. With the bundled Caddy profile, Caddy serves ports 80/443 with automatic HTTPS and stores certificates/config under `.storage/caddy/`.
 
-This runs Caddy on ports 80/443 with automatic HTTPS, the app internally on port 3000, Redis with append-only persistence, and the Upstash-compatible Redis HTTP proxy used by the app. Make sure DNS for `APP_DOMAIN` points to the server and ports 80/443 are open. Redis data is stored under `.storage/redis/`; Caddy certificates/config are stored under `.storage/caddy/`.
+For local debugging on the host, the app is bound to `http://127.0.0.1:3000` by default.
 
-For local debugging on the host, the app is also bound to `http://127.0.0.1:3000` by default.
-
-Production Compose shortcuts:
+Production commands:
 
 ```sh
-npm run compose:prod:build     # build the app image
-npm run compose:prod:deploy    # build and start/update the stack
-npm run compose:prod:up        # start/update existing images without rebuilding
-npm run compose:prod:down      # stop and remove containers/network, keep .storage data
-npm run compose:prod:recreate  # force-recreate containers without rebuilding
-npm run compose:prod:rebuild   # rebuild and force-recreate containers
-npm run compose:prod:logs      # follow logs
-```
+npm run prod:app:build        # build the app image
+npm run prod:app:build:plain  # build the app image with detailed output
+npm run prod:app:up           # start/update Redis, Redis HTTP proxy, and app
+npm run prod:app:recreate     # force-recreate core containers without rebuilding
+npm run prod:app:down         # stop and remove containers/network, keep .storage data
+npm run prod:app:logs         # follow core stack logs
 
-Short aliases are also available:
-
-```sh
-npm run compose:prod
-npm run compose:logs
-npm run compose:down
+npm run prod:proxy:up         # start bundled Caddy proxy
+npm run prod:proxy:down       # stop/remove bundled Caddy proxy only
+npm run prod:proxy:logs       # follow Caddy logs
 ```
