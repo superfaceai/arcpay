@@ -1,3 +1,4 @@
+import { getRequestOrigin } from "@/lib";
 import { createWebRoute, getSession } from "@/web/services";
 import { withWebAuth } from "@/web/middleware";
 
@@ -37,7 +38,7 @@ export const connectRoute = createWebRoute().get(
       return c.redirect("/home");
     }
 
-    const baseUrl = new URL(c.req.url).origin;
+    const baseUrl = getRequestOrigin(c);
 
     const account = (await loadAccountById(accountId))!;
     const apiKeys = (await listApiKeysForAccount({ accountId })).filter(

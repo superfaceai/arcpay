@@ -1,3 +1,4 @@
+import { getRequestOrigin } from "@/lib";
 import { createApi } from "@/api/services";
 import { createMcpServer, handleMcpRequest } from "@/mcp/services";
 import { withAuth } from "@/api/middlewares";
@@ -14,7 +15,7 @@ export const walletMcpUrl = (baseUrl: string) =>
 export const walletMcp = createApi().all("/wallet", withAuth(), async (c) => {
   const accountId = c.get("accountId");
   const live = c.get("isLive");
-  const hostUrl = new URL(c.req.url).origin;
+  const hostUrl = getRequestOrigin(c);
 
   const mcpServer = createMcpServer({
     name: "wallet",

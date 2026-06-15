@@ -1,3 +1,4 @@
+import { getRequestOrigin } from "@/lib";
 import { createApi } from "@/api/services";
 import { withAuth } from "@/api/middlewares";
 import { createMcpServer, handleMcpRequest } from "@/mcp/services";
@@ -19,7 +20,7 @@ export const ucpCheckoutsMcp = createApi().all(
   async (c) => {
     const accountId = c.get("accountId");
     const live = c.get("isLive");
-    const hostUrl = new URL(c.req.url).origin;
+    const hostUrl = getRequestOrigin(c);
 
     const mcpServer = createMcpServer({
       name: "ucp-checkouts",
